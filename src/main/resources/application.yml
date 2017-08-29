@@ -1,0 +1,18 @@
+openchannel:
+    marketplace-id: 59a3fd3cf960874e72e96add
+    secret: bxtWZKAmtEZRSaxfIqCmGO7OiaMHsxhEGMyUyY4phJc
+    api-url: https://market.openchannel.io/
+    api-version: v2
+    developer-id: 1
+spring:
+  thymeleaf:
+    prefix: classpath:/views/
+    suffix: .html
+  resources:
+    static-locations: classpath:/static/
+  mvc:
+    static-path-pattern: /assets/**
+logging:
+  level:
+    org.springframework: INFO
+    io.openchannel: DEBUG
