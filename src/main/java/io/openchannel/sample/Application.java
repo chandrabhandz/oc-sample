@@ -15,8 +15,13 @@ import org.springframework.context.annotation.ComponentScan;
  */
 
 @SpringBootApplication
-@ComponentScan({"io.openchannel.sample.config", "io.openchannel.sample.controller"})
+@ComponentScan("io.openchannel.sample")
 public class Application {
+
+    /**
+     * Main method, which works as entry point for application
+     * @param args
+     */
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
     }

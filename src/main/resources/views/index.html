@@ -4,7 +4,21 @@
 <body>
 <section class="statistics">
     <div class="container section-container">
-        <!-- TO BE ADDED LATER -->
+        <div th:each="app : ${apps.get('list')}">
+            <div class="error-panel" th:if="${app.status.value == 'inDevelopment'}">
+                <i class="fa fa-exclamation-circle"></i>
+                <span>
+                Drafts must be published before they can be listed on the marketplace.
+            </span>
+            </div>
+        </div>
+        <h1>
+            <i class="fa fa-search"></i>
+            <span th:text="${views} + ' Views'"></span>
+        </h1>
+        <div id="plot">
+
+        </div>
     </div>
 </section>
 
@@ -23,32 +37,72 @@
     <div class="section-container"><h1 class="text-center">My Apps</h1>
         <div class="container">
             <div class="card-group">
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="card">
-                            <div class="card-overlay text-center">
-                                <div class="card-overlay-panel"><a class="btn btn-see-through" data-toggle="tooltip"
-                                                                   title="" href="/app/edit/59a54d5aca753d311f7444b6/1"
-                                                                   data-original-title="Edit"><i
-                                        class="fa fa-pencil"></i></a><a class="btn btn-see-through"
-                                                                        data-toggle="tooltip" title="" href="#"
-                                                                        target="_blank" data-original-title="Preview"><i
-                                        class="fa fa-search"></i></a><a class="btn btn-see-through"
-                                                                        data-toggle="tooltip" title=""
-                                                                        onclick="showDeleteDialog('59a54d5aca753d311f7444b6', '1', 'pending')"
-                                                                        data-original-title="Delete"><i
-                                        class="fa fa-trash"></i></a></div>
-                            </div>
-                            <div class="pending card-status text-center"><span>Pending Approval</span></div>
-                            <div class="card-content">
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="card-image"><img src="//d3grfap2l5ikgv.cloudfront.net/59a54d3ff960874e72409fae.png"/>
+                <div class="row" th:switch="${apps.get('list').size() == 0}">
+                    <div class="no-results-card" th:case="${true}">
+                        You don't have any apps yet.
+                    </div>
+                    <div th:case="${false}">
+                        <div class="col-md-6" th:each="app : ${apps.get('list')}">
+                            <div class="card">
+                                <div class="card-overlay text-center">
+                                    <div class="card-overlay-panel">
+                                        <a href="" class="btn btn-see-through" data-toggle="tooltip" title="Edit"
+                                           th:href="@{/app/edit/{appId}/{appVersion}(appId=${app.appId}, appVersion=${app.version})}">
+                                            <i class="fa fa-pencil"></i>
+                                        </a>
+                                        <a class="btn btn-see-through" th:if="${app.status.value == 'inDevelopment'}"
+                                           data-toggle="tooltip" title="Publish"
+                                           th:onclick="'showPublishDialog(\'' + ${app.appId} + '\',\'' + ${app.version} + '\''">
+                                            <i class="fa fa-rocket"></i>
+                                        </a>
+                                        <a class="btn btn-see-through" data-toggle="tooltip" title="Preview" href="#"
+                                           target="_blank">
+                                            <i class="fa fa-search"></i>
+                                        </a>
+                                        <div th:if="${app.status.value == 'approved'}">
+                                            <a class="btn btn-see-through"
+                                               th:if="${app.parent.status.value == 'approved'}" data-toggle="tooltip"
+                                               title="Suspend"
+                                               th:onclick="'showSuspendDialog(\'' + ${app.appId} + '\', \'suspend\')'">
+                                                <i class="fa fa-pause"></i>
+                                            </a>
+                                            <a class="btn btn-see-through"
+                                               th:if="${app.parent.status.value == 'suspended' and app.parent.status.modifiedBy == 'developer'}"
+                                               data-toggle="tooltip" title="Suspend"
+                                               th:onclick="'showSuspendDialog(\'' + ${app.appId} + '\', \'unsuspend\')'">
+                                                <i class="fa fa-play"></i>
+                                            </a>
                                         </div>
+                                        <a class="btn btn-see-through" data-toggle="tooltip" title="Delete"
+                                           th:onclick="'showDeleteDialog(\'' + ${app.appId} + '\', \'' + ${app.version} + '\', \'' + ${app.status.value} + '\')'">
+                                            <i class="fa fa-trash"></i>
+                                        </a>
                                     </div>
-                                    <div class="col-md-8">
-                                        <div class="card-title">Sample</div>
-                                        <div class="card-summary">This is a sample application</div>
+                                    <div th:class="${app.parent.status.value} + ' card-status text-center'"
+                                         th:if="${app.status.value == 'approved'}">
+                                        <span th:if="${app.parent.status.value == 'approved'}">Approved</span>
+                                        <span th:if="${app.parent.status.value != 'approved'}">Suspended</span>
+                                    </div>
+                                </div>
+                                <div th:switch="${app.status.value}"
+                                     th:class="${app.status.value  + ' card-status text-center'}">
+                                    <span th:case="${'inDevelopment'}">Draft</span>
+                                    <span th:case="${'inReview'}">In Review</span>
+                                    <span th:case="${'pending'}">Pending Approval</span>
+                                    <span th:case="${'suspended'}">Suspended</span>
+                                    <span th:case="${'rejected'}">Rejected</span>
+                                </div>
+                                <div class="card-content">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="card-image">
+                                                <img th:src="@{${app.customData.icon}}" alt="App Image"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <div class="card-title" th:text="${app.name}"></div>
+                                            <div class="card-summary" th:text="${app.customData.summary}"></div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -59,6 +113,14 @@
         </div>
     </div>
 </section>
-
+<th:block th:replace="fragments/common :: scripts"></th:block>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var app = true;
+    var statistics = [[${statistics}]];
+    var toast_type = '';
+    var toast_message = '';
+    /*]]>*/
+</script>
 </body>
 </html>

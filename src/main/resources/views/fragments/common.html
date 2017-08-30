@@ -1,11 +1,30 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head th:fragment="head">
+    <title>Sample Application</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
     <link href="/assets/css/style.css" th:href="@{/assets/css/style.css}" rel="stylesheet" type="text/css"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
     <link href="/assets/css/cropper.min.css" th:href="@{/assets/css/cropper.min.css}" rel="stylesheet" type="text/css"/>
     <link href="/assets/css/select2.min.css" th:href="@{/assets/css/select2.min.css}" rel="stylesheet" type="text/css"/>
     <link href="/assets/css/toastr.css" th:href="@{/assets/css/toastr.css}" rel="stylesheet" type="text/css"/>
 </head>
+<body>
+
+<th:block th:fragment="scripts">
+    <script type="text/javascript" th:src="@{/assets/js/config.js}"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript" th:src="@{/assets/js/cropper.min.js}"></script>
+    <script type="text/javascript" th:src="@{/assets/js/dropzone.js}"></script>
+    <script type="text/javascript" th:src="@{/assets/js/video-embed.js}"></script>
+    <script type="text/javascript" th:src="@{/assets/js/select2.min.js}"></script>
+    <script type="text/javascript" th:src="@{/assets/js/jqBootstrapValidation.js}"></script>
+    <script type="text/javascript" th:src="@{/assets/js/jquery.flot.min.js}"></script>
+    <script type="text/javascript" th:src="@{/assets/js/cropper-dropzone.js}"></script>
+    <script type="text/javascript" th:src="@{/assets/js/tinymce/tinymce.min.js}"></script>
+    <script type="text/javascript" th:src="@{/assets/js/toastr.min.js}"></script>
+    <script type="text/javascript" th:src="@{/assets/js/scripts.js}"></script>
+</th:block>
+</body>
 </html>
