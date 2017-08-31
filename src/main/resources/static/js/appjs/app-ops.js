@@ -54,14 +54,14 @@ $(function() {
     initializeCropperDropzone("#upload-images", {
         fileType: "images",
         maxFiles: 10,
-        autoProcessQueue: true,
+        autoProcessQueue: true
     });
 
     initializeCropperDropzone("#upload-files", {
         fileType: "files",
         bFile: true,
         maxFiles: 10,
-        autoProcessQueue: true,
+        autoProcessQueue: true
     });
 
     // Initialize category select dropdown

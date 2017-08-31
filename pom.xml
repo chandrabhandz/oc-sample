@@ -52,6 +52,11 @@
             <artifactId>httpclient</artifactId>
             <version>${apache.httpclient.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpmime</artifactId>
+            <version>${apache.httpclient.version}</version>
+        </dependency>
 
         <!-- Simple JSON -->
         <dependency>

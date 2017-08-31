@@ -20,7 +20,7 @@ function initializeCropperDropzone( selector, config ) {
     var showCropper = true;
 
     var options = {
-        url: "/apps/upload",
+        url: "/files/upload",
         method: 'post',
         addRemoveLinks: true,
         clickable: false,

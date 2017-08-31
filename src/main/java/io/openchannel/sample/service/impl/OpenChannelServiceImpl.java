@@ -2,6 +2,7 @@ package io.openchannel.sample.service.impl;
 
 import io.openchannel.sample.config.OpenChannelProperties;
 import io.openchannel.sample.service.OpenChannelService;
+import io.openchannel.sample.util.CommonUtil;
 import io.openchannel.sample.util.JSONUtil;
 import io.openchannel.sample.util.OpenChannelAPIUtil;
 import org.json.simple.JSONArray;
@@ -11,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.io.IOException;
 
 /**
@@ -39,6 +41,11 @@ public class OpenChannelServiceImpl implements OpenChannelService {
      * Endpoint for stats
      */
     private static final String ENDPOINT_STATS = "stats/series/month/views";
+
+    /**
+     * Endpoint for files
+     */
+    private static final String ENDPOINT_FILES = "files";
 
     /**
      * OpenChannelAPIUtil which performs low level communication with APIs
@@ -90,5 +97,24 @@ public class OpenChannelServiceImpl implements OpenChannelService {
             LOGGER.warn("Error while communicating with openchannel stats api", e);
         }
         return new JSONArray();
+    }
+
+    /**
+     * Uploads a file to openchannel API and gets information about uploaded file
+     *
+     * @param content
+     * @return file url
+     */
+    @Override
+    public String uploadFiles(final File content) {
+        try {
+            JSONObject jsonObject = JSONUtil.getJSONObject(openChannelAPIUtil.sendPost(ENDPOINT_FILES, new OpenChannelAPIUtil.RequestParameter("file", content)));
+            if(!CommonUtil.isNull(jsonObject.get("fileUrl"))) {
+                return jsonObject.get("fileUrl").toString();
+            }
+        } catch (IOException e) {
+            LOGGER.warn("Error while uploading file to openchannel api", e);
+        }
+        return "";
     }
 }

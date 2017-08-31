@@ -3,6 +3,8 @@ package io.openchannel.sample.service;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import java.io.File;
+
 /**
  * OpenChannelService.java : OpenChannelService which serves as abstraction layer between implementation and usage
  *
@@ -26,4 +28,11 @@ public interface OpenChannelService {
      * @return JSONArray returns array of statistics
      */
     JSONArray getStatistics();
+
+    /**
+     * Uploads a file to openchannel API and gets information about uploaded file
+     * @param content
+     * @return file url
+     */
+    String uploadFiles(File content);
 }

@@ -4,10 +4,13 @@ import io.openchannel.sample.config.OpenChannelProperties;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
@@ -21,6 +24,7 @@ import org.springframework.stereotype.Service;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
+import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -75,10 +79,11 @@ public class OpenChannelAPIUtil {
      * @return response returned from API
      * @throws IOException throws an IOException if request can't be completed
      */
-    public String sendGet(final String path, RequestParameter... requestParameters) throws IOException {
+    public String sendGet(final String path, final RequestParameter... requestParameters) throws IOException {
         final CloseableHttpClient httpClient = getHttpClient();
-        final HttpGet httpGet = new HttpGet(buildURI(path) + "?" + buildRequestParams(requestParameters));
+        final HttpGet httpGet = new HttpGet(buildURI(path) + "?" + buildGetRequestParams(requestParameters));
         try {
+            httpGet.addHeader(new BasicHeader("Content-Type", "application/json"));
             return getString(httpGet, httpClient);
         } catch (IOException e) {
             LOGGER.warn("unable to complete request {}", e.getMessage());
@@ -94,12 +99,38 @@ public class OpenChannelAPIUtil {
     }
 
     /**
+     * Send a POST request to specified API url and gets response as String
+     * @param path API path to be invoked
+     * @param requestParameters list of request parameters
+     * @return response returned from API
+     * @throws IOException throws an IOException if request can't be completed
+     */
+    public String sendPost(final String path, final RequestParameter... requestParameters) throws IOException {
+        final CloseableHttpClient httpClient = getHttpClient();
+        final HttpPost httpPost = new HttpPost(buildURI(path));
+        try {
+            httpPost.setEntity(buildMultipartRequestParams(requestParameters));
+            return getString(httpPost, httpClient);
+        } catch (IOException e) {
+            LOGGER.warn("unable to complete request {}", e.getMessage());
+            throw e;
+        } finally {
+            try {
+                httpPost.releaseConnection();
+                httpClient.close();
+            } catch (IOException e) {
+                LOGGER.warn("unable to close HTTP resources {}", e.getMessage());
+            }
+        }
+    }
+
+    /**
      * builds URIEncoded Request parameter
      *
      * @param requestParameters list of request parameters
      * @return URL Encoded string
      */
-    private String buildRequestParams(final RequestParameter... requestParameters) {
+    private String buildGetRequestParams(final RequestParameter... requestParameters) {
         if (requestParameters.length == 0)
             return EMPTY_STRING;
         final StringBuilder stringBuilder = new StringBuilder();
@@ -121,6 +152,25 @@ public class OpenChannelAPIUtil {
 
         return stringBuilder.toString();
 
+    }
+
+    /**
+     * builds multipart form entity for multipart requests
+     *
+     * @param requestParameters list of request parameters
+     * @return Multipart Entity
+     */
+    private HttpEntity buildMultipartRequestParams(final RequestParameter... requestParameters) {
+        final MultipartEntityBuilder multipartEntityBuilder = MultipartEntityBuilder.create();
+        for (int i = 0; i < requestParameters.length; i++) {
+            if (!EMPTY_STRING.equals(requestParameters[i].getValue())) {
+                multipartEntityBuilder.addTextBody(requestParameters[i].getName(), String.valueOf(requestParameters[i].getValue()));
+            } else {
+                multipartEntityBuilder.addBinaryBody(requestParameters[i].getName(), requestParameters[i].getFile(), ContentType.APPLICATION_OCTET_STREAM, requestParameters[i].getFile().getName());
+            }
+        }
+
+        return multipartEntityBuilder.build();
     }
 
     /**
@@ -173,7 +223,6 @@ public class OpenChannelAPIUtil {
      * @param requestBase Generic HTTP Request
      */
     private void buildHeaders(HttpRequestBase requestBase) {
-        requestBase.addHeader(new BasicHeader("Content-Type", "application/json"));
         String b64 = encodeB64(openChannelProperties.getMarketplaceId() + ":" + openChannelProperties.getSecret());
         requestBase.addHeader(new BasicHeader("Authorization", "Basic " + b64));
     }
@@ -225,25 +274,61 @@ public class OpenChannelAPIUtil {
         private final String name;
 
         /**
-         * value of parameter
+         * value of string parameter
          */
         private final String value;
 
         /**
+         * value of file, for multipart requests
+         */
+        private final File file;
+
+        /**
+         * Simple Name-Value pair constructor
+         *
          * @param name
          * @param value
          */
         public RequestParameter(String name, String value) {
             this.name = name;
             this.value = value;
+            this.file = null;
         }
 
+        /**
+         * Multipart Name-File pair constructor
+         *
+         * @param name
+         * @param file
+         */
+        public RequestParameter(String name, File file) {
+            this.name = name;
+            this.file = file;
+            this.value = EMPTY_STRING;
+        }
+
+        /**
+         * Getter for name
+         * @return
+         */
         private String getName() {
             return name;
         }
 
+        /**
+         * Getter for string value
+         * @return
+         */
         private String getValue() {
             return value;
+        }
+
+        /**
+         * Getter for file
+         * @return
+         */
+        public File getFile() {
+            return file;
         }
 
         /**
@@ -269,5 +354,4 @@ public class OpenChannelAPIUtil {
                     '}';
         }
     }
-
 }
