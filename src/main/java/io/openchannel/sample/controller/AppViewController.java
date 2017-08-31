@@ -1,5 +1,6 @@
 package io.openchannel.sample.controller;
 
+import io.openchannel.sample.form.AppFormModel;
 import io.openchannel.sample.service.OpenChannelService;
 import org.json.simple.JSONArray;
 import org.slf4j.Logger;
@@ -8,9 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
- * ViewController.java : responsible for rendering all the HTML view
+ * AppViewController.java : responsible for rendering all the HTML view
  * <p>
  * Created on 29/8/17 4:53 PM by Raja Dushyant Vashishtha
  * Sr. Software Engineer
@@ -20,11 +22,12 @@ import org.springframework.web.bind.annotation.GetMapping;
  */
 
 @Controller
-public class ViewController {
+@RequestMapping("/app")
+public class AppViewController {
     /**
      * Logger Reference
      */
-    private static final Logger LOGGER = LoggerFactory.getLogger(ViewController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AppViewController.class);
 
     /**
      * OpenChannelService, an intermediate layer between APIs and Controller
@@ -37,7 +40,7 @@ public class ViewController {
      * @param openChannelService open channel service reference
      */
     @Autowired
-    public ViewController(OpenChannelService openChannelService) {
+    public AppViewController(OpenChannelService openChannelService) {
         this.openChannelService = openChannelService;
     }
 
@@ -47,7 +50,7 @@ public class ViewController {
      * @param model model to be injected into view
      * @return view name
      */
-    @GetMapping("/")
+    @GetMapping({"", "/"})
     public String index(final Model model) {
         LOGGER.debug("initializing index page rendering");
         model.addAttribute("apps", openChannelService.searchApps());
@@ -62,5 +65,17 @@ public class ViewController {
         model.addAttribute("statistics", statistics.toJSONString());
 
         return "index";
+    }
+
+    /**
+     * Renders App Create page where user can create a new application
+     *
+     * @param model model to be injected into view
+     * @return view name
+     */
+    @GetMapping("/create")
+    public String createApp(final Model model) {
+        model.addAttribute("app", new AppFormModel());
+        return "app/create";
     }
 }

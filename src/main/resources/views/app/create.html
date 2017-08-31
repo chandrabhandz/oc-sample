@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="/fragments/common :: head"></head>
+<body>
+<section class="breadcrumb">
+    <div class="container">
+        <h1>Add App</h1>
+        <a th:href="@{/}">
+            <span>Home</span>
+        </a>
+        <span>/</span>
+        <a th:href="@{/}">
+            <span>My Apps</span>
+        </a>
+        <span>/</span>
+        <span>Add App</span>
+    </div>
+</section>
+<section class="form">
+    <div class="container">
+        <form th:action="@{/api/app/create}" th:class="form" method="post" th:novalidate="${true}" th:object="${app}">
+            <input type="hidden" id="publish" value="false" name="publish"/>
+            <div class="form-group row control-group">
+                <div class="col-md-3 item">
+                    Application Name
+                    <span class="text-danger">*</span>
+                </div>
+                <div class="col-md-6 controls">
+                    <input th:field="*{applicationName}" type="text" class="form-control" required="true" data-validation-required-message="Please fill out this field" name="name"/>
+                </div>
+            </div>
+            <div class="form-group row control-group">
+                <div class="col-md-3 item">
+                    Summary
+                    <span class="text-danger">*</span>
+                </div>
+                <div class="col-md-6 controls">
+                    <textarea th:field="*{summary}" cols="30" rows="10" class="form-control" required="true" data-validation-required-message="Please fill out this field" name="summary"></textarea>
+                </div>
+            </div>
+            <div class="form-group row control-group">
+                <div class="col-md-3 item">
+                    Description
+                    <span class="text-danger">*</span>
+                </div>
+                <div class="col-md-6 controls">
+                    <textarea th:field="*{description}" name="description" cols="30" rows="10" class="form-control" required="true" data-validation-required-message="Please fill out this field"></textarea>
+                </div>
+            </div>
+            <div class="form-group row control-group">
+                <div class="col-md-3 item">
+                    Icon
+                    <span class="text-danger">*</span>
+                </div>
+                <div class="col-md-6">
+                    <div id="upload-icon" class="dropzone">
+
+                    </div>
+                </div>
+                <div class="col-md-6 col-md-offset-3 controls">
+                    <input th:field="*{icon}" id="icon" name="icon" type="input" class="hidden" value="" required="true" data-validation-required-message="Please upload icon"/>
+                </div>
+            </div>
+            <div class="form-group row control-group">
+                <div class="col-md-3 item">
+                    Images
+                </div>
+                <div class="col-md-6">
+                    <div id="upload-images" class="dropzone">
+                        <input th:field="*{images}" id="images" name="images" type="input" class="hidden" value=""/>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group row control-group">
+                <div class="col-md-3 item">
+                    Files
+                </div>
+                <div class="col-md-6">
+                    <div id="upload-files" class="dropzone">
+                        <input th:field="*{files}" name="files" type="input" class="hidden" value="" id="files"/>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group row control-group">
+                <div class="col-md-3 item">
+                    Category<span class="text-danger">*</span>
+                </div>
+                <div class="col-md-6 controls">
+                    <select th:field="*{category}" name="category" multiple="multiple" class="form-control categorizer" required="true" data-validation-required-message="Please select at least one">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group row control-group">
+                <div class="col-md-3 item">
+                    Website URL
+                </div>
+                <div class="col-md-6">
+                    <input th:field="*{websiteUrl}" class="form-control" name="website_url"/>
+                </div>
+            </div>
+            <div class="form-group row control-group">
+                <div class="col-md-3 item">
+                    Video URL
+                </div>
+                <div class="col-md-6">
+                    <input th:field="*{videoUrl}" class="form-control video-url" name="video_url"/>
+                    <div class="video-preview"></div>
+                </div>
+            </div>
+            <div class="form-group row control-group">
+                <div class="col-md-3">
+
+                </div>
+                <div class="col-md-6 controls">
+                    <input th:field="*{tncFlag}" value="true" type="checkbox" data-validation-required-message="Please check this box if you want to proceed." required="true" id="tnc"/>
+                    <label for="tnc" class="">I agree to the terms and conditions.<span class="text-danger">*</span></label>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-md-6 col-md-offset-3">
+                    <button class="btn btn-primary pull-right" th:type="submit" th:onclick="'bSubmit=false;'">
+                        Save Draft
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>
+<th:block th:replace="/fragments/common :: scripts"></th:block>
+<th:block th:replace="/app/fragments/common :: appscripts"></th:block>
+</body>
+</html>
