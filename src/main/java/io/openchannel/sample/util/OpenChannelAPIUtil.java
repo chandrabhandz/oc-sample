@@ -1,8 +1,10 @@
 package io.openchannel.sample.util;
 
 import io.openchannel.sample.config.OpenChannelProperties;
+import io.openchannel.sample.form.BaseFormModel;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
@@ -10,6 +12,7 @@ import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
 import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
@@ -17,6 +20,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.ssl.SSLContextBuilder;
 import org.apache.http.util.EntityUtils;
+import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -100,16 +104,21 @@ public class OpenChannelAPIUtil {
 
     /**
      * Send a POST request to specified API url and gets response as String
-     * @param path API path to be invoked
+     *
+     * @param path              API path to be invoked
+     * @param postContentType   ContentType of request (Multipart/JSON)
      * @param requestParameters list of request parameters
      * @return response returned from API
      * @throws IOException throws an IOException if request can't be completed
      */
-    public String sendPost(final String path, final RequestParameter... requestParameters) throws IOException {
+    public String sendPost(final String path, final PostContentType postContentType, final RequestParameter... requestParameters) throws IOException {
         final CloseableHttpClient httpClient = getHttpClient();
         final HttpPost httpPost = new HttpPost(buildURI(path));
         try {
-            httpPost.setEntity(buildMultipartRequestParams(requestParameters));
+            if (PostContentType.MULTIPART.equals(postContentType))
+                httpPost.setEntity(buildMultipartRequestParams(requestParameters));
+            else
+                httpPost.setEntity(buildJsonRequestParams(requestParameters));
             return getString(httpPost, httpClient);
         } catch (IOException e) {
             LOGGER.warn("unable to complete request {}", e.getMessage());
@@ -117,6 +126,30 @@ public class OpenChannelAPIUtil {
         } finally {
             try {
                 httpPost.releaseConnection();
+                httpClient.close();
+            } catch (IOException e) {
+                LOGGER.warn("unable to close HTTP resources {}", e.getMessage());
+            }
+        }
+    }
+
+    /**
+     * Send a DELETE request to specified API url and gets response as String
+     * @param path API path to be invoked
+     * @return response returned from API
+     * @throws IOException throws an IOException if request can't be completed
+     */
+    public String sendDelete(final String path) throws IOException {
+        final CloseableHttpClient httpClient = getHttpClient();
+        final HttpDelete httpDelete = new HttpDelete(buildURI(path));
+        try {
+            return getString(httpDelete, httpClient);
+        } catch (IOException e) {
+            LOGGER.warn("unable to complete request {}", e.getMessage());
+            throw e;
+        } finally {
+            try {
+                httpDelete.releaseConnection();
                 httpClient.close();
             } catch (IOException e) {
                 LOGGER.warn("unable to close HTTP resources {}", e.getMessage());
@@ -163,14 +196,34 @@ public class OpenChannelAPIUtil {
     private HttpEntity buildMultipartRequestParams(final RequestParameter... requestParameters) {
         final MultipartEntityBuilder multipartEntityBuilder = MultipartEntityBuilder.create();
         for (int i = 0; i < requestParameters.length; i++) {
-            if (!EMPTY_STRING.equals(requestParameters[i].getValue())) {
+            if (requestParameters[i].getValue() instanceof String) {
                 multipartEntityBuilder.addTextBody(requestParameters[i].getName(), String.valueOf(requestParameters[i].getValue()));
+            } else if (requestParameters[i].getValue() instanceof File) {
+                multipartEntityBuilder.addBinaryBody(requestParameters[i].getName(), (File) requestParameters[i].getValue(), ContentType.APPLICATION_OCTET_STREAM, ((File) requestParameters[i].getValue()).getName());
             } else {
-                multipartEntityBuilder.addBinaryBody(requestParameters[i].getName(), requestParameters[i].getFile(), ContentType.APPLICATION_OCTET_STREAM, requestParameters[i].getFile().getName());
+                throw new UnsupportedOperationException("multipart other than String & File is not supported at this moment");
             }
         }
 
         return multipartEntityBuilder.build();
+    }
+
+    /**
+     * builds json request entity
+     *
+     * @param requestParameters list of reuqest parameters
+     * @return StringEntity
+     */
+    private HttpEntity buildJsonRequestParams(final RequestParameter... requestParameters) {
+        final JSONObject jsonObject = new JSONObject();
+        for (int i = 0; i < requestParameters.length; i++) {
+            if(requestParameters[i].getValue() instanceof BaseFormModel) {
+                jsonObject.put(requestParameters[i].getName(), ((BaseFormModel) requestParameters[i].getValue()).toJson());
+            } else {
+                jsonObject.put(requestParameters[i].getName(), requestParameters[i].getValue());
+            }
+        }
+        return new StringEntity(jsonObject.toJSONString(), ContentType.APPLICATION_JSON);
     }
 
     /**
@@ -264,6 +317,13 @@ public class OpenChannelAPIUtil {
     }
 
     /**
+     * Enum for Post Request Content type
+     */
+    public enum PostContentType {
+        MULTIPART, JSON
+    }
+
+    /**
      * RequestParameter class : wrapper for API Request parameters
      */
     public static class RequestParameter {
@@ -274,14 +334,9 @@ public class OpenChannelAPIUtil {
         private final String name;
 
         /**
-         * value of string parameter
+         * value of parameter
          */
-        private final String value;
-
-        /**
-         * value of file, for multipart requests
-         */
-        private final File file;
+        private final Object value;
 
         /**
          * Simple Name-Value pair constructor
@@ -289,26 +344,14 @@ public class OpenChannelAPIUtil {
          * @param name
          * @param value
          */
-        public RequestParameter(String name, String value) {
+        public RequestParameter(String name, Object value) {
             this.name = name;
             this.value = value;
-            this.file = null;
-        }
-
-        /**
-         * Multipart Name-File pair constructor
-         *
-         * @param name
-         * @param file
-         */
-        public RequestParameter(String name, File file) {
-            this.name = name;
-            this.file = file;
-            this.value = EMPTY_STRING;
         }
 
         /**
          * Getter for name
+         *
          * @return
          */
         private String getName() {
@@ -317,18 +360,11 @@ public class OpenChannelAPIUtil {
 
         /**
          * Getter for string value
+         *
          * @return
          */
-        private String getValue() {
+        private Object getValue() {
             return value;
-        }
-
-        /**
-         * Getter for file
-         * @return
-         */
-        public File getFile() {
-            return file;
         }
 
         /**
@@ -339,7 +375,7 @@ public class OpenChannelAPIUtil {
          */
         public String getEncoded() throws UnsupportedEncodingException {
             try {
-                return getName() + "=" + URLEncoder.encode(getValue(), StandardCharsets.UTF_8.name());
+                return getName() + "=" + URLEncoder.encode(String.valueOf(getValue()), StandardCharsets.UTF_8.name());
             } catch (UnsupportedEncodingException e) {
                 LOGGER.warn("Unable to encode request parameters");
                 throw e;
@@ -354,4 +390,5 @@ public class OpenChannelAPIUtil {
                     '}';
         }
     }
+
 }

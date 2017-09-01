@@ -1,5 +1,15 @@
 package io.openchannel.sample.form;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
+import java.io.Serializable;
+import java.util.List;
+
 /**
  * AppFormModel.java : FormModel wrapper for an App which defines basic properties of an app which are visible to a user/other component of application
  * Created on 31/8/17 1:23 PM by Raja Dushyant Vashishtha
@@ -9,17 +19,29 @@ package io.openchannel.sample.form;
  * www.decipherzone.com
  */
 
-public class AppFormModel {
-    private String applicationName;
+public class AppFormModel implements BaseFormModel, Serializable {
+
+    private String appId;
+    private String name;
     private String summary;
     private String description;
     private String icon;
-    private String images;
-    private String files;
-    private String category;
+    private List<String> images;
+    private List<String> files;
+    private List<String> category;
     private String websiteUrl;
     private String videoUrl;
     private String tncFlag;
+    private String publish;
+    private String version;
+
+    public Integer getVersion() {
+        return version == null ? null : Integer.valueOf(version);
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
 
     public String getDescription() {
         return description;
@@ -37,27 +59,27 @@ public class AppFormModel {
         this.icon = icon;
     }
 
-    public String getImages() {
+    public List<String> getImages() {
         return images;
     }
 
-    public void setImages(String images) {
+    public void setImages(List<String> images) {
         this.images = images;
     }
 
-    public String getFiles() {
+    public List<String> getFiles() {
         return files;
     }
 
-    public void setFiles(String files) {
+    public void setFiles(List<String> files) {
         this.files = files;
     }
 
-    public String getCategory() {
+    public List<String> getCategory() {
         return category;
     }
 
-    public void setCategory(String category) {
+    public void setCategory(List<String> category) {
         this.category = category;
     }
 
@@ -85,12 +107,12 @@ public class AppFormModel {
         this.tncFlag = tncFlag;
     }
 
-    public String getApplicationName() {
-        return applicationName;
+    public String getName() {
+        return name;
     }
 
-    public void setApplicationName(String applicationName) {
-        this.applicationName = applicationName;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getSummary() {
@@ -101,19 +123,30 @@ public class AppFormModel {
         this.summary = summary;
     }
 
+    public Boolean getPublish() {
+        return Boolean.valueOf(publish);
+    }
+
+    public void setPublish(String publish) {
+        this.publish = publish;
+    }
+
     @Override
-    public String toString() {
-        return "AppFormModel{" +
-                "applicationName='" + applicationName + '\'' +
-                ", summary='" + summary + '\'' +
-                ", description='" + description + '\'' +
-                ", icon='" + icon + '\'' +
-                ", images='" + images + '\'' +
-                ", files='" + files + '\'' +
-                ", category='" + category + '\'' +
-                ", websiteUrl='" + websiteUrl + '\'' +
-                ", videoUrl='" + videoUrl + '\'' +
-                ", tncFlag='" + tncFlag + '\'' +
-                '}';
+    public JSONObject toJson() {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+            return (JSONObject) new JSONParser().parse(objectMapper.writeValueAsString(this));
+        } catch (JsonProcessingException | ParseException e) {
+            throw new RuntimeException("Can't convert to json", e);
+        }
+    }
+
+    public String getAppId() {
+        return appId;
+    }
+
+    public void setAppId(String appId) {
+        this.appId = appId;
     }
 }

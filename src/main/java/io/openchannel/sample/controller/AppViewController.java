@@ -2,14 +2,22 @@ package io.openchannel.sample.controller;
 
 import io.openchannel.sample.form.AppFormModel;
 import io.openchannel.sample.service.OpenChannelService;
+import io.openchannel.sample.util.CommonUtil;
 import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import javax.servlet.http.HttpSession;
 
 /**
  * AppViewController.java : responsible for rendering all the HTML view
@@ -74,8 +82,32 @@ public class AppViewController {
      * @return view name
      */
     @GetMapping("/create")
-    public String createApp(final Model model) {
+    public String getCreateAppPage(final Model model) {
         model.addAttribute("app", new AppFormModel());
         return "app/create";
     }
+
+    @PostMapping("/create")
+    public String createApp(@ModelAttribute final AppFormModel appFormModel, final Model model, final RedirectAttributes redirectAttributes) {
+        JSONObject status = openChannelService.createApp(appFormModel);
+        if(!CommonUtil.isNull(status.get("error"))) {
+            JSONArray error = (JSONArray) status.get("error");
+            String message = String.valueOf(((JSONObject) error.get(0)).get("message"));
+            model.addAttribute("toast_type", "error");
+            model.addAttribute("toast_message", message);
+            redirectAttributes.addFlashAttribute(appFormModel);
+            redirectAttributes.addFlashAttribute(model);
+            return "redirect:/app/create/";
+        }
+
+        if(appFormModel.getPublish()) {
+            model.addAttribute("toast_type", "publish");
+        } else {
+            model.addAttribute("toast_type", "create");
+        }
+        redirectAttributes.addFlashAttribute(model);
+        LOGGER.debug("App Created ? : {}", status);
+        return "redirect:/app/";
+    }
+
 }

@@ -1,6 +1,7 @@
 package io.openchannel.sample.service.impl;
 
 import io.openchannel.sample.config.OpenChannelProperties;
+import io.openchannel.sample.form.AppFormModel;
 import io.openchannel.sample.service.OpenChannelService;
 import io.openchannel.sample.util.CommonUtil;
 import io.openchannel.sample.util.JSONUtil;
@@ -46,6 +47,11 @@ public class OpenChannelServiceImpl implements OpenChannelService {
      * Endpoint for files
      */
     private static final String ENDPOINT_FILES = "files";
+
+    /**
+     * Endpoint for creating app
+     */
+    private static final String ENDPOINT_CREATE_APP = "apps";
 
     /**
      * OpenChannelAPIUtil which performs low level communication with APIs
@@ -108,8 +114,8 @@ public class OpenChannelServiceImpl implements OpenChannelService {
     @Override
     public String uploadFiles(final File content) {
         try {
-            JSONObject jsonObject = JSONUtil.getJSONObject(openChannelAPIUtil.sendPost(ENDPOINT_FILES, new OpenChannelAPIUtil.RequestParameter("file", content)));
-            if(!CommonUtil.isNull(jsonObject.get("fileUrl"))) {
+            JSONObject jsonObject = JSONUtil.getJSONObject(openChannelAPIUtil.sendPost(ENDPOINT_FILES, OpenChannelAPIUtil.PostContentType.MULTIPART, new OpenChannelAPIUtil.RequestParameter("file", content)));
+            if (!CommonUtil.isNull(jsonObject.get("fileUrl"))) {
                 return jsonObject.get("fileUrl").toString();
             }
         } catch (IOException e) {
@@ -117,4 +123,52 @@ public class OpenChannelServiceImpl implements OpenChannelService {
         }
         return "";
     }
+
+    /**
+     * Creates an App to open channel marketplace
+     *
+     * @param appFormModel App form model which contains information about newly created app
+     * @return Boolean true if app is created successfully
+     */
+    @Override
+    public JSONObject createApp(final AppFormModel appFormModel) {
+        try {
+            JSONObject jsonObject = JSONUtil.getJSONObject(openChannelAPIUtil.sendPost(ENDPOINT_CREATE_APP, OpenChannelAPIUtil.PostContentType.JSON, new OpenChannelAPIUtil.RequestParameter("developerId", openChannelProperties.getDeveloperId()), new OpenChannelAPIUtil.RequestParameter("name", appFormModel.getName()), new OpenChannelAPIUtil.RequestParameter("customData", appFormModel)));
+            if (appFormModel.getPublish()) {
+                appFormModel.setAppId(String.valueOf(jsonObject.get("appId")));
+                appFormModel.setVersion(String.valueOf(jsonObject.get("version")));
+                if (publishApp(appFormModel)) {
+                    return new JSONObject();
+                }
+            }
+            return jsonObject;
+        } catch (IOException e) {
+            LOGGER.warn("Error while submitting app to openchannel api", e);
+        }
+        return new JSONObject();
+    }
+
+    /**
+     * Publish an app to open channel marketplace
+     *
+     * @param appFormModel App form model
+     * @return True if app is published successfully
+     */
+    @Override
+    public Boolean publishApp(final AppFormModel appFormModel) {
+
+        try {
+            openChannelAPIUtil.sendPost(ENDPOINT_CREATE_APP + "/" + appFormModel.getAppId() + "/" + "publish", OpenChannelAPIUtil.PostContentType.JSON, new OpenChannelAPIUtil.RequestParameter("developerId", openChannelProperties.getDeveloperId()), new OpenChannelAPIUtil.RequestParameter("version", appFormModel.getVersion()));
+            return Boolean.TRUE;
+        } catch (IOException e) {
+            LOGGER.warn("Error while publishing app to openchannel api", e);
+        }
+
+        return Boolean.FALSE;
+    }
+
+    public Boolean deleteApp() {
+        return Boolean.FALSE;
+    }
+
 }

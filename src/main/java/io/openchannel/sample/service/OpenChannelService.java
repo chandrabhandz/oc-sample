@@ -1,5 +1,6 @@
 package io.openchannel.sample.service;
 
+import io.openchannel.sample.form.AppFormModel;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -34,5 +35,19 @@ public interface OpenChannelService {
      * @param content
      * @return file url
      */
-    String uploadFiles(File content);
+    String uploadFiles(final File content);
+
+    /**
+     * Creates an app to openchannel market place
+     * @param appFormModel
+     * @return
+     */
+    JSONObject createApp(final AppFormModel appFormModel);
+
+    /**
+     * Publish an app to open channel marketplace
+     * @param appFormModel App form model
+     * @return True if app is published successfully
+     */
+    Boolean publishApp(final AppFormModel appFormModel);
 }

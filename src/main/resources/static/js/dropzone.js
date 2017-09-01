@@ -1438,7 +1438,6 @@
       progressObj = (ref = xhr.upload) != null ? ref : xhr;
       progressObj.onprogress = updateProgress;
       headers = {
-        "Accept": "application/json",
         "Cache-Control": "no-cache",
         "X-Requested-With": "XMLHttpRequest"
       };

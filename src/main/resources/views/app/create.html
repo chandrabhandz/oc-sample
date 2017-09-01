@@ -18,7 +18,7 @@
 </section>
 <section class="form">
     <div class="container">
-        <form th:action="@{/api/app/create}" th:class="form" method="post" th:novalidate="${true}" th:object="${app}">
+        <form th:action="@{/app/create}" th:class="form" method="post" th:novalidate="${true}" th:object="${app}">
             <input type="hidden" id="publish" value="false" name="publish"/>
             <div class="form-group row control-group">
                 <div class="col-md-3 item">
@@ -26,7 +26,7 @@
                     <span class="text-danger">*</span>
                 </div>
                 <div class="col-md-6 controls">
-                    <input th:field="*{applicationName}" type="text" class="form-control" required="true" data-validation-required-message="Please fill out this field" name="name"/>
+                    <input th:field="*{name}" type="text" class="form-control" required="required" data-validation-required-message="Please fill out this field" name="name"/>
                 </div>
             </div>
             <div class="form-group row control-group">
@@ -35,7 +35,7 @@
                     <span class="text-danger">*</span>
                 </div>
                 <div class="col-md-6 controls">
-                    <textarea th:field="*{summary}" cols="30" rows="10" class="form-control" required="true" data-validation-required-message="Please fill out this field" name="summary"></textarea>
+                    <textarea th:field="*{summary}" cols="30" rows="10" class="form-control" required="required" data-validation-required-message="Please fill out this field" name="summary"></textarea>
                 </div>
             </div>
             <div class="form-group row control-group">
@@ -44,7 +44,7 @@
                     <span class="text-danger">*</span>
                 </div>
                 <div class="col-md-6 controls">
-                    <textarea th:field="*{description}" name="description" cols="30" rows="10" class="form-control" required="true" data-validation-required-message="Please fill out this field"></textarea>
+                    <textarea th:field="*{description}" name="description" cols="30" rows="10" class="form-control" required="required" data-validation-required-message="Please fill out this field"></textarea>
                 </div>
             </div>
             <div class="form-group row control-group">
@@ -58,7 +58,7 @@
                     </div>
                 </div>
                 <div class="col-md-6 col-md-offset-3 controls">
-                    <input th:field="*{icon}" id="icon" name="icon" type="input" class="hidden" value=""/>
+                    <input th:field="*{icon}" id="icon" name="icon" type="input" class="hidden" value="" required="required" data-validation-required-message="Please upload icon"/>
                 </div>
             </div>
             <div class="form-group row control-group">
@@ -86,11 +86,11 @@
                     Category<span class="text-danger">*</span>
                 </div>
                 <div class="col-md-6 controls">
-                    <select th:field="*{category}" name="category" multiple="multiple" class="form-control categorizer" required="true" data-validation-required-message="Please select at least one">
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                        <option value="4">4</option>
+                    <select th:field="*{category}" name="category" multiple="multiple" class="form-control categorizer" required="required" data-validation-required-message="Please select at least one">
+                        <option value="Sample Category 1">Sample Category 1</option>
+                        <option value="Sample Category 2">Sample Category 2</option>
+                        <option value="Sample Category 3">Sample Category 3</option>
+                        <option value="Sample Category 4">Sample Category 4</option>
                     </select>
                 </div>
             </div>
@@ -116,7 +116,7 @@
 
                 </div>
                 <div class="col-md-6 controls">
-                    <input th:field="*{tncFlag}" value="true" type="checkbox" data-validation-required-message="Please check this box if you want to proceed." required="true" id="tnc"/>
+                    <input th:field="*{tncFlag}" value="true" type="checkbox" data-validation-required-message="Please check this box if you want to proceed." required="required" id="tnc"/>
                     <label for="tnc" class="">I agree to the terms and conditions.<span class="text-danger">*</span></label>
                 </div>
             </div>
