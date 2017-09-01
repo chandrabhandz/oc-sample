@@ -18,5 +18,7 @@ spring:
      max-request-size: 10MB
 logging:
   level:
-    org.springframework: INFO
+    ROOT: INFO
     io.openchannel: DEBUG
+server:
+  max-http-header-size: 2048000
