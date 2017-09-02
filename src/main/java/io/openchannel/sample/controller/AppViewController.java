@@ -44,7 +44,7 @@ public class AppViewController {
     private static final String PUBLISH = "publish";
     private static final String ERRORS = "errors";
     private static final String MODEL_MAP = "modelMap";
-    private static final String REDIRECT_APP = "";
+    private static final String REDIRECT_APP = "redirect:/app";
     private static final String IN_DEVELOPMENT = "inDevelopment";
     private static final String ERROR = "error";
 
@@ -109,7 +109,7 @@ public class AppViewController {
     public String getCreateAppPage(final Model model) {
         if(!model.containsAttribute("app"))
             model.addAttribute("app", new AppFormModel());
-        return "app/create";
+        return "create";
     }
 
     /**
@@ -173,7 +173,7 @@ public class AppViewController {
             }
             model.addAttribute("views", views);
             model.addAttribute("statistics", statistics.toJSONString());
-            return "app/edit";
+            return "edit";
         } catch (Exception e) {
             model.addAttribute(TOAST_TYPE, ERROR);
             model.addAttribute(TOAST_MESSAGE, e.getLocalizedMessage());

@@ -87,7 +87,7 @@ $(function() {
         preventSubmit: true,
         submitSuccess: function () {
 
-            if (typeof app != 'undefined') {
+            if (app) {
                 var status = JSON.parse(app).status.value;
 
                 // If app status is pending, submit the form without publish modal dialog.

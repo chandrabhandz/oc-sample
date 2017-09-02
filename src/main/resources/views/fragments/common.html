@@ -19,7 +19,7 @@
     <script type="text/javascript" th:src="@{/assets/js/config.js}"></script>
     <script type="text/javascript" th:src="@{/assets/js/scripts.js}"></script>
     <script type="text/javascript" th:inline="javascript">
-        var app = [[${app != null ? app.toJson() : true}]];
+        var app = [[${app != null and app.appId != null ? app.toJson() : false}]];
         var statistics = [[${statistics}]];
         var toast_type = [[${modelMap == null or !#maps.containsKey(modelMap, 'toast_type') or modelMap.toast_type == null ? '' : modelMap.toast_type}]];
         var toast_message = [[${modelMap == null or !#maps.containsKey(modelMap, 'toast_message') or modelMap.toast_message == null ? '' : modelMap.toast_message}]];
