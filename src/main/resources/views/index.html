@@ -4,13 +4,11 @@
 <body>
 <section class="statistics">
     <div class="container section-container">
-        <div th:each="app : ${apps.get('list')}">
-            <div class="error-panel" th:if="${app.status.value == 'inDevelopment'}">
-                <i class="fa fa-exclamation-circle"></i>
-                <span>
+        <div class="error-panel" th:if="${inDevelopment}">
+            <i class="fa fa-exclamation-circle"></i>
+            <span>
                 Drafts must be published before they can be listed on the marketplace.
             </span>
-            </div>
         </div>
         <h1>
             <i class="fa fa-search"></i>
@@ -52,7 +50,7 @@
                                         </a>
                                         <a class="btn btn-see-through" th:if="${app.status.value == 'inDevelopment'}"
                                            data-toggle="tooltip" title="Publish"
-                                           th:onclick="'showPublishDialog(\'' + ${app.appId} + '\',\'' + ${app.version} + '\''">
+                                           th:onclick="'showPublishDialog(\'' + ${app.appId} + '\',\'' + ${app.version} + '\')'">
                                             <i class="fa fa-rocket"></i>
                                         </a>
                                         <a class="btn btn-see-through" data-toggle="tooltip" title="Preview" href="#"
@@ -96,12 +94,15 @@
                                     <div class="row">
                                         <div class="col-md-4">
                                             <div class="card-image">
-                                                <img th:src="@{${app.customData.icon}}" alt="App Image"/>
+                                                <img th:if="${#maps.containsKey(app.customData, 'icon')}"
+                                                     th:src="${app.customData.icon}" alt="App Image"/>
+                                                <img th:unless="${#maps.containsKey(app.customData, 'icon')}"
+                                                     th:src="@{/assets/images/notavailable.png}" alt="App Image"/>
                                             </div>
                                         </div>
                                         <div class="col-md-8">
                                             <div class="card-title" th:text="${app.name}"></div>
-                                            <div class="card-summary" th:text="${app.customData.summary}"></div>
+                                            <div th:if="${#maps.containsKey(app.customData, 'summary')}" class="card-summary" th:text="${app.customData.summary}"></div>
                                         </div>
                                     </div>
                                 </div>
@@ -114,15 +115,13 @@
     </div>
 </section>
 <th:block th:replace="fragments/common :: scripts"></th:block>
+<script type="text/javascript" th:src="@{/assets/js/appjs/app-index.js}"></script>
 <script type="text/javascript" th:src="@{/assets/js/config.js}"></script>
 <script type="text/javascript" th:src="@{/assets/js/jquery.flot.min.js}"></script>
-<script type="text/javascript" th:src="@{/assets/js/scripts.js}"></script>
 <script th:inline="javascript">
     /*<![CDATA[*/
     var app = true;
     var statistics = [[${statistics}]];
-    var toast_type = '';
-    var toast_message = '';
     /*]]>*/
 </script>
 </body>

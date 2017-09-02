@@ -15,6 +15,11 @@
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script type="text/javascript" th:src="@{/assets/js/toastr.min.js}"></script>
+    <script type="text/javascript" th:src="@{/assets/js/scripts.js}"></script>
+    <script type="text/javascript" th:inline="javascript">
+        var toast_type = [[${modelMap == null or !#maps.containsKey(modelMap, 'toast_type') or modelMap.toast_type == null ? '' : modelMap.toast_type}]];
+        var toast_message = [[${modelMap == null or !#maps.containsKey(modelMap, 'toast_message') or modelMap.toast_message == null ? '' : modelMap.toast_message}]];
+    </script>
 </th:block>
 </body>
 </html>

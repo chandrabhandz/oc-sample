@@ -135,13 +135,15 @@ public class OpenChannelAPIUtil {
 
     /**
      * Send a DELETE request to specified API url and gets response as String
-     * @param path API path to be invoked
+     *
+     * @param path              API path to be invoked
+     * @param requestParameters list of request parameters
      * @return response returned from API
      * @throws IOException throws an IOException if request can't be completed
      */
-    public String sendDelete(final String path) throws IOException {
+    public String sendDelete(final String path, final RequestParameter... requestParameters) throws IOException {
         final CloseableHttpClient httpClient = getHttpClient();
-        final HttpDelete httpDelete = new HttpDelete(buildURI(path));
+        final HttpDelete httpDelete = new HttpDelete(buildURI(path) + "?" + buildGetRequestParams(requestParameters));
         try {
             return getString(httpDelete, httpClient);
         } catch (IOException e) {
@@ -217,7 +219,7 @@ public class OpenChannelAPIUtil {
     private HttpEntity buildJsonRequestParams(final RequestParameter... requestParameters) {
         final JSONObject jsonObject = new JSONObject();
         for (int i = 0; i < requestParameters.length; i++) {
-            if(requestParameters[i].getValue() instanceof BaseFormModel) {
+            if (requestParameters[i].getValue() instanceof BaseFormModel) {
                 jsonObject.put(requestParameters[i].getName(), ((BaseFormModel) requestParameters[i].getValue()).toJson());
             } else {
                 jsonObject.put(requestParameters[i].getName(), requestParameters[i].getValue());

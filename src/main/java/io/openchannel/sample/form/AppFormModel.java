@@ -7,6 +7,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
 
@@ -35,8 +36,8 @@ public class AppFormModel implements BaseFormModel, Serializable {
     private String publish;
     private String version;
 
-    public Integer getVersion() {
-        return version == null ? null : Integer.valueOf(version);
+    public String getVersion() {
+        return version;
     }
 
     public void setVersion(String version) {
@@ -139,6 +140,15 @@ public class AppFormModel implements BaseFormModel, Serializable {
             return (JSONObject) new JSONParser().parse(objectMapper.writeValueAsString(this));
         } catch (JsonProcessingException | ParseException e) {
             throw new RuntimeException("Can't convert to json", e);
+        }
+    }
+
+    public static AppFormModel fromJson(final String json) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            return objectMapper.readValue(json, AppFormModel.class);
+        } catch (IOException e) {
+            throw new RuntimeException("Can't convert from json", e);
         }
     }
 

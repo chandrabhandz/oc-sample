@@ -47,7 +47,44 @@ public interface OpenChannelService {
     /**
      * Publish an app to open channel marketplace
      * @param appFormModel App form model
-     * @return True if app is published successfully
+     * @return Api Response
      */
-    Boolean publishApp(final AppFormModel appFormModel);
+    JSONObject publishApp(final AppFormModel appFormModel);
+
+    /**
+     * Delete an app from open channel marketplace
+     * If version is not supplied, complete app is deleted otherwise only specified version
+     *
+     * @param appId   unique appid
+     * @param version version identified (Can be empty)
+     * @return api response
+     */
+    JSONObject deleteApp(String appId, String version);
+
+    /**
+     * Updates an App to open channel marketplace
+     *
+     * @param appFormModel App form model which contains information about app to be updated
+     * @return Api Response
+     */
+    JSONObject updateApp(AppFormModel appFormModel);
+
+    /**
+     * Fetches app data from openchannel api
+     *
+     * @param appId unique app id
+     * @param version app version
+     * @return AppFormModel
+     */
+    AppFormModel getApp(String appId, String version);
+
+    /**
+     * Change app status
+     *
+     * @param appId unique app id
+     * @param status new app status
+     * @return ApiResponse
+     * @throws RuntimeException
+     */
+    JSONObject changeAppStatus(String appId, String status) throws RuntimeException;
 }
