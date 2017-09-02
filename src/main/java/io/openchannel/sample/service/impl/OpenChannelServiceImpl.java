@@ -1,6 +1,7 @@
 package io.openchannel.sample.service.impl;
 
 import io.openchannel.sample.config.OpenChannelProperties;
+import io.openchannel.sample.exception.ApplicationOperationException;
 import io.openchannel.sample.form.AppFormModel;
 import io.openchannel.sample.service.OpenChannelService;
 import io.openchannel.sample.util.CommonUtil;
@@ -178,13 +179,13 @@ public class OpenChannelServiceImpl implements OpenChannelService {
             JSONObject apiResponse = JSONUtil.getJSONObject(openChannelAPIUtil.sendPost(ENDPOINT_CREATE_APP + "/" + appFormModel.getAppId() + "/" + "publish", OpenChannelAPIUtil.PostContentType.JSON, new OpenChannelAPIUtil.RequestParameter("developerId", openChannelProperties.getDeveloperId()), new OpenChannelAPIUtil.RequestParameter("version", Integer.parseInt(appFormModel.getVersion()))));
             if (!CommonUtil.isNull(apiResponse.get("errors"))) {
                 JSONArray errors = (JSONArray) apiResponse.get("errors");
-                throw new RuntimeException(String.valueOf(((JSONObject) errors.get(0)).get("message")));
+                throw new ApplicationOperationException(String.valueOf(((JSONObject) errors.get(0)).get("message")));
             }
             return apiResponse;
         } catch (IOException e) {
             LOGGER.debug("Error while publishing app to openchannel, Root cause : ", e);
             LOGGER.warn("Error while publishing app to openchannel");
-            throw new RuntimeException("Failed to publish", e);
+            throw new ApplicationOperationException("Failed to publish", e);
         }
     }
 
@@ -207,7 +208,7 @@ public class OpenChannelServiceImpl implements OpenChannelService {
         } catch (IOException e) {
             LOGGER.debug("Error while deleting app from openchannel api, Root cause : ", e);
             LOGGER.warn("Error while deleting app from openchannel api");
-            throw new RuntimeException("Failed to delete", e);
+            throw new ApplicationOperationException("Failed to delete", e);
         }
     }
 
@@ -224,7 +225,7 @@ public class OpenChannelServiceImpl implements OpenChannelService {
 
             if(!CommonUtil.isNull(apiResponse.get("errors"))) {
                 JSONArray errors = (JSONArray) apiResponse.get("errors");
-                throw new RuntimeException(String.valueOf(((JSONObject) errors.get(0)).get("message")));
+                throw new ApplicationOperationException(String.valueOf(((JSONObject) errors.get(0)).get("message")));
             }
 
             if (appFormModel.getPublish()) {
@@ -237,7 +238,7 @@ public class OpenChannelServiceImpl implements OpenChannelService {
         } catch (IOException e) {
             LOGGER.debug("Error while updating app to openchannel api, Root cause : ", e);
             LOGGER.warn("Error while updating app to openchannel api");
-            throw new RuntimeException("Failed to update", e);
+            throw new ApplicationOperationException("Failed to update", e);
         }
     }
 
@@ -247,15 +248,15 @@ public class OpenChannelServiceImpl implements OpenChannelService {
      * @param appId   unique app id
      * @param version app version
      * @return AppFormModel with all available details
-     * @throws RuntimeException can be thrown for errors
+     * @throws ApplicationOperationException can be thrown for errors
      */
     @Override
-    public AppFormModel getApp(final String appId, final String version) throws RuntimeException {
+    public AppFormModel getApp(final String appId, final String version) throws ApplicationOperationException {
         try {
             JSONObject apiResponse = JSONUtil.getJSONObject(openChannelAPIUtil.sendGet(ENDPOINT_CREATE_APP + "/" + appId + "/versions/" + version, new OpenChannelAPIUtil.RequestParameter("developerId", openChannelProperties.getDeveloperId())));
             if (CommonUtil.isNull(apiResponse.get("appId")) && !CommonUtil.isNull(apiResponse.get("errors"))) {
                 JSONArray errors = (JSONArray) apiResponse.get("errors");
-                throw new RuntimeException(String.valueOf(((JSONObject) errors.get(0)).get("message")));
+                throw new ApplicationOperationException(String.valueOf(((JSONObject) errors.get(0)).get("message")));
             }
             AppFormModel appFormModel = AppFormModel.fromJson(((JSONObject) apiResponse.get("customData")).toJSONString());
             appFormModel.setAppId(String.valueOf(apiResponse.get("appId")));
@@ -264,7 +265,7 @@ public class OpenChannelServiceImpl implements OpenChannelService {
         } catch (IOException e) {
             LOGGER.debug("Error while fetching app from openchannel api, Root cause : ", e);
             LOGGER.warn("Error while updating app to openchannel api");
-            throw new RuntimeException("Failed to get app details", e);
+            throw new ApplicationOperationException("Failed to get app details", e);
         }
     }
 
@@ -274,21 +275,21 @@ public class OpenChannelServiceImpl implements OpenChannelService {
      * @param appId   unique app id
      * @param version app version
      * @return JsonObject with all available details
-     * @throws RuntimeException can be thrown for errors
+     * @throws ApplicationOperationException can be thrown for errors
      */
     @Override
-    public JSONObject changeAppStatus(final String appId, final String status) throws RuntimeException {
+    public JSONObject changeAppStatus(final String appId, final String status) throws ApplicationOperationException {
         try {
             JSONObject apiResponse = JSONUtil.getJSONObject(openChannelAPIUtil.sendPost(ENDPOINT_CREATE_APP + "/" + appId + "/status", OpenChannelAPIUtil.PostContentType.JSON, new OpenChannelAPIUtil.RequestParameter("developerId", openChannelProperties.getDeveloperId()), new OpenChannelAPIUtil.RequestParameter("status", status)));
             if (!CommonUtil.isNull(apiResponse.get("errors"))) {
                 JSONArray errors = (JSONArray) apiResponse.get("errors");
-                throw new RuntimeException(String.valueOf(((JSONObject) errors.get(0)).get("message")));
+                throw new ApplicationOperationException(String.valueOf(((JSONObject) errors.get(0)).get("message")));
             }
             return apiResponse;
         } catch (IOException e) {
             LOGGER.debug("Error while changing app status in openchannel api, Root cause : ", e);
             LOGGER.warn("Error while changing app status in openchannel api");
-            throw new RuntimeException("Failed to change app status", e);
+            throw new ApplicationOperationException("Failed to change app status", e);
         }
     }
 

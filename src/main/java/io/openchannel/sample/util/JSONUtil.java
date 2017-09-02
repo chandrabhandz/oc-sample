@@ -1,5 +1,6 @@
 package io.openchannel.sample.util;
 
+import io.openchannel.sample.exception.ApplicationOperationException;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -33,7 +34,7 @@ public class JSONUtil {
         try {
             return (JSONArray) jsonParser.parse(object.toString());
         } catch (Exception e) {
-            throw new RuntimeException("Unable to parse given Object", e);
+            throw new ApplicationOperationException("Unable to parse given Object", e);
         }
     }
 
@@ -48,7 +49,7 @@ public class JSONUtil {
         try {
             return (JSONObject) jsonParser.parse(object.toString());
         } catch (Exception e) {
-            throw new RuntimeException("Unable to parse given Object", e);
+            throw new ApplicationOperationException("Unable to parse given Object", e);
         }
     }
 }

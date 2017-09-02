@@ -90,14 +90,14 @@ public class OpenChannelAPIUtil {
             httpGet.addHeader(new BasicHeader("Content-Type", "application/json"));
             return getString(httpGet, httpClient);
         } catch (IOException e) {
-            LOGGER.warn("unable to complete request {}", e.getMessage());
+            LOGGER.warn("unable to complete get request {}", e.getMessage());
             throw e;
         } finally {
             try {
                 httpGet.releaseConnection();
                 httpClient.close();
             } catch (IOException e) {
-                LOGGER.warn("unable to close HTTP resources {}", e.getMessage());
+                LOGGER.warn("unable to close GET HTTP resources {}", e.getMessage());
             }
         }
     }
@@ -121,14 +121,14 @@ public class OpenChannelAPIUtil {
                 httpPost.setEntity(buildJsonRequestParams(requestParameters));
             return getString(httpPost, httpClient);
         } catch (IOException e) {
-            LOGGER.warn("unable to complete request {}", e.getMessage());
+            LOGGER.warn("unable to complete post request {}", e.getMessage());
             throw e;
         } finally {
             try {
                 httpPost.releaseConnection();
                 httpClient.close();
             } catch (IOException e) {
-                LOGGER.warn("unable to close HTTP resources {}", e.getMessage());
+                LOGGER.warn("unable to close POST HTTP resources {}", e.getMessage());
             }
         }
     }
@@ -147,14 +147,14 @@ public class OpenChannelAPIUtil {
         try {
             return getString(httpDelete, httpClient);
         } catch (IOException e) {
-            LOGGER.warn("unable to complete request {}", e.getMessage());
+            LOGGER.warn("unable to complete delete request {}", e.getMessage());
             throw e;
         } finally {
             try {
                 httpDelete.releaseConnection();
                 httpClient.close();
             } catch (IOException e) {
-                LOGGER.warn("unable to close HTTP resources {}", e.getMessage());
+                LOGGER.warn("unable to close DELETE HTTP resources {}", e.getMessage());
             }
         }
     }

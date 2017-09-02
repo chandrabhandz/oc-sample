@@ -37,10 +37,16 @@ public class AppViewController {
     private static final Logger LOGGER = LoggerFactory.getLogger(AppViewController.class);
 
     /**
-     * Toast constants
+     * Constants
      */
     private static final String TOAST_TYPE = "toast_type";
     private static final String TOAST_MESSAGE = "toast_message";
+    private static final String PUBLISH = "publish";
+    private static final String ERRORS = "errors";
+    private static final String MODEL_MAP = "modelMap";
+    private static final String REDIRECT_APP = "";
+    private static final String IN_DEVELOPMENT = "inDevelopment";
+    private static final String ERROR = "error";
 
     /**
      * OpenChannelService, an intermediate layer between APIs and Controller
@@ -75,14 +81,14 @@ public class AppViewController {
             views += Integer.valueOf(String.valueOf(statsJsonArray.get(1)));
         }
 
-        model.addAttribute("inDevelopment", Boolean.FALSE);
+        model.addAttribute(IN_DEVELOPMENT, Boolean.FALSE);
         JSONArray list = (JSONArray) appList.get("list");
         if (!CommonUtil.isNull(list))
             for (int i = list.size() - 1; i >= 0; i--) {
                 JSONObject app = (JSONObject) list.get(i);
                 JSONObject status = (JSONObject) app.get("status");
-                if ("inDevelopment".equals(status.get("value"))) {
-                    model.addAttribute("inDevelopment", Boolean.TRUE);
+                if (IN_DEVELOPMENT.equals(status.get("value"))) {
+                    model.addAttribute(IN_DEVELOPMENT, Boolean.TRUE);
                     break;
                 }
             }
@@ -120,29 +126,29 @@ public class AppViewController {
         JSONObject status = null;
         try {
             status = openChannelService.createApp(appFormModel);
-            if (!CommonUtil.isNull(status.get("errors"))) {
-                JSONArray error = (JSONArray) status.get("errors");
+            if (!CommonUtil.isNull(status.get(ERRORS))) {
+                JSONArray error = (JSONArray) status.get(ERRORS);
                 String message = String.valueOf(((JSONObject) error.get(0)).get("message"));
-                model.addAttribute(TOAST_TYPE, "error");
+                model.addAttribute(TOAST_TYPE, ERROR);
                 model.addAttribute(TOAST_MESSAGE, message);
                 redirectAttributes.addFlashAttribute("app", appFormModel);
-                redirectAttributes.addFlashAttribute("modelMap", model);
+                redirectAttributes.addFlashAttribute(MODEL_MAP, model);
                 return "redirect:/app/create/";
             }
 
             if (appFormModel.getPublish()) {
-                model.addAttribute(TOAST_TYPE, "publish");
+                model.addAttribute(TOAST_TYPE, PUBLISH);
             } else {
                 model.addAttribute(TOAST_TYPE, "create");
             }
         } catch (Exception e) {
-            model.addAttribute(TOAST_TYPE, "error");
+            model.addAttribute(TOAST_TYPE, ERROR);
             model.addAttribute(TOAST_MESSAGE, e.getLocalizedMessage());
             LOGGER.debug("Error while creating app", e);
         }
-        redirectAttributes.addFlashAttribute("modelMap", model);
+        redirectAttributes.addFlashAttribute(MODEL_MAP, model);
         LOGGER.debug("App Created ? : {}", status);
-        return "redirect:/app/";
+        return REDIRECT_APP;
     }
 
     /**
@@ -169,11 +175,11 @@ public class AppViewController {
             model.addAttribute("statistics", statistics.toJSONString());
             return "app/edit";
         } catch (Exception e) {
-            model.addAttribute(TOAST_TYPE, "error");
+            model.addAttribute(TOAST_TYPE, ERROR);
             model.addAttribute(TOAST_MESSAGE, e.getLocalizedMessage());
-            redirectAttributes.addFlashAttribute("modelMap", model);
+            redirectAttributes.addFlashAttribute(MODEL_MAP, model);
             LOGGER.debug("Error while getting app information");
-            return "redirect:/app/";
+            return REDIRECT_APP;
         }
     }
 
@@ -191,31 +197,31 @@ public class AppViewController {
         JSONObject status = null;
         try {
             status = openChannelService.updateApp(appFormModel);
-            if (!CommonUtil.isNull(status.get("error"))) {
-                JSONArray error = (JSONArray) status.get("errors");
+            if (!CommonUtil.isNull(status.get(ERROR))) {
+                JSONArray error = (JSONArray) status.get(ERRORS);
                 String message = String.valueOf(((JSONObject) error.get(0)).get("message"));
-                model.addAttribute(TOAST_TYPE, "error");
+                model.addAttribute(TOAST_TYPE, ERROR);
                 model.addAttribute(TOAST_MESSAGE, message);
                 redirectAttributes.addFlashAttribute("app", appFormModel);
-                redirectAttributes.addFlashAttribute("modelMap", model);
+                redirectAttributes.addFlashAttribute(MODEL_MAP, model);
                 return "redirect:/app/edit/" + appFormModel.getAppId() + "/" + appFormModel.getVersion();
             }
 
             if (appFormModel.getPublish()) {
-                model.addAttribute(TOAST_TYPE, "publish");
+                model.addAttribute(TOAST_TYPE, PUBLISH);
             } else {
                 model.addAttribute(TOAST_TYPE, "update");
             }
         } catch (Exception e) {
-            model.addAttribute(TOAST_TYPE, "error");
+            model.addAttribute(TOAST_TYPE, ERROR);
             model.addAttribute(TOAST_MESSAGE, e.getLocalizedMessage());
             LOGGER.debug("Error while updating app", e);
-            redirectAttributes.addFlashAttribute("modelMap", model);
+            redirectAttributes.addFlashAttribute(MODEL_MAP, model);
             return "redirect:/app/edit/" + appFormModel.getAppId() + "/" + appFormModel.getVersion();
         }
-        redirectAttributes.addFlashAttribute("modelMap", model);
-        LOGGER.debug("App Updated ? : {}", String.valueOf(status));
-        return "redirect:/app/";
+        redirectAttributes.addFlashAttribute(MODEL_MAP, model);
+        LOGGER.debug("App Updated ? : {}", status);
+        return REDIRECT_APP;
     }
 
     /**
@@ -233,12 +239,12 @@ public class AppViewController {
             model.addAttribute(TOAST_TYPE, "status");
             model.addAttribute(TOAST_MESSAGE, "App has been deleted");
         } catch (Exception e) {
-            model.addAttribute(TOAST_TYPE, "error");
+            model.addAttribute(TOAST_TYPE, ERROR);
             model.addAttribute(TOAST_MESSAGE, e.getLocalizedMessage());
             LOGGER.debug("Error while deleting app");
         }
-        redirectAttributes.addFlashAttribute("modelMap", model);
-        return "redirect:/app/";
+        redirectAttributes.addFlashAttribute(MODEL_MAP, model);
+        return REDIRECT_APP;
     }
 
     /**
@@ -254,14 +260,14 @@ public class AppViewController {
     public String publishApp(@PathVariable("appId") final String appId, @PathVariable(value = "version", required = false) final String version, final Model model, final RedirectAttributes redirectAttributes) {
         try {
             openChannelService.publishApp(openChannelService.getApp(appId, version));
-            model.addAttribute(TOAST_TYPE, "publish");
+            model.addAttribute(TOAST_TYPE, PUBLISH);
         } catch (Exception e) {
-            model.addAttribute(TOAST_TYPE, "error");
+            model.addAttribute(TOAST_TYPE, ERROR);
             model.addAttribute(TOAST_MESSAGE, e.getLocalizedMessage());
             LOGGER.debug("Error while publishing app");
         }
-        redirectAttributes.addFlashAttribute("modelMap", model);
-        return "redirect:/app/";
+        redirectAttributes.addFlashAttribute(MODEL_MAP, model);
+        return REDIRECT_APP;
     }
 
     /**
@@ -279,12 +285,12 @@ public class AppViewController {
             openChannelService.changeAppStatus(appId, status);
             model.addAttribute(TOAST_TYPE, "update");
         } catch (Exception e) {
-            model.addAttribute(TOAST_TYPE, "error");
+            model.addAttribute(TOAST_TYPE, ERROR);
             model.addAttribute(TOAST_MESSAGE, e.getLocalizedMessage());
             LOGGER.debug("Error while changing app status");
         }
-        redirectAttributes.addFlashAttribute("modelMap", model);
-        return "redirect:/app/";
+        redirectAttributes.addFlashAttribute(MODEL_MAP, model);
+        return REDIRECT_APP;
     }
 
 }

@@ -1,6 +1,5 @@
 package io.openchannel.sample.util;
 
-import java.io.FileNotFoundException;
 import java.util.Random;
 
 /**

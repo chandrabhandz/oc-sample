@@ -3,6 +3,7 @@ package io.openchannel.sample.form;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.openchannel.sample.exception.ApplicationOperationException;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -139,7 +140,7 @@ public class AppFormModel implements BaseFormModel, Serializable {
             objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
             return (JSONObject) new JSONParser().parse(objectMapper.writeValueAsString(this));
         } catch (JsonProcessingException | ParseException e) {
-            throw new RuntimeException("Can't convert to json", e);
+            throw new ApplicationOperationException("Can't convert to json", e);
         }
     }
 
@@ -148,7 +149,7 @@ public class AppFormModel implements BaseFormModel, Serializable {
         try {
             return objectMapper.readValue(json, AppFormModel.class);
         } catch (IOException e) {
-            throw new RuntimeException("Can't convert from json", e);
+            throw new ApplicationOperationException("Can't convert from json", e);
         }
     }
 

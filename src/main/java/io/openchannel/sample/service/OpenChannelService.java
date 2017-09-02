@@ -8,7 +8,7 @@ import java.io.File;
 
 /**
  * OpenChannelService.java : OpenChannelService which serves as abstraction layer between implementation and usage
- *
+ * <p>
  * Created on 29/8/17 5:36 PM by Raja Dushyant Vashishtha
  * Sr. Software Engineer
  * rajad@decipherzone.com
@@ -25,13 +25,13 @@ public interface OpenChannelService {
     JSONObject searchApps();
 
     /**
-     *
      * @return JSONArray returns array of statistics
      */
     JSONArray getStatistics();
 
     /**
      * Get stats based on developerid & appid
+     *
      * @param appId unique app id
      * @return api response
      */
@@ -39,6 +39,7 @@ public interface OpenChannelService {
 
     /**
      * Uploads a file to openchannel API and gets information about uploaded file
+     *
      * @param content
      * @return file url
      */
@@ -46,6 +47,7 @@ public interface OpenChannelService {
 
     /**
      * Creates an app to openchannel market place
+     *
      * @param appFormModel
      * @return
      */
@@ -53,6 +55,7 @@ public interface OpenChannelService {
 
     /**
      * Publish an app to open channel marketplace
+     *
      * @param appFormModel App form model
      * @return Api Response
      */
@@ -79,7 +82,7 @@ public interface OpenChannelService {
     /**
      * Fetches app data from openchannel api
      *
-     * @param appId unique app id
+     * @param appId   unique app id
      * @param version app version
      * @return AppFormModel
      */
@@ -88,10 +91,10 @@ public interface OpenChannelService {
     /**
      * Change app status
      *
-     * @param appId unique app id
+     * @param appId  unique app id
      * @param status new app status
      * @return ApiResponse
      * @throws RuntimeException
      */
-    JSONObject changeAppStatus(String appId, String status) throws RuntimeException;
+    JSONObject changeAppStatus(String appId, String status);
 }
