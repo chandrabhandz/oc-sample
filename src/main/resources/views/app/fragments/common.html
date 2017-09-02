@@ -14,6 +14,14 @@
     <script type="text/javascript" th:src="@{/assets/js/cropper-dropzone.js}"></script>
     <script type="text/javascript" th:src="@{/assets/js/tinymce/tinymce.min.js}"></script>
     <script type="text/javascript" th:src="@{/assets/js/appjs/app-ops.js}"></script>
+    <script>
+        function removeFile(obj, selector, fileName) {
+            $(selector).val($(selector).val().replace(',' + fileName, ''));
+            $(selector).val($(selector).val().replace(fileName + ',', ''));
+            $(selector).val($(selector).val().replace(fileName, ''));
+            $(obj).parent().remove();
+        }
+    </script>
 </th:block>
 </body>
 </html>

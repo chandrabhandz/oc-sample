@@ -106,6 +106,23 @@ public class OpenChannelServiceImpl implements OpenChannelService {
     }
 
     /**
+     * Get stats based on developerid & appid
+     * @param appId unique app id
+     * @return api response
+     */
+    @Override
+    public JSONArray getStatistics(final String appId) {
+        try {
+            return JSONUtil.getJSONArray(openChannelAPIUtil.sendGet(ENDPOINT_STATS, new OpenChannelAPIUtil.RequestParameter("query", "{developerId: '" + openChannelProperties.getDeveloperId() + "', appId: '" + appId + "'}")));
+        } catch (IOException e) {
+            LOGGER.warn("Error while communicating with openchannel stats api", e);
+        }
+        return new JSONArray();
+    }
+
+
+
+    /**
      * Uploads a file to openchannel API and gets information about uploaded file
      *
      * @param content
@@ -203,9 +220,14 @@ public class OpenChannelServiceImpl implements OpenChannelService {
     @Override
     public JSONObject updateApp(final AppFormModel appFormModel) {
         try {
-            JSONObject apiResponse = JSONUtil.getJSONObject(openChannelAPIUtil.sendPost(ENDPOINT_CREATE_APP + "/" + appFormModel.getAppId() + "/" + "/versions" + appFormModel.getVersion(), OpenChannelAPIUtil.PostContentType.JSON, new OpenChannelAPIUtil.RequestParameter("developerId", openChannelProperties.getDeveloperId()), new OpenChannelAPIUtil.RequestParameter("name", appFormModel.getName()), new OpenChannelAPIUtil.RequestParameter("customData", appFormModel)));
+            JSONObject apiResponse = JSONUtil.getJSONObject(openChannelAPIUtil.sendPost(ENDPOINT_CREATE_APP + "/" + appFormModel.getAppId() + "/versions/" + appFormModel.getVersion(), OpenChannelAPIUtil.PostContentType.JSON, new OpenChannelAPIUtil.RequestParameter("developerId", openChannelProperties.getDeveloperId()), new OpenChannelAPIUtil.RequestParameter("name", appFormModel.getName()), new OpenChannelAPIUtil.RequestParameter("customData", appFormModel)));
+
+            if(!CommonUtil.isNull(apiResponse.get("errors"))) {
+                JSONArray errors = (JSONArray) apiResponse.get("errors");
+                throw new RuntimeException(String.valueOf(((JSONObject) errors.get(0)).get("message")));
+            }
+
             if (appFormModel.getPublish()) {
-                appFormModel.setVersion(String.valueOf(apiResponse.get("version")));
                 JSONObject publishApiResponse = publishApp(appFormModel);
                 if (!publishApiResponse.isEmpty()) {
                     return publishApiResponse;

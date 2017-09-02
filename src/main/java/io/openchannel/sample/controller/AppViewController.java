@@ -158,6 +158,15 @@ public class AppViewController {
     public String getEditAppPage(@PathVariable("appId") final String appId, @PathVariable("version") final String version, final Model model, final RedirectAttributes redirectAttributes) {
         try {
             model.addAttribute("app", openChannelService.getApp(appId, version));
+
+            JSONArray statistics = openChannelService.getStatistics(appId);
+            int views = 0;
+            for (int i = 0; i < statistics.size(); i++) {
+                JSONArray statsJsonArray = (JSONArray) statistics.get(i);
+                views += Integer.valueOf(String.valueOf(statsJsonArray.get(1)));
+            }
+            model.addAttribute("views", views);
+            model.addAttribute("statistics", statistics.toJSONString());
             return "app/edit";
         } catch (Exception e) {
             model.addAttribute(TOAST_TYPE, "error");
@@ -178,24 +187,34 @@ public class AppViewController {
      */
     @PostMapping("/edit")
     public String updateApp(@ModelAttribute final AppFormModel appFormModel, final Model model, final RedirectAttributes redirectAttributes) {
-        JSONObject status = openChannelService.updateApp(appFormModel);
-        if (!CommonUtil.isNull(status.get("error"))) {
-            JSONArray error = (JSONArray) status.get("errors");
-            String message = String.valueOf(((JSONObject) error.get(0)).get("message"));
+
+        JSONObject status = null;
+        try {
+            status = openChannelService.updateApp(appFormModel);
+            if (!CommonUtil.isNull(status.get("error"))) {
+                JSONArray error = (JSONArray) status.get("errors");
+                String message = String.valueOf(((JSONObject) error.get(0)).get("message"));
+                model.addAttribute(TOAST_TYPE, "error");
+                model.addAttribute(TOAST_MESSAGE, message);
+                redirectAttributes.addFlashAttribute("app", appFormModel);
+                redirectAttributes.addFlashAttribute("modelMap", model);
+                return "redirect:/app/edit/" + appFormModel.getAppId() + "/" + appFormModel.getVersion();
+            }
+
+            if (appFormModel.getPublish()) {
+                model.addAttribute(TOAST_TYPE, "publish");
+            } else {
+                model.addAttribute(TOAST_TYPE, "update");
+            }
+        } catch (Exception e) {
             model.addAttribute(TOAST_TYPE, "error");
-            model.addAttribute(TOAST_MESSAGE, message);
-            redirectAttributes.addFlashAttribute("app", appFormModel);
+            model.addAttribute(TOAST_MESSAGE, e.getLocalizedMessage());
+            LOGGER.debug("Error while updating app", e);
             redirectAttributes.addFlashAttribute("modelMap", model);
             return "redirect:/app/edit/" + appFormModel.getAppId() + "/" + appFormModel.getVersion();
         }
-
-        if (appFormModel.getPublish()) {
-            model.addAttribute(TOAST_TYPE, "publish");
-        } else {
-            model.addAttribute(TOAST_TYPE, "update");
-        }
         redirectAttributes.addFlashAttribute("modelMap", model);
-        LOGGER.debug("App Updated ? : {}", status);
+        LOGGER.debug("App Updated ? : {}", String.valueOf(status));
         return "redirect:/app/";
     }
 

@@ -259,7 +259,7 @@ public class OpenChannelAPIUtil {
      * @return complete URI
      */
     private String buildURI(final String path) {
-        return getURIFormatted(openChannelProperties.getApiUrl()) + getURIFormatted(openChannelProperties.getApiVersion()) + getURIFormatted(path);
+        return getURIFormatted(openChannelProperties.getApiUrl()) + getURIFormatted(openChannelProperties.getApiVersion()) + path;
     }
 
     /**

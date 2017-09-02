@@ -120,6 +120,11 @@ $(function() {
 
                 $(modal).modal();
             }
+        },
+        submitError: function ($form, event, errors) {
+            console.log($form);
+            console.log(event);
+            console.log(errors);
         }
     });
 

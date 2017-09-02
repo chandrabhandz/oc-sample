@@ -31,6 +31,13 @@ public interface OpenChannelService {
     JSONArray getStatistics();
 
     /**
+     * Get stats based on developerid & appid
+     * @param appId unique app id
+     * @return api response
+     */
+    JSONArray getStatistics(String appId);
+
+    /**
      * Uploads a file to openchannel API and gets information about uploaded file
      * @param content
      * @return file url

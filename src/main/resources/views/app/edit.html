@@ -4,7 +4,7 @@
 <body>
 <section class="breadcrumb">
     <div class="container">
-        <h1>Add App</h1>
+        <h1>Edit App</h1>
         <a th:href="@{/}">
             <span>Home</span>
         </a>
@@ -13,20 +13,28 @@
             <span>My Apps</span>
         </a>
         <span>/</span>
-        <span>Add App</span>
+        <span>Edit App</span>
     </div>
 </section>
 <section class="form">
     <div class="container">
-        <form th:action="@{/app/create}" th:class="form" method="post" th:novalidate="${true}" th:object="${app}">
+        <h1>
+            <i class="fa fa-search"> </i>
+            <span th:text="${views} + ' Views'"></span>
+        </h1>
+        <div id="plot"> </div>
+        <form th:action="@{/app/edit}" th:class="form" method="post" th:novalidate="${true}" th:object="${app}">
             <input type="hidden" id="publish" value="false" name="publish"/>
+            <input type="hidden" id="appId" name="appId" th:field="*{appId}"/>
+            <input type="hidden" id="version" name="version" th:field="*{version}"/>
             <div class="form-group row control-group">
                 <div class="col-md-3 item">
                     Application Name
                     <span class="text-danger">*</span>
                 </div>
                 <div class="col-md-6 controls">
-                    <input th:field="*{name}" type="text" class="form-control" required="required" data-validation-required-message="Please fill out this field" name="name"/>
+                    <input th:field="*{name}" type="text" class="form-control" required="required"
+                           data-validation-required-message="Please fill out this field" name="name"/>
                 </div>
             </div>
             <div class="form-group row control-group">
@@ -35,7 +43,8 @@
                     <span class="text-danger">*</span>
                 </div>
                 <div class="col-md-6 controls">
-                    <textarea th:field="*{summary}" cols="30" rows="10" class="form-control" required="required" data-validation-required-message="Please fill out this field" name="summary"></textarea>
+                    <textarea th:field="*{summary}" cols="30" rows="10" class="form-control" required="required"
+                              data-validation-required-message="Please fill out this field" name="summary"></textarea>
                 </div>
             </div>
             <div class="form-group row control-group">
@@ -44,7 +53,9 @@
                     <span class="text-danger">*</span>
                 </div>
                 <div class="col-md-6 controls">
-                    <textarea th:field="*{description}" name="description" cols="30" rows="10" class="form-control" required="required" data-validation-required-message="Please fill out this field"></textarea>
+                    <textarea th:field="*{description}" name="description" cols="30" rows="10" class="form-control"
+                              required="required"
+                              data-validation-required-message="Please fill out this field"></textarea>
                 </div>
             </div>
             <div class="form-group row control-group">
@@ -54,23 +65,24 @@
                 </div>
                 <div class="col-md-6">
                     <div id="upload-icon" class="dropzone">
-                        <div class="dz-preview dz-processing dz-image-preview dz-success dz-complete" th:if="${app.icon != null}">
-                            <div class="dz-image">
-                                <img th:src="${app.icon}" data-dz-thumbnail="true"/>
-                            </div>
-                            <div class="dz-progress">
+                        <input th:field="*{icon}" id="icon" name="icon" type="hidden" class="hidden" value=""
+                               required="required" data-validation-required-message="Please upload icon"/>
+                    </div>
+                    <div class="dz-preview dz-processing dz-image-preview dz-success dz-complete"
+                         th:if="${app.icon != null}">
+                        <div class="dz-image">
+                            <img th:src="${app.icon}" data-dz-thumbnail="true"/>
+                        </div>
+                        <div class="dz-progress">
                                 <span class="dz-upload completed" data-dz-uploadprogress="true" style="width: 100%;">
                                     Complete
                                 </span>
-                            </div>
-                            <a href="javascript:void(0);" data-dz-remove="" th:onclick="'removeFile(this, \'#icon\', \'' + ${app.icon} + '\')'" class="dz-remove">
-                                <i class="fa fa-trash"></i>
-                            </a>
                         </div>
+                        <a href="javascript:void(0);" data-dz-remove=""
+                           th:onclick="'removeFile(this, \'#icon\', \'' + ${app.icon} + '\')'" class="dz-remove">
+                            <i class="fa fa-trash"></i>
+                        </a>
                     </div>
-                </div>
-                <div class="col-md-6 col-md-offset-3 controls">
-                    <input th:field="*{icon}" id="icon" name="icon" type="hidden" class="hidden" required="required" data-validation-required-message="Please upload icon"/>
                 </div>
             </div>
             <div class="form-group row control-group">
@@ -80,7 +92,8 @@
                 <div class="col-md-6">
                     <div id="upload-images" class="dropzone">
                         <input th:field="*{images}" id="images" name="images" type="hidden" class="hidden" value=""/>
-                        <div class="dz-preview dz-processing dz-image-preview dz-success dz-complete" th:if="${app.images != null}" th:each="image : ${app.images}" >
+                        <div class="dz-preview dz-processing dz-image-preview dz-success dz-complete"
+                             th:if="${app.images != null}" th:each="image : ${app.images}">
                             <div class="dz-image">
                                 <img th:src="${image}" data-dz-thumbnail="true"/>
                             </div>
@@ -89,7 +102,8 @@
                                     Complete
                                 </span>
                             </div>
-                            <a href="javascript:void(0);" data-dz-remove="" th:onclick="'removeFile(this, \'#images\', \'' + ${image} + '\')'" class="dz-remove">
+                            <a href="javascript:void(0);" data-dz-remove=""
+                               th:onclick="'removeFile(this, \'#images\', \'' + ${image} + '\')'" class="dz-remove">
                                 <i class="fa fa-trash"></i>
                             </a>
                         </div>
@@ -103,7 +117,8 @@
                 <div class="col-md-6">
                     <div id="upload-files" class="dropzone">
                         <input th:field="*{files}" name="files" type="hidden" class="hidden" value="" id="files"/>
-                        <div class="dz-preview dz-processing dz-image-preview dz-success dz-complete" th:if="${app.files != null}" th:each="file : ${app.files}" >
+                        <div class="dz-preview dz-processing dz-image-preview dz-success dz-complete"
+                             th:if="${app.files != null}" th:each="file : ${app.files}">
                             <div class="dz-image">
                                 <img th:src="${file}" data-dz-thumbnail="true"/>
                             </div>
@@ -112,7 +127,8 @@
                                     Complete
                                 </span>
                             </div>
-                            <a href="javascript:void(0);" data-dz-remove="" th:onclick="'removeFile(this, \'#files\', \'' + ${file} + '\')'" class="dz-remove">
+                            <a href="javascript:void(0);" data-dz-remove=""
+                               th:onclick="'removeFile(this, \'#files\', \'' + ${file} + '\')'" class="dz-remove">
                                 <i class="fa fa-trash"></i>
                             </a>
                         </div>
@@ -124,7 +140,8 @@
                     Category<span class="text-danger">*</span>
                 </div>
                 <div class="col-md-6 controls">
-                    <select th:field="*{category}" name="category" multiple="multiple" class="form-control categorizer" required="required" data-validation-required-message="Please select at least one">
+                    <select th:field="*{category}" name="category" multiple="multiple" class="form-control categorizer"
+                            required="required" data-validation-required-message="Please select at least one">
                         <option value="Sample Category 1">Sample Category 1</option>
                         <option value="Sample Category 2">Sample Category 2</option>
                         <option value="Sample Category 3">Sample Category 3</option>
@@ -154,14 +171,17 @@
 
                 </div>
                 <div class="col-md-6 controls">
-                    <input th:field="*{tncFlag}" value="true" type="checkbox" data-validation-required-message="Please check this box if you want to proceed." required="required" id="tnc"/>
-                    <label for="tnc" class="">I agree to the terms and conditions.<span class="text-danger">*</span></label>
+                    <input th:field="*{tncFlag}" value="true" type="checkbox"
+                           data-validation-required-message="Please check this box if you want to proceed."
+                           required="required" id="tnc"/>
+                    <label for="tnc" class="">I agree to the terms and conditions.<span
+                            class="text-danger">*</span></label>
                 </div>
             </div>
             <div class="form-group row">
                 <div class="col-md-6 col-md-offset-3">
                     <button class="btn btn-primary pull-right" th:type="submit" th:onclick="'bSubmit=false;'">
-                        Save Draft
+                        Save
                     </button>
                 </div>
             </div>

@@ -57,7 +57,7 @@
                                            target="_blank">
                                             <i class="fa fa-search"></i>
                                         </a>
-                                        <div th:if="${app.status.value == 'approved'}">
+                                        <th:block th:if="${app.status.value == 'approved'}">
                                             <a class="btn btn-see-through"
                                                th:if="${app.parent.status.value == 'approved'}" data-toggle="tooltip"
                                                title="Suspend"
@@ -66,24 +66,25 @@
                                             </a>
                                             <a class="btn btn-see-through"
                                                th:if="${app.parent.status.value == 'suspended' and app.parent.status.modifiedBy == 'developer'}"
-                                               data-toggle="tooltip" title="Suspend"
-                                               th:onclick="'showSuspendDialog(\'' + ${app.appId} + '\', \'unsuspend\')'">
+                                               data-toggle="tooltip" title="Unsuspend" th:onclick="'showSuspendDialog(\'' + ${app.appId} + '\', \'unsuspend\')'">
                                                 <i class="fa fa-play"></i>
                                             </a>
-                                        </div>
+                                        </th:block>
                                         <a class="btn btn-see-through" data-toggle="tooltip" title="Delete"
                                            th:onclick="'showDeleteDialog(\'' + ${app.appId} + '\', \'' + ${app.version} + '\', \'' + ${app.status.value} + '\')'">
                                             <i class="fa fa-trash"></i>
                                         </a>
                                     </div>
-                                    <div th:class="${app.parent.status.value} + ' card-status text-center'"
-                                         th:if="${app.status.value == 'approved'}">
+                                    <div th:class="${app.parent.status.value} + ' card-status text-center'" th:if="${app.status.value == 'approved'}">
                                         <span th:if="${app.parent.status.value == 'approved'}">Approved</span>
                                         <span th:if="${app.parent.status.value != 'approved'}">Suspended</span>
                                     </div>
                                 </div>
-                                <div th:switch="${app.status.value}"
-                                     th:class="${app.status.value  + ' card-status text-center'}">
+                                <div th:if="${app.status.value == 'approved'}" th:class="${app.parent.status.value  + ' card-status text-center'}">
+                                    <span th:if="${app.parent.status.value == 'approved'}">Approved</span>
+                                    <span th:if="${app.parent.status.value != 'approved'}">Suspended</span>
+                                </div>
+                                <div th:if="${app.status.value != 'approved'}" th:switch="${app.status.value}" th:class="${app.status.value  + ' card-status text-center'}">
                                     <span th:case="${'inDevelopment'}">Draft</span>
                                     <span th:case="${'inReview'}">In Review</span>
                                     <span th:case="${'pending'}">Pending Approval</span>
@@ -116,13 +117,5 @@
 </section>
 <th:block th:replace="fragments/common :: scripts"></th:block>
 <script type="text/javascript" th:src="@{/assets/js/appjs/app-index.js}"></script>
-<script type="text/javascript" th:src="@{/assets/js/config.js}"></script>
-<script type="text/javascript" th:src="@{/assets/js/jquery.flot.min.js}"></script>
-<script th:inline="javascript">
-    /*<![CDATA[*/
-    var app = true;
-    var statistics = [[${statistics}]];
-    /*]]>*/
-</script>
 </body>
 </html>
