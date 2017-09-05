@@ -111,7 +111,7 @@ function showDeleteDialog(appId, version, status) {
         '			<div class="modal-footer">' +
         '				<button class="btn btn-default" data-dismiss="modal"> Cancel </button>';
     if (status == 'approved')
-        modal += '		<button class="btn btn-danger" onclick="deleteApp(this, \'' + appId + '\')"> <i class="fa fa-spinner hidden"> </i> Delete </button>';
+        modal += '		<button class="btn btn-danger" onclick="deleteApp(this, \'' + appId + '\', \'\')"> <i class="fa fa-spinner hidden"> </i> Delete </button>';
     else
         modal += '		<button class="btn btn-danger" onclick="deleteApp(this, \'' + appId + '\', \'' + version + '\')"> <i class="fa fa-spinner hidden"> </i> Delete </button>';
 

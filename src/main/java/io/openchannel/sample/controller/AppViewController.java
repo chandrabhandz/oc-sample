@@ -75,10 +75,15 @@ public class AppViewController {
         JSONObject appList = openChannelService.searchApps();
         model.addAttribute("apps", appList);
         JSONArray statistics = openChannelService.getStatistics();
-        int views = 0;
+        double views = 0;
         for (int i = 0; i < statistics.size(); i++) {
             JSONArray statsJsonArray = (JSONArray) statistics.get(i);
-            views += Integer.valueOf(String.valueOf(statsJsonArray.get(1)));
+            try {
+                views += Double.valueOf(String.valueOf(statsJsonArray.get(1)));
+            } catch (NumberFormatException e) {
+                LOGGER.info("Error while parsing stats to double : {}", statsJsonArray.get(1));
+                LOGGER.debug("can not parse to double", e);
+            }
         }
 
         model.addAttribute(IN_DEVELOPMENT, Boolean.FALSE);
@@ -93,7 +98,7 @@ public class AppViewController {
                 }
             }
 
-        model.addAttribute("views", views);
+        model.addAttribute("views", (int) views);
         model.addAttribute("statistics", statistics.toJSONString());
 
         return "index";
@@ -166,12 +171,12 @@ public class AppViewController {
             model.addAttribute("app", openChannelService.getApp(appId, version));
 
             JSONArray statistics = openChannelService.getStatistics(appId);
-            int views = 0;
+            double views = 0;
             for (int i = 0; i < statistics.size(); i++) {
                 JSONArray statsJsonArray = (JSONArray) statistics.get(i);
-                views += Integer.valueOf(String.valueOf(statsJsonArray.get(1)));
+                views += Double.parseDouble(String.valueOf(statsJsonArray.get(1)));
             }
-            model.addAttribute("views", views);
+            model.addAttribute("views", (int) views);
             model.addAttribute("statistics", statistics.toJSONString());
             return "edit";
         } catch (Exception e) {
@@ -232,7 +237,7 @@ public class AppViewController {
      * @param redirectAttributes Redirect attributes to pass values to another controller
      * @return view
      */
-    @GetMapping("/delete/{appId}/{version}")
+    @GetMapping({"/delete/{appId}/{version}", "/delete/{appId}"})
     public String deleteApp(@PathVariable("appId") final String appId, @PathVariable(value = "version", required = false) final String version, final Model model, final RedirectAttributes redirectAttributes) {
         try {
             openChannelService.deleteApp(appId, version);

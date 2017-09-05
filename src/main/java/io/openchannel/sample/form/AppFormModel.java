@@ -1,7 +1,9 @@
 package io.openchannel.sample.form;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.openchannel.sample.exception.ApplicationOperationException;
 import org.json.simple.JSONObject;
@@ -23,7 +25,9 @@ import java.util.List;
 
 public class AppFormModel implements BaseFormModel, Serializable {
 
+    @JsonIgnore
     private String appId;
+    @JsonIgnore
     private String name;
     private String summary;
     private String description;
@@ -33,9 +37,21 @@ public class AppFormModel implements BaseFormModel, Serializable {
     private List<String> category;
     private String websiteUrl;
     private String videoUrl;
+    @JsonIgnore
     private String tncFlag;
+    @JsonIgnore
     private String publish;
+    @JsonIgnore
     private String version;
+
+    public static AppFormModel fromJson(final String json) {
+        ObjectMapper objectMapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        try {
+            return objectMapper.readValue(json, AppFormModel.class);
+        } catch (IOException e) {
+            throw new ApplicationOperationException("Can't convert from json", e);
+        }
+    }
 
     public String getVersion() {
         return version;
@@ -141,15 +157,6 @@ public class AppFormModel implements BaseFormModel, Serializable {
             return (JSONObject) new JSONParser().parse(objectMapper.writeValueAsString(this));
         } catch (JsonProcessingException | ParseException e) {
             throw new ApplicationOperationException("Can't convert to json", e);
-        }
-    }
-
-    public static AppFormModel fromJson(final String json) {
-        ObjectMapper objectMapper = new ObjectMapper();
-        try {
-            return objectMapper.readValue(json, AppFormModel.class);
-        } catch (IOException e) {
-            throw new ApplicationOperationException("Can't convert from json", e);
         }
     }
 

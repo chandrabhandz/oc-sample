@@ -155,6 +155,7 @@ public class OpenChannelServiceImpl implements OpenChannelService {
             if (CommonUtil.isNull(apiResponse.get("errors")) && appFormModel.getPublish()) {
                 appFormModel.setAppId(String.valueOf(apiResponse.get("appId")));
                 appFormModel.setVersion(String.valueOf(apiResponse.get("version")));
+                appFormModel.setName(String.valueOf(apiResponse.get("name")));
                 JSONObject publishApiResponse = publishApp(appFormModel);
                 if (!publishApiResponse.isEmpty()) {
                     return publishApiResponse;
@@ -201,7 +202,7 @@ public class OpenChannelServiceImpl implements OpenChannelService {
     public JSONObject deleteApp(final String appId, final String version) {
         try {
             String finalPath = ENDPOINT_CREATE_APP + "/" + appId;
-            if (!"".equals(version)) {
+            if (!CommonUtil.isNull(version) && !"".equals(version)) {
                 finalPath = finalPath + "/versions/" + version;
             }
             return JSONUtil.getJSONObject(openChannelAPIUtil.sendDelete(finalPath, new OpenChannelAPIUtil.RequestParameter("developerId", openChannelProperties.getDeveloperId())));
@@ -261,6 +262,7 @@ public class OpenChannelServiceImpl implements OpenChannelService {
             AppFormModel appFormModel = AppFormModel.fromJson(((JSONObject) apiResponse.get("customData")).toJSONString());
             appFormModel.setAppId(String.valueOf(apiResponse.get("appId")));
             appFormModel.setVersion(String.valueOf(apiResponse.get("version")));
+            appFormModel.setName(String.valueOf(apiResponse.get("name")));
             return appFormModel;
         } catch (IOException e) {
             LOGGER.debug("Error while fetching app from openchannel api, Root cause : ", e);
