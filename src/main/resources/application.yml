@@ -1,7 +1,7 @@
 openchannel:
-    marketplace-id: 5463cee5e4b042e3e26f1e41
-    secret: E2lWmPmaADbXm3buLFr4vPa10FVm7M501XOtIMFjJBM
-    api-url: https://sandbox-market.openchannel.io/
+    marketplace-id: 59a3fd3cf960874e72e96add
+    secret: bxtWZKAmtEZRSaxfIqCmGO7OiaMHsxhEGMyUyY4phJc
+    api-url: https://market.openchannel.io/
     api-version: v2
     developer-id: 1
 spring:
@@ -18,7 +18,7 @@ spring:
      max-request-size: 10MB
 logging:
   level:
-    ROOT: WARN
+    ROOT: DEBUG
     io.openchannel: DEBUG
 server:
   max-http-header-size: 2048000
