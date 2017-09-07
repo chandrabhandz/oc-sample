@@ -8,12 +8,6 @@ import javax.validation.constraints.NotNull;
 /**
  * OpenChannelProperties.java : works as loaded "openchannel" properties from application.yml to be
  * available within application for further usage
- * <p>
- * Created on 28/8/17 7:03 PM by Raja Dushyant Vashishtha
- * Sr. Software Engineer
- * rajad@decipherzone.com
- * Decipher Zone Softwares
- * www.decipherzone.com
  */
 
 @ConfigurationProperties(prefix = "openchannel")
@@ -61,6 +55,7 @@ public class OpenChannelProperties {
 
     /**
      * Getter for ssl flag
+     *
      * @return
      */
     public Boolean getSslEnabled() {
@@ -69,6 +64,7 @@ public class OpenChannelProperties {
 
     /**
      * Setter for ssl flag
+     *
      * @param sslEnabled
      */
     public void setSslEnabled(Boolean sslEnabled) {
@@ -77,6 +73,7 @@ public class OpenChannelProperties {
 
     /**
      * Getter for marketplaceid
+     *
      * @return
      */
     public String getMarketplaceId() {
@@ -85,6 +82,7 @@ public class OpenChannelProperties {
 
     /**
      * Setter for marketplaceid
+     *
      * @param marketplaceId openchannel unique marketplace id
      */
     public void setMarketplaceId(String marketplaceId) {
@@ -93,6 +91,7 @@ public class OpenChannelProperties {
 
     /**
      * Getter for secret
+     *
      * @return
      */
     public String getSecret() {
@@ -101,6 +100,7 @@ public class OpenChannelProperties {
 
     /**
      * Setter for secret
+     *
      * @param secret openchannel API secret
      */
     public void setSecret(String secret) {
@@ -109,6 +109,7 @@ public class OpenChannelProperties {
 
     /**
      * Getter for api url
+     *
      * @return
      */
     public String getApiUrl() {
@@ -117,6 +118,7 @@ public class OpenChannelProperties {
 
     /**
      * Setter for api url
+     *
      * @param apiUrl Marketplace API url
      */
     public void setApiUrl(String apiUrl) {
@@ -125,6 +127,7 @@ public class OpenChannelProperties {
 
     /**
      * Getter for developer id
+     *
      * @return
      */
     public String getDeveloperId() {
@@ -133,6 +136,7 @@ public class OpenChannelProperties {
 
     /**
      * Setter for developer id
+     *
      * @param developerId developer id to be used
      */
     public void setDeveloperId(String developerId) {
@@ -141,6 +145,7 @@ public class OpenChannelProperties {
 
     /**
      * Getter for API Version
+     *
      * @return
      */
     public String getApiVersion() {
@@ -149,6 +154,7 @@ public class OpenChannelProperties {
 
     /**
      * Setter for API Version
+     *
      * @param apiVersion api version string
      */
     public void setApiVersion(String apiVersion) {

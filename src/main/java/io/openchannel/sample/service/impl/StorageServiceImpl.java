@@ -12,12 +12,6 @@ import java.io.IOException;
 
 /**
  * StorageServiceImpl.java : Implementation of storage service which handles file resource handling
- * <p>
- * Created on 31/8/17 3:41 PM by Raja Dushyant Vashishtha
- * Sr. Software Engineer
- * rajad@decipherzone.com
- * Decipher Zone Softwares
- * www.decipherzone.com
  */
 
 @Service

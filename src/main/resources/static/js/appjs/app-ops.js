@@ -1,12 +1,3 @@
-/**
- * Created on 31/8/17 2:46 PM by Raja Dushyant Vashishtha
- * Sr. Software Engineer
- * rajad@decipherzone.com
- * Decipher Zone Softwares
- * www.decipherzone.com
- */
-
-
 var bSubmit = false;
 
 // Disable dropzone autodiscover to initialize the dropzone with custom configuration

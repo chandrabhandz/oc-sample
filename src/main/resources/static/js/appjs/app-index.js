@@ -1,11 +1,3 @@
-/**
- * Created on 2/9/17 2:32 PM by Raja Dushyant Vashishtha
- * Sr. Software Engineer
- * rajad@decipherzone.com
- * Decipher Zone Softwares
- * www.decipherzone.com
- */
-
 function showPublishDialog(appId, version) {
     var modal =
         '<div id="modal_publish" class="modal fade" role="dialog">' +

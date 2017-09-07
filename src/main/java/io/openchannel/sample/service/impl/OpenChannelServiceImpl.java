@@ -19,12 +19,6 @@ import java.io.IOException;
 
 /**
  * OpenChannelServiceImpl.java : Communicates through open channel APIs
- * <p>
- * Created on 29/8/17 5:36 PM by Raja Dushyant Vashishtha
- * Sr. Software Engineer
- * rajad@decipherzone.com
- * Decipher Zone Softwares
- * www.decipherzone.com
  */
 
 @Service
@@ -108,6 +102,7 @@ public class OpenChannelServiceImpl implements OpenChannelService {
 
     /**
      * Get stats based on developerid & appid
+     *
      * @param appId unique app id
      * @return api response
      */
@@ -120,7 +115,6 @@ public class OpenChannelServiceImpl implements OpenChannelService {
         }
         return new JSONArray();
     }
-
 
 
     /**
@@ -224,7 +218,7 @@ public class OpenChannelServiceImpl implements OpenChannelService {
         try {
             JSONObject apiResponse = JSONUtil.getJSONObject(openChannelAPIUtil.sendPost(ENDPOINT_CREATE_APP + "/" + appFormModel.getAppId() + "/versions/" + appFormModel.getVersion(), OpenChannelAPIUtil.PostContentType.JSON, new OpenChannelAPIUtil.RequestParameter("developerId", openChannelProperties.getDeveloperId()), new OpenChannelAPIUtil.RequestParameter("name", appFormModel.getName()), new OpenChannelAPIUtil.RequestParameter("customData", appFormModel)));
 
-            if(!CommonUtil.isNull(apiResponse.get("errors"))) {
+            if (!CommonUtil.isNull(apiResponse.get("errors"))) {
                 JSONArray errors = (JSONArray) apiResponse.get("errors");
                 throw new ApplicationOperationException(String.valueOf(((JSONObject) errors.get(0)).get("message")));
             }

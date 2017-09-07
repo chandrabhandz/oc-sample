@@ -18,11 +18,6 @@ import java.io.IOException;
 
 /**
  * FilesController.java : Files Controller, which is responsible for providing a common layer to upload files to server/openchannel api
- * Created on 31/8/17 3:00 PM by Raja Dushyant Vashishtha
- * Sr. Software Engineer
- * rajad@decipherzone.com
- * Decipher Zone Softwares
- * www.decipherzone.com
  */
 
 @Controller
@@ -45,8 +40,9 @@ public class FilesController {
 
     /**
      * Constructor injection
+     *
      * @param openChannelService open channel service reference
-     * @param storageService storage service reference
+     * @param storageService     storage service reference
      */
     @Autowired
     public FilesController(OpenChannelService openChannelService, StorageService storageService) {
@@ -56,6 +52,7 @@ public class FilesController {
 
     /**
      * Post Request mapping for uploading a new file to server and later on to openchannel API.
+     *
      * @param multipartFile multipartfile request
      * @return File URL or Empty String
      */

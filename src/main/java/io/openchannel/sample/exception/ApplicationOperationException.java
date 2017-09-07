@@ -2,12 +2,6 @@ package io.openchannel.sample.exception;
 
 /**
  * ApplicationOperationException.java : Default application exception
- *
- * Created on 2/9/17 7:04 PM by Raja Dushyant Vashishtha
- * Sr. Software Engineer
- * rajad@decipherzone.com
- * Decipher Zone Softwares
- * www.decipherzone.com
  */
 
 public class ApplicationOperationException extends RuntimeException {

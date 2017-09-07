@@ -20,12 +20,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
  * AppViewController.java : responsible for rendering all the HTML view
- * <p>
- * Created on 29/8/17 4:53 PM by Raja Dushyant Vashishtha
- * Sr. Software Engineer
- * rajad@decipherzone.com
- * Decipher Zone Softwares
- * www.decipherzone.com
  */
 
 @Controller
@@ -112,7 +106,7 @@ public class AppViewController {
      */
     @GetMapping("/create")
     public String getCreateAppPage(final Model model) {
-        if(!model.containsAttribute("app"))
+        if (!model.containsAttribute("app"))
             model.addAttribute("app", new AppFormModel());
         return "create";
     }

@@ -8,12 +8,6 @@ import java.io.File;
 
 /**
  * OpenChannelService.java : OpenChannelService which serves as abstraction layer between implementation and usage
- * <p>
- * Created on 29/8/17 5:36 PM by Raja Dushyant Vashishtha
- * Sr. Software Engineer
- * rajad@decipherzone.com
- * Decipher Zone Softwares
- * www.decipherzone.com
  */
 
 public interface OpenChannelService {

@@ -16,11 +16,6 @@ import java.util.List;
 
 /**
  * AppFormModel.java : FormModel wrapper for an App which defines basic properties of an app which are visible to a user/other component of application
- * Created on 31/8/17 1:23 PM by Raja Dushyant Vashishtha
- * Sr. Software Engineer
- * rajad@decipherzone.com
- * Decipher Zone Softwares
- * www.decipherzone.com
  */
 
 public class AppFormModel implements BaseFormModel, Serializable {

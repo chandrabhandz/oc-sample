@@ -3,11 +3,7 @@ package io.openchannel.sample.util;
 import java.util.Random;
 
 /**
- * Created on 30/8/17 2:30 PM by Raja Dushyant Vashishtha
- * Sr. Software Engineer
- * rajad@decipherzone.com
- * Decipher Zone Softwares
- * www.decipherzone.com
+ * CommonUtil.java : Contains common utility method
  */
 
 public class CommonUtil {

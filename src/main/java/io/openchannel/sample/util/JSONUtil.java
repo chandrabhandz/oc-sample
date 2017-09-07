@@ -7,12 +7,6 @@ import org.json.simple.parser.JSONParser;
 
 /**
  * JSONUtil.java : Json util for application
- *
- * Created on 30/8/17 4:47 PM by Raja Dushyant Vashishtha
- * Sr. Software Engineer
- * rajad@decipherzone.com
- * Decipher Zone Softwares
- * www.decipherzone.com
  */
 
 public class JSONUtil {

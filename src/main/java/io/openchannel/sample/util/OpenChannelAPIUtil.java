@@ -40,12 +40,6 @@ import java.util.Base64;
 
 /**
  * HTTPUtil.java : Responsible for make HTTP Calls to external api
- * <p>
- * Created on 29/8/17 6:22 PM by Raja Dushyant Vashishtha
- * Sr. Software Engineer
- * rajad@decipherzone.com
- * Decipher Zone Softwares
- * www.decipherzone.com
  */
 
 @Service
