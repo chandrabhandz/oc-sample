@@ -4,6 +4,7 @@ openchannel:
     api-url: https://market.openchannel.io/
     api-version: v2
     developer-id: 1
+    userId: 1
 spring:
   thymeleaf:
     prefix: classpath:/views/

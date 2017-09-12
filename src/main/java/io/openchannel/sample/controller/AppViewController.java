@@ -66,7 +66,7 @@ public class AppViewController {
     @GetMapping({"", "/"})
     public String index(final Model model) {
         LOGGER.debug("initializing index page rendering");
-        JSONObject appList = openChannelService.searchApps();
+        JSONObject appList = openChannelService.searchAllApps();
         model.addAttribute("apps", appList);
         JSONArray statistics = openChannelService.getStatistics();
         double views = 0;
@@ -95,7 +95,7 @@ public class AppViewController {
         model.addAttribute("views", (int) views);
         model.addAttribute("statistics", statistics.toJSONString());
 
-        return "index";
+        return "app-index";
     }
 
     /**
@@ -108,7 +108,7 @@ public class AppViewController {
     public String getCreateAppPage(final Model model) {
         if (!model.containsAttribute("app"))
             model.addAttribute("app", new AppFormModel());
-        return "create";
+        return "app-create";
     }
 
     /**
@@ -172,7 +172,7 @@ public class AppViewController {
             }
             model.addAttribute("views", (int) views);
             model.addAttribute("statistics", statistics.toJSONString());
-            return "edit";
+            return "app-edit";
         } catch (Exception e) {
             model.addAttribute(TOAST_TYPE, ERROR);
             model.addAttribute(TOAST_MESSAGE, e.getLocalizedMessage());

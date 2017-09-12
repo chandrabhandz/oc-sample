@@ -1,121 +1,144 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="fragments/common :: head"></head>
+<head>
+	<title>Marketplace home</title>
+</head>
+<head th:replace="fragments/header :: header"></head>
 <body>
-<section class="statistics">
-    <div class="container section-container">
-        <div class="error-panel" th:if="${inDevelopment}">
-            <i class="fa fa-exclamation-circle"></i>
-            <span>
-                Drafts must be published before they can be listed on the marketplace.
-            </span>
-        </div>
-        <h1>
-            <i class="fa fa-search"></i>
-            <span th:text="${views} + ' Views'"></span>
-        </h1>
-        <div id="plot">
 
-        </div>
-    </div>
-</section>
+<!-- Hero section-->
+<div class="jumbotron hero-section">
+	<div class="container">
+		<h1 class="heading">Your Marketplace</h1>
+		<p class="sub-txt">Apps, plugins and add-ons for your platform</p>
 
-<section class="add-app">
-    <div class="section-container action-container text-center">
-        <div class="container">
-            <h1>
-                Add your app
-            </h1>
-            <a th:href="@{/app/create}" class="btn btn-white btn-see-through btn-lg">Add App</a>
-        </div>
-    </div>
-</section>
+		<div class="col-sm-6 col-md-3 MarketplaceFeature">
+			<a th:href="@{/views/detail-page.html}">
+				<div class="MarketplaceFeature-icon">
+					<img th:src="@{/assets/images/mp-logos/9.png}" alt=""/>
+				</div>
+				<h3>ZenHub</h3>
+				<p class="MarketplaceFeature-text">Agile project management within GitHub</p>
+			</a>
+		</div>
 
-<section class="apps">
-    <div class="section-container"><h1 class="text-center">My Apps</h1>
-        <div class="container">
-            <div class="card-group">
-                <div class="row" th:switch="${apps.get('list').size() == 0}">
-                    <div class="no-results-card" th:case="${true}">
-                        You don't have any apps yet.
-                    </div>
-                    <div th:case="${false}">
-                        <div class="col-md-6" th:each="app : ${apps.get('list')}">
-                            <div class="card">
-                                <div class="card-overlay text-center">
-                                    <div class="card-overlay-panel">
-                                        <a href="" class="btn btn-see-through" data-toggle="tooltip" title="Edit"
-                                           th:href="@{/app/edit/{appId}/{appVersion}(appId=${app.appId}, appVersion=${app.version})}">
-                                            <i class="fa fa-pencil"></i>
-                                        </a>
-                                        <a class="btn btn-see-through" th:if="${app.status.value == 'inDevelopment'}"
-                                           data-toggle="tooltip" title="Publish"
-                                           th:onclick="'showPublishDialog(\'' + ${app.appId} + '\',\'' + ${app.version} + '\')'">
-                                            <i class="fa fa-rocket"></i>
-                                        </a>
-                                        <a class="btn btn-see-through" data-toggle="tooltip" title="Preview" href="#"
-                                           target="_blank">
-                                            <i class="fa fa-search"></i>
-                                        </a>
-                                        <th:block th:if="${app.status.value == 'approved'}">
-                                            <a class="btn btn-see-through"
-                                               th:if="${app.parent.status.value == 'approved'}" data-toggle="tooltip"
-                                               title="Suspend"
-                                               th:onclick="'showSuspendDialog(\'' + ${app.appId} + '\', \'suspend\')'">
-                                                <i class="fa fa-pause"></i>
-                                            </a>
-                                            <a class="btn btn-see-through"
-                                               th:if="${app.parent.status.value == 'suspended' and app.parent.status.modifiedBy == 'developer'}"
-                                               data-toggle="tooltip" title="Unsuspend" th:onclick="'showSuspendDialog(\'' + ${app.appId} + '\', \'unsuspend\')'">
-                                                <i class="fa fa-play"></i>
-                                            </a>
-                                        </th:block>
-                                        <a class="btn btn-see-through" data-toggle="tooltip" title="Delete"
-                                           th:onclick="'showDeleteDialog(\'' + ${app.appId} + '\', \'' + ${app.version} + '\', \'' + ${app.status.value} + '\')'">
-                                            <i class="fa fa-trash"></i>
-                                        </a>
-                                    </div>
-                                    <div th:class="${app.parent.status.value} + ' card-status text-center'" th:if="${app.status.value == 'approved'}">
-                                        <span th:if="${app.parent.status.value == 'approved'}">Approved</span>
-                                        <span th:if="${app.parent.status.value != 'approved'}">Suspended</span>
-                                    </div>
-                                </div>
-                                <div th:if="${app.status.value == 'approved'}" th:class="${app.parent.status.value  + ' card-status text-center'}">
-                                    <span th:if="${app.parent.status.value == 'approved'}">Approved</span>
-                                    <span th:if="${app.parent.status.value != 'approved'}">Suspended</span>
-                                </div>
-                                <div th:if="${app.status.value != 'approved'}" th:switch="${app.status.value}" th:class="${app.status.value  + ' card-status text-center'}">
-                                    <span th:case="${'inDevelopment'}">Draft</span>
-                                    <span th:case="${'inReview'}">In Review</span>
-                                    <span th:case="${'pending'}">Pending Approval</span>
-                                    <span th:case="${'suspended'}">Suspended</span>
-                                    <span th:case="${'rejected'}">Rejected</span>
-                                </div>
-                                <div class="card-content">
-                                    <div class="row">
-                                        <div class="col-md-4">
-                                            <div class="card-image">
-                                                <img th:if="${#maps.containsKey(app.customData, 'icon')}"
-                                                     th:src="${app.customData.icon}" alt="App Image"/>
-                                                <img th:unless="${#maps.containsKey(app.customData, 'icon')}"
-                                                     th:src="@{/assets/images/notavailable.png}" alt="App Image"/>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-8">
-                                            <div class="card-title" th:text="${app.name}"></div>
-                                            <div th:if="${#maps.containsKey(app.customData, 'summary')}" class="card-summary" th:text="${app.customData.summary}"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-<th:block th:replace="fragments/common :: scripts"></th:block>
-<script type="text/javascript" th:src="@{/assets/js/appjs/app-index.js}"></script>
+
+		<div class="col-sm-6 col-md-3 MarketplaceFeature">
+			<a href="detail-page.html">
+				<div class="MarketplaceFeature-icon">
+					<img th:src="@{/assets/images/mp-logos/woocommerce.png}" alt=""/>
+				</div>
+				<h3>Travis CI</h3>
+				<p class="MarketplaceFeature-text">Test and deploy with confidence</p>
+			</a>
+		</div>
+
+		<div class="clearfix visible-sm"></div>
+
+		<div class="col-sm-6 col-md-3 MarketplaceFeature">
+			<a href="detail-page.html">
+				<div class="MarketplaceFeature-icon">
+					<img th:src="@{/assets/images/mp-logos/godaddy.png}" alt=""/>
+				</div>
+				<h3>GoDaddy</h3>
+				<p class="MarketplaceFeature-text">Fire up your PHP Apps Performance</p>
+			</a>
+		</div>
+
+
+		<div class="col-sm-6 col-md-3 MarketplaceFeature">
+			<a href="detail-page.html">
+				<div class="MarketplaceFeature-icon">
+					<img th:src="@{/assets/images/mp-logos/intercom.png}" alt=""/>
+				</div>
+				<h3>Intercom</h3>
+				<p class="MarketplaceFeature-text">Communicate with your customers, personally, at scale.</p>
+			</a>
+		</div>
+
+	</div>
+</div>
+<!--end-->
+
+<div class="container">
+	<!-- sidebar -->
+	<div class="sidebar-toggle hidden">
+		<button type="button" class="btn-info btn">
+			<span class="glyphicon glyphicon-menu-hamburger"></span>
+		</button>
+	</div>
+
+	<div class="col-md-4 col-lg-3">
+		<div class="sidebar">
+			<h4 class="heading">Search Marketplace</h4>
+			<form accept-charset="UTF-8" action="#" class="search-form" method="post">
+				<input value="" type="text" name="query" placeholder="Search" aria-label="Search" id="IntegrationSearch" class="form-control search"/>
+			</form>
+
+			<h4 class="heading">Collections</h4>
+			<ul>
+				<li><a th:href="@{/}" data-category="*">All Apps</a></li>
+				<li><a th:href="@{/app}" data-category="myApps">My Apps</a></li>
+				<li><a href="#" data-category="popular">Popular</a></li>
+			</ul>
+
+			<h4 class="heading">Categories</h4>
+			<ul class="category">
+				<li><a href="#" data-category="Accounting">Accounting</a></li>
+				<li><a href="#" data-category="Analytics">Analytics</a></li>
+				<li><a href="#" data-category="Automation">Automation</a></li>
+				<li><a href="#" data-category="Booking Ticketing">Booking &amp; Ticketing</a></li>
+				<li><a href="#" data-category="Card Readers &amp; POS">Card Readers &amp; POS</a></li>
+				<li><a href="#" data-category="CRM">CRM</a></li>
+				<li><a href="#" data-category="Customer Support">Customer Support</a></li>
+				<li><a href="#" data-category="E-Commerce">E-Commerce</a></li>
+				<li><a href="#" data-category="Electronic Signature">Electronic Signature</a></li>
+				<li><a href="#" data-category="Email Marketing &amp; Dunning">Email Marketing &amp; Dunning</a></li>
+				<li><a href="#" data-category="Financing">Financing</a></li>
+				<li><a href="#" data-category="Form Building">Form Building</a></li>
+				<li><a href="#" data-category="Fundraising">Fundraising</a></li>
+				<li><a href="#" data-category="Gift Certificates">Gift Certificates</a></li>
+				<li><a href="#" data-category="Inventory Management">Inventory Management</a></li>
+				<li><a href="#" data-category="Invoicing">Invoicing</a></li>
+			</ul>
+
+		</div>
+	</div><!-- end sidebar -->
+
+	<!-- search conatiner -->
+	<section id="apps" class="apps">
+		<div class="col-sm-12 col-md-8 col-lg-9">
+			<div class="main-content">
+					<div class="row" th:switch="${apps.get('list').size() == 0}">
+						<div class="no-results-card" th:case="${true}">
+							You don't have any apps yet.
+						</div>
+						<div th:case="${false}">
+							<div class="col-md-6" th:each="app : ${apps.get('list')}">
+								<!--<a class="Integration-box" href="detail-page.html"  data-context="Accounting">-->
+								<a class="Integration-box" th:href="@{/details/{appId}/{appVersion}(appId=${app.appId}, appVersion=${app.version})}">
+										<div class="row">
+											<img class="Integration-Icon" th:if="${#maps.containsKey(app.customData, 'icon')}"
+												 th:src="${app.customData.icon}" alt="App Image"/>
+											<img class="Integration-Icon" th:unless="${#maps.containsKey(app.customData, 'icon')}"
+												 th:src="@{/assets/images/notavailable.png}" alt="App Image"/>
+
+											<div class="Integration-Detail">
+												<h3 th:text="${app.name}"></h3>
+												<p class="IntegrationTagline" th:if="${#maps.containsKey(app.customData, 'summary')}" th:text="${app.customData.summary}"></p>
+											</div>
+											</div>
+									</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+	</section>
+
+
+</div>
+<script type="text/javascript" th:src="@{/assets/js/appjs/app-category.js}"></script>
 </body>
+
 </html>

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>App Details</title>
+</head>
+<head th:replace="fragments/header :: header"></head>
+
+<body class="bg-light">
+
+<!--section-->
+<div class="jumbotron hero-section text-center">
+    <div class="container">
+        <h2 class="Integration__heading" th:text="${appDetail.name}"></h2>
+        <img th:src="${appDetail.customData.icon}" alt="" class="Integration-logo"/>
+    </div>
+</div>
+<!--end-->
+
+<div class="container">
+    <!-- sidebar -->
+    <div class="col-sm-12 col-md-4 col-md-push-8">
+
+        <!-- download button card -->
+        <div class="card text-center">
+            <button class="btn-danger btn btn-lg" onclick="uninstallApp()"><i class="fa fa-close"></i> Uninstall App</button>
+            <button class="btn-primary btn btn-lg" onclick="installApp()"><i class="fa fa-check"></i> Get It Now</button>
+        </div>
+
+        <!-- media card -->
+        <div class="card">
+            <div class="embed-responsive embed-responsive-16by9">
+                <iframe th:src="${appDetail.customData.videoUrl}" class="embed-responsive-item"></iframe>
+            </div>
+
+            <div class="thumb-slider">
+                <ul class="bxslider">
+                    <li th:each="image: ${appDetail.customData.get('images')}"><a href="img/slider/images.jpg"><img th:src="${image}" /></a></li>
+                </ul>
+            </div>
+
+        </div>
+
+        <!-- details card -->
+        <div class="card">
+            <h4 class="lead-txt">Website</h4>
+            <p><a th:href="${appDetail.customData.websiteUrl}" th:text="${appDetail.customData.websiteUrl}"></a></p>
+
+            <h4 class="lead-txt">Categories</h4>
+            <p th:each="category : ${appDetail.customData.get('category')}" th:text="${category}"></p>
+
+        </div>
+
+    </div><!-- end sidebar -->
+
+    <!-- search conatiner -->
+    <div class="col-sm-12 col-md-8 col-md-pull-4">
+        <div class="main-content">
+
+            <div class="card">
+                <div class="description">
+                    <p th:text="${appDetail.customData.description}"></p>
+                </div>
+            </div>
+
+            <div class="related-product">
+                <h4>Other Related Apps</h4>
+
+                <div class="col-sm-6 col-md-4 MarketplaceFeature">
+                    <a href="detail-page.html">
+                        <div class="MarketplaceFeature-icon">
+                            <img th:src="@{/assets/images/mp-logos/woocommerce.png}" alt=""/>
+                        </div>
+                        <h3>WooCommerce</h3>
+                        <p class="MarketplaceFeature-text">WooCommerce is the most popular eCommerce platform on the web.</p>
+                    </a>
+                </div>
+
+                <div class="col-sm-6 col-md-4 MarketplaceFeature">
+                    <a href="detail-page.html">
+                        <div class="MarketplaceFeature-icon">
+                            <img th:src="@{/assets/images/mp-logos/chatfuel.png}" alt=""/>
+                        </div>
+                        <h3>Chatfuel</h3>
+                        <p class="MarketplaceFeature-text">Chatfuel is a free self-serve chatbot creation platform.</p>
+                    </a>
+                </div>
+
+                <div class="col-sm-6 col-md-4 MarketplaceFeature">
+                    <a href="detail-page.html">
+                        <div class="MarketplaceFeature-icon">
+                            <img th:src="@{/assets/images/mp-logos/intercom.png}" alt=""/>
+                        </div>
+                        <h3>Intercom</h3>
+                        <p class="MarketplaceFeature-text">Communicate with your customers, personally, at scale.</p>
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+
+<script>
+    if( $.fn.bxSlider) {
+        $('.thumb-slider ul').bxSlider({loop:false});
+    }
+
+    $('.thumb-slider').magnificPopup({
+        delegate: 'li>a',
+        type: 'image',
+        tLoading: 'Loading image #%curr%...',
+        mainClass: 'mfp-img-mobile',
+        gallery: {
+            enabled: true,
+            navigateByImgClick: true,
+            preload: [0,1] // Will preload 0 - before current, and 1 after the current image
+        },
+        image: {
+            tError: '<a href="%url%">The image #%curr%</a> could not be loaded.'
+        }
+    });
+
+    function uninstallApp(){
+
+    }
+
+    function installApp(){
+
+    }
+</script>
+
+</body>
+
+</html>

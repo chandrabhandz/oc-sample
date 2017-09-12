@@ -54,6 +54,13 @@ public class OpenChannelProperties {
     private Boolean sslEnabled = Boolean.FALSE;
 
     /**
+     * userID
+     * Validated with NotNull
+     */
+    @NotNull
+    private String userId;
+
+    /**
      * Getter for ssl flag
      *
      * @return
@@ -159,5 +166,23 @@ public class OpenChannelProperties {
      */
     public void setApiVersion(String apiVersion) {
         this.apiVersion = apiVersion;
+    }
+
+    /**
+     * Getter for user id
+     *
+     * @return
+     */
+    public String getUserId() {
+        return userId;
+    }
+
+    /**
+     * Setter for user id
+     *
+     * @param userId user id to be used
+     */
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 }

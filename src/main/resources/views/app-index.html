@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/common :: head"></head>
+<body>
+<section class="statistics">
+    <div class="container section-container">
+        <div class="error-panel" th:if="${inDevelopment}">
+            <i class="fa fa-exclamation-circle"></i>
+            <span>
+                Drafts must be published before they can be listed on the marketplace.
+            </span>
+        </div>
+        <h1>
+            <i class="fa fa-search"></i>
+            <span th:text="${views} + ' Views'"></span>
+        </h1>
+        <div id="plot">
+
+        </div>
+    </div>
+</section>
+
+<section class="add-app">
+    <div class="section-container action-container text-center">
+        <div class="container">
+            <h1>
+                Add your app
+            </h1>
+            <a th:href="@{/app/create}" class="btn btn-white btn-see-through btn-lg">Add App</a>
+        </div>
+    </div>
+</section>
+
+<section class="apps">
+    <div class="section-container"><h1 class="text-center">My Apps</h1>
+        <div class="container">
+            <div class="card-group">
+                <div class="row" th:switch="${apps.get('list').size() == 0}">
+                    <div class="no-results-card" th:case="${true}">
+                        You don't have any apps yet.
+                    </div>
+                    <div th:case="${false}">
+                        <div class="col-md-6" th:each="app : ${apps.get('list')}">
+                            <div class="card">
+                                <div class="card-overlay text-center">
+                                    <div class="card-overlay-panel">
+                                        <a href="" class="btn btn-see-through" data-toggle="tooltip" title="Edit"
+                                           th:href="@{/app/edit/{appId}(appId=${app.appId})}">
+                                            <i class="fa fa-pencil"></i>
+                                        </a>
+                                        <a class="btn btn-see-through" th:if="${app.status.value == 'inDevelopment'}"
+                                           data-toggle="tooltip" title="Publish"
+                                           th:onclick="'showPublishDialog(\'' + ${app.appId} + '\',\'' + ${app.version} + '\')'">
+                                            <i class="fa fa-rocket"></i>
+                                        </a>
+                                        <a class="btn btn-see-through" data-toggle="tooltip" title="Preview" href="#"
+                                           target="_blank">
+                                            <i class="fa fa-search"></i>
+                                        </a>
+                                        <th:block th:if="${app.status.value == 'approved'}">
+                                            <a class="btn btn-see-through"
+                                               th:if="${app.parent.status.value == 'approved'}" data-toggle="tooltip"
+                                               title="Suspend"
+                                               th:onclick="'showSuspendDialog(\'' + ${app.appId} + '\', \'suspend\')'">
+                                                <i class="fa fa-pause"></i>
+                                            </a>
+                                            <a class="btn btn-see-through"
+                                               th:if="${app.parent.status.value == 'suspended' and app.parent.status.modifiedBy == 'developer'}"
+                                               data-toggle="tooltip" title="Unsuspend" th:onclick="'showSuspendDialog(\'' + ${app.appId} + '\', \'unsuspend\')'">
+                                                <i class="fa fa-play"></i>
+                                            </a>
+                                        </th:block>
+                                        <a class="btn btn-see-through" data-toggle="tooltip" title="Delete"
+                                           th:onclick="'showDeleteDialog(\'' + ${app.appId} + '\', \'' + ${app.version} + '\', \'' + ${app.status.value} + '\')'">
+                                            <i class="fa fa-trash"></i>
+                                        </a>
+                                    </div>
+                                    <div th:class="${app.parent.status.value} + ' card-status text-center'" th:if="${app.status.value == 'approved'}">
+                                        <span th:if="${app.parent.status.value == 'approved'}">Approved</span>
+                                        <span th:if="${app.parent.status.value != 'approved'}">Suspended</span>
+                                    </div>
+                                </div>
+                                <div th:if="${app.status.value == 'approved'}" th:class="${app.parent.status.value  + ' card-status text-center'}">
+                                    <span th:if="${app.parent.status.value == 'approved'}">Approved</span>
+                                    <span th:if="${app.parent.status.value != 'approved'}">Suspended</span>
+                                </div>
+                                <div th:if="${app.status.value != 'approved'}" th:switch="${app.status.value}" th:class="${app.status.value  + ' card-status text-center'}">
+                                    <span th:case="${'inDevelopment'}">Draft</span>
+                                    <span th:case="${'inReview'}">In Review</span>
+                                    <span th:case="${'pending'}">Pending Approval</span>
+                                    <span th:case="${'suspended'}">Suspended</span>
+                                    <span th:case="${'rejected'}">Rejected</span>
+                                </div>
+                                <div class="card-content">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="card-image">
+                                                <img th:if="${#maps.containsKey(app.customData, 'icon')}"
+                                                     th:src="${app.customData.icon}" alt="App Image"/>
+                                                <img th:unless="${#maps.containsKey(app.customData, 'icon')}"
+                                                     th:src="@{/assets/images/notavailable.png}" alt="App Image"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <div class="card-title" th:text="${app.name}"></div>
+                                            <div th:if="${#maps.containsKey(app.customData, 'summary')}" class="card-summary" th:text="${app.customData.summary}"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<th:block th:replace="fragments/common :: scripts"></th:block>
+<script type="text/javascript" th:src="@{/assets/js/appjs/app-index.js}"></script>
+</body>
+</html>

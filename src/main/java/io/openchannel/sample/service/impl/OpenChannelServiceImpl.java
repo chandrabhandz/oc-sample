@@ -13,7 +13,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.validation.constraints.Null;
 import java.io.File;
 import java.io.IOException;
 
@@ -49,6 +53,11 @@ public class OpenChannelServiceImpl implements OpenChannelService {
     private static final String ENDPOINT_CREATE_APP = "apps";
 
     /**
+     * Endpoint for uninstalling app
+     */
+    private static final String ENDPOINT_UNINSTALL_APP = "ownership/apps";
+
+    /**
      * OpenChannelAPIUtil which performs low level communication with APIs
      */
     private final OpenChannelAPIUtil openChannelAPIUtil;
@@ -71,14 +80,35 @@ public class OpenChannelServiceImpl implements OpenChannelService {
     }
 
     /**
-     * search for apps using loaded developer id
+     * search for all apps using loaded developer id
      *
      * @return JsonObject which contains data returned from API
      */
     @Override
-    public JSONObject searchApps() {
+    public JSONObject searchAllApps() {
+        String query = "{$or:[{\"status.value\":\"rejected\",isLatestVersion:true},{isLive:true},{\"status.value\":{$in:[\"inDevelopment\",\"inReview\",\"pending\"]}}]}";
+        return searchApps(query);
+    }
+
+    /**
+     * search for all approved apps using loaded developer id
+     *
+     * @return JsonObject which contains data returned from API
+     */
+    @Override
+    public JSONObject searchApprovedApps() {
+        String query = "{$or:[{\"status.value\":\"approved\",isLatestVersion:true},{isLive:true},{\"status.value\":{$in:[\"inDevelopment\"]}},{userId:"+ openChannelProperties.getUserId() +"}]}";
+        return searchApps(query);
+    }
+
+    /**
+     * search for apps using loaded developer id
+     *
+     * @return JsonObject which contains data returned from API
+     */
+    private JSONObject searchApps(String query) {
         try {
-            return JSONUtil.getJSONObject(openChannelAPIUtil.sendGet(ENDPOINT_APPS, new OpenChannelAPIUtil.RequestParameter("developerId", openChannelProperties.getDeveloperId()), new OpenChannelAPIUtil.RequestParameter("query", "{$or:[{\"status.value\":\"rejected\",isLatestVersion:true},{isLive:true},{\"status.value\":{$in:[\"inDevelopment\",\"inReview\",\"pending\"]}}]}")));
+            return JSONUtil.getJSONObject(openChannelAPIUtil.sendGet(ENDPOINT_APPS, new OpenChannelAPIUtil.RequestParameter("developerId", openChannelProperties.getDeveloperId()), new OpenChannelAPIUtil.RequestParameter("query", query)));
         } catch (IOException e) {
             LOGGER.warn("Error while communicating with openchannel search api", e);
         }
@@ -246,7 +276,7 @@ public class OpenChannelServiceImpl implements OpenChannelService {
      * @throws ApplicationOperationException can be thrown for errors
      */
     @Override
-    public AppFormModel getApp(final String appId, final String version) throws ApplicationOperationException {
+    public AppFormModel getApp(final String appId, final String version) {
         try {
             JSONObject apiResponse = JSONUtil.getJSONObject(openChannelAPIUtil.sendGet(ENDPOINT_CREATE_APP + "/" + appId + "/versions/" + version, new OpenChannelAPIUtil.RequestParameter("developerId", openChannelProperties.getDeveloperId())));
             if (CommonUtil.isNull(apiResponse.get("appId")) && !CommonUtil.isNull(apiResponse.get("errors"))) {
@@ -269,12 +299,11 @@ public class OpenChannelServiceImpl implements OpenChannelService {
      * Change app status
      *
      * @param appId   unique app id
-     * @param version app version
      * @return JsonObject with all available details
      * @throws ApplicationOperationException can be thrown for errors
      */
     @Override
-    public JSONObject changeAppStatus(final String appId, final String status) throws ApplicationOperationException {
+    public JSONObject changeAppStatus(final String appId, final String status) {
         try {
             JSONObject apiResponse = JSONUtil.getJSONObject(openChannelAPIUtil.sendPost(ENDPOINT_CREATE_APP + "/" + appId + "/status", OpenChannelAPIUtil.PostContentType.JSON, new OpenChannelAPIUtil.RequestParameter("developerId", openChannelProperties.getDeveloperId()), new OpenChannelAPIUtil.RequestParameter("status", status)));
             if (!CommonUtil.isNull(apiResponse.get("errors"))) {
@@ -286,6 +315,77 @@ public class OpenChannelServiceImpl implements OpenChannelService {
             LOGGER.debug("Error while changing app status in openchannel api, Root cause : ", e);
             LOGGER.warn("Error while changing app status in openchannel api");
             throw new ApplicationOperationException("Failed to change app status", e);
+        }
+    }
+
+    /**
+     * search for all the apps based on category using loaded developer id
+     *
+     * @param category  app category
+     * @return JsonObject which contains data returned from API
+     */
+    @Override
+    public JSONObject searchAppsForCategory(String category){
+        String query = "{'status.value':'approved','customData.category':'" + category + "'},{isLive:true},{'userId':'"+ openChannelProperties.getUserId() +"'}";
+        return searchApps(query);
+    }
+
+    /**
+     * Fetches app data using appId and version
+     *
+     * @param appId   unique app id
+     * @param version app version
+     * @return JsonObject which contains data returned from API
+     */
+    @Override
+    public JSONObject getAppFromId(String appId, String version) {
+        try {
+            String path = null;
+            if (!CommonUtil.isNull(version)) {
+                path = ENDPOINT_CREATE_APP + "/" + appId + "/versions/" + version;
+            } else {
+                path = ENDPOINT_CREATE_APP + "/" + appId;
+            }
+
+            JSONObject apiResponse = JSONUtil.getJSONObject(openChannelAPIUtil.sendGet(path, new OpenChannelAPIUtil.RequestParameter("userId", openChannelProperties.getUserId())));
+            return apiResponse;
+        } catch (IOException e) {
+            LOGGER.debug("Error while fetching app from openchannel api, Root cause : ", e);
+            throw new ApplicationOperationException("Failed to get app details", e);
+        }
+    }
+
+    /**
+     * Uninstall app
+     *
+     * @param appId unique app id
+     * @return JsonObject
+     */
+    @Override
+    public JSONObject unInstallApp(String appId) {
+        try {
+            JSONObject apiResponse = JSONUtil.getJSONObject(openChannelAPIUtil.sendDelete(ENDPOINT_UNINSTALL_APP + "/" + appId, new OpenChannelAPIUtil.RequestParameter("userId", openChannelProperties.getUserId())));
+            return apiResponse;
+        } catch (Exception e) {
+            LOGGER.debug("Error while uninstalling app");
+            throw new ApplicationOperationException("Failed to uninstall app", e);
+        }
+    }
+
+    /**
+     * Install app
+     *
+     * @param appId unique app id
+     * @return JsonObject
+     */
+    @Override
+    public JSONObject installApp(final String appId){
+        try {
+            JSONObject apiResponse = JSONUtil.getJSONObject(openChannelAPIUtil.sendPost(ENDPOINT_UNINSTALL_APP + "/" + appId, OpenChannelAPIUtil.PostContentType.JSON, new OpenChannelAPIUtil.RequestParameter("userId", openChannelProperties.getUserId()), new OpenChannelAPIUtil.RequestParameter("modelId", "1")));
+            return apiResponse;
+        } catch (Exception e) {
+            LOGGER.debug("Error while uninstalling app");
+            throw new ApplicationOperationException("Failed to uninstall app", e);
         }
     }
 

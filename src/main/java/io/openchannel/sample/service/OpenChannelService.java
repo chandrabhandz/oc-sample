@@ -12,11 +12,18 @@ import java.io.File;
 
 public interface OpenChannelService {
     /**
-     * search for apps using loaded developer id
+     * search for all the apps using loaded developer id
      *
      * @return JsonObject which contains data returned from API
      */
-    JSONObject searchApps();
+    JSONObject searchAllApps();
+
+    /**
+     * search for all the approved apps using loaded developer id
+     *
+     * @return JsonObject which contains data returned from API
+     */
+    JSONObject searchApprovedApps();
 
     /**
      * @return JSONArray returns array of statistics
@@ -91,4 +98,38 @@ public interface OpenChannelService {
      * @throws RuntimeException
      */
     JSONObject changeAppStatus(String appId, String status);
+
+    /**
+     * search for all the apps based on category using loaded developer id
+     *
+     * @param category  app category
+     * @return JsonObject which contains data returned from API
+     */
+    JSONObject searchAppsForCategory(String category);
+
+    /**
+     * Fetches app data using appId and version
+     *
+     * @param appId   unique app id
+     * @param version app version
+     * @return JsonObject which contains data returned from API
+     */
+    JSONObject getAppFromId(String appId, String version);
+
+    /**
+     * Uninstall app
+     *
+     * @param appId unique app id
+     * @return JsonObject
+     */
+    JSONObject unInstallApp(final String appId);
+
+    /**
+     * Install app
+     *
+     * @param appId unique app id
+     * @return JsonObject
+     */
+    JSONObject installApp(final String appId);
+
 }
