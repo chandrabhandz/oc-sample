@@ -185,7 +185,7 @@ a,a:focus,a:visited,a:hover {
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
-    background: url('../img/search.png');
+    background: url('../images/search.png');
     background-color: #f6f9fc;
     background-repeat: no-repeat;
     background-position: 15px 11px;
@@ -770,7 +770,7 @@ img.mfp-img {
 /* LOADER */
 .bx-wrapper .bx-loading {
   min-height: 50px;
-  background: url(../img/bx_loader.gif) center center no-repeat #ffffff;
+  background: url(../images/bx_loader.gif) center center no-repeat #ffffff;
   height: 100%;
   width: 100%;
   position: absolute;
@@ -811,7 +811,7 @@ img.mfp-img {
 /* DIRECTION CONTROLS (NEXT / PREV) */
 .bx-wrapper .bx-prev {
   left: 10px;
-  background: url(../img/controls.png) no-repeat 0 -32px;
+  background: url(../images/controls.png) no-repeat 0 -32px;
 }
 .bx-wrapper .bx-prev:hover,
 .bx-wrapper .bx-prev:focus {
@@ -819,7 +819,7 @@ img.mfp-img {
 }
 .bx-wrapper .bx-next {
   right: 10px;
-  background: url(../img/controls.png) no-repeat -43px -32px;
+  background: url(../images/controls.png) no-repeat -43px -32px;
 }
 .bx-wrapper .bx-next:hover,
 .bx-wrapper .bx-next:focus {

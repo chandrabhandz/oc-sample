@@ -12,10 +12,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.slf4j.Logger;
 
-/**
- * Created on 2/9/17 7:40 PM by Raja Dushyant Vashishtha
- */
-
 @Controller
 public class HomeViewController {
     /**
@@ -100,13 +96,29 @@ public class HomeViewController {
      * @param appId  unique app id
      * @return JsonObject
      */
-    @GetMapping("/install/{appId}")
-    public @ResponseBody JSONObject installApp(@PathVariable("appId") final String appId) {
+    @GetMapping("/install/{appId}/{modelId}")
+    public @ResponseBody JSONObject installApp(@PathVariable("appId") final String appId, @PathVariable("modelId") final String modelId) {
         try {
-            return openChannelService.installApp(appId);
+            return openChannelService.installApp(appId, modelId);
         } catch (Exception e) {
-            LOGGER.debug("Error while uninstalling app");
-            throw new ApplicationOperationException("Failed to uninstall app", e);
+            LOGGER.debug("Error while installing app");
+            throw new ApplicationOperationException("Failed to install app", e);
+        }
+    }
+
+    /**
+     * Search apps
+     *
+     * @param   query search parameter
+     * @return JsonObject
+     */
+    @GetMapping("/searchapp/{query}")
+    public @ResponseBody JSONObject searchApp(@PathVariable("query") final String query) {
+        try {
+            return openChannelService.searchApp(query);
+        } catch (Exception e) {
+            LOGGER.debug("Error while searching app");
+            throw new ApplicationOperationException("Failed to search app", e);
         }
     }
 }

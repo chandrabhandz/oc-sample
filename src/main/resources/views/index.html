@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-	<title>Marketplace home</title>
+    <th:block th:replace="fragments/header :: header"></th:block>
 </head>
-<head th:replace="fragments/header :: header"></head>
 <body>
+
+<th:block th:replace="fragments/header :: navbar"></th:block>
 
 <!-- Hero section-->
 <div class="jumbotron hero-section">
@@ -13,7 +14,7 @@
 		<p class="sub-txt">Apps, plugins and add-ons for your platform</p>
 
 		<div class="col-sm-6 col-md-3 MarketplaceFeature">
-			<a th:href="@{/views/detail-page.html}">
+			<a href="#">
 				<div class="MarketplaceFeature-icon">
 					<img th:src="@{/assets/images/mp-logos/9.png}" alt=""/>
 				</div>
@@ -47,7 +48,7 @@
 
 
 		<div class="col-sm-6 col-md-3 MarketplaceFeature">
-			<a href="detail-page.html">
+			<a href="#">
 				<div class="MarketplaceFeature-icon">
 					<img th:src="@{/assets/images/mp-logos/intercom.png}" alt=""/>
 				</div>
@@ -63,7 +64,7 @@
 <div class="container">
 	<!-- sidebar -->
 	<div class="sidebar-toggle hidden">
-		<button type="button" class="btn-info btn">
+		<button type="button" class="btn-info b tn">
 			<span class="glyphicon glyphicon-menu-hamburger"></span>
 		</button>
 	</div>
@@ -116,7 +117,7 @@
 						<div th:case="${false}">
 							<div class="col-md-6" th:each="app : ${apps.get('list')}">
 								<!--<a class="Integration-box" href="detail-page.html"  data-context="Accounting">-->
-								<a class="Integration-box" th:href="@{/details/{appId}/{appVersion}(appId=${app.appId}, appVersion=${app.version})}">
+								<a class="Integration-box" th:href="@{/details/{appId}(appId=${app.appId})}">
 										<div class="row">
 											<img class="Integration-Icon" th:if="${#maps.containsKey(app.customData, 'icon')}"
 												 th:src="${app.customData.icon}" alt="App Image"/>
@@ -138,7 +139,8 @@
 
 
 </div>
-<script type="text/javascript" th:src="@{/assets/js/appjs/app-category.js}"></script>
+
+<th:block th:replace="fragments/common :: marketplace-scripts"></th:block>
 </body>
 
 </html>

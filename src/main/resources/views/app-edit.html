@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="fragments/common :: head"></head>
+<head>
+    <th:block th:replace="fragments/common :: head"></th:block>
+</head>
 <body>
 <section class="breadcrumb">
     <div class="container">
@@ -176,7 +178,7 @@
         </form>
     </div>
 </section>
-<th:block th:replace="fragments/common :: scripts"></th:block>
+<th:block th:replace="fragments/common :: app-scripts"></th:block>
 <th:block th:replace="fragments/app-common:: appscripts"></th:block>
 </body>
 </html>

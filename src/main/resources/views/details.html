@@ -1,12 +1,10 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>App Details</title>
+    <th:block th:replace="fragments/header :: header"></th:block>
 </head>
-<head th:replace="fragments/header :: header"></head>
-
 <body class="bg-light">
-
+<th:block th:replace="fragments/header :: navbar"></th:block>
 <!--section-->
 <div class="jumbotron hero-section text-center">
     <div class="container">
@@ -21,15 +19,16 @@
     <div class="col-sm-12 col-md-4 col-md-push-8">
 
         <!-- download button card -->
-        <div class="card text-center">
-            <button class="btn-danger btn btn-lg" onclick="uninstallApp()"><i class="fa fa-close"></i> Uninstall App</button>
-            <button class="btn-primary btn btn-lg" onclick="installApp()"><i class="fa fa-check"></i> Get It Now</button>
+        <div class="card text-center" th:switch="${#maps.containsKey(appDetail, 'ownership') and appDetail.ownership.status.ownershipStatus == 'active'}">
+            <button th:case="${true}" id="uninstall-app" class="btn-danger btn btn-lg" th:onclick="'uninstallApp(\'' + ${appDetail.appId} + '\');'"><i class="fa fa-close"></i> Uninstall App</button>
+            <button th:case="${false}" id="install-app" class="btn-primary btn btn-lg" th:onclick="'installApp(\'' + ${appDetail.appId} +'\',\''+ ${appDetail.model} + '\');'"><i class="fa fa-check"></i> Get It Now</button>
         </div>
 
         <!-- media card -->
         <div class="card">
             <div class="embed-responsive embed-responsive-16by9">
-                <iframe th:src="${appDetail.customData.videoUrl}" class="embed-responsive-item"></iframe>
+                <input type="hidden" th:value="${appDetail.customData.videoUrl}" class="form-control video-url" name="video_url"/>
+                <div class="video-preview"></div>
             </div>
 
             <div class="thumb-slider">
@@ -43,7 +42,7 @@
         <!-- details card -->
         <div class="card">
             <h4 class="lead-txt">Website</h4>
-            <p><a th:href="${appDetail.customData.websiteUrl}" th:text="${appDetail.customData.websiteUrl}"></a></p>
+            <p><a th:href="${'http://'+appDetail.customData.websiteUrl}" th:text="${appDetail.customData.websiteUrl}"></a></p>
 
             <h4 class="lead-txt">Categories</h4>
             <p th:each="category : ${appDetail.customData.get('category')}" th:text="${category}"></p>
@@ -57,8 +56,7 @@
         <div class="main-content">
 
             <div class="card">
-                <div class="description">
-                    <p th:text="${appDetail.customData.description}"></p>
+                <div class="description" th:utext="${appDetail.customData.description}">
                 </div>
             </div>
 
@@ -101,6 +99,7 @@
 
 </div>
 
+<th:block th:replace="fragments/common :: marketplace-scripts"></th:block>
 
 <script>
     if( $.fn.bxSlider) {
@@ -122,15 +121,24 @@
         }
     });
 
-    function uninstallApp(){
-
+    function uninstallApp(appId) {
+        $.ajax({
+            url: "/uninstall/" + appId, success: function (result) {
+                $('#uninstall-app').hide();
+                $('#install-app').show();
+            }
+        });
     }
 
-    function installApp(){
-
+    function installApp(appId, modelId){
+        $.ajax({url: "/install/" + appId + "/" + modelId, success: function(result){
+            $('#install-app').hide();
+            $('#uninstall-app').show();
+        }
+        });
     }
+
 </script>
-
 </body>
 
 </html>

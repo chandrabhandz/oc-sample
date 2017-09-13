@@ -122,14 +122,23 @@ public interface OpenChannelService {
      * @param appId unique app id
      * @return JsonObject
      */
-    JSONObject unInstallApp(final String appId);
+    JSONObject unInstallApp(String appId);
 
     /**
      * Install app
      *
      * @param appId unique app id
+     * @param modelId unique model id
      * @return JsonObject
      */
-    JSONObject installApp(final String appId);
+    JSONObject installApp(String appId, String modelId );
+
+    /**
+     * Search apps
+     *
+     * @param   queryParameter search parameter
+     * @return JsonObject
+     */
+    JSONObject searchApp(String queryParameter);
 
 }

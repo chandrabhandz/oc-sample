@@ -18,14 +18,6 @@ import java.util.Random;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
-/**
- * Created on 1/9/17 6:19 PM by Raja Dushyant Vashishtha
- * Sr. Software Engineer
- * rajad@decipherzone.com
- * Decipher Zone Softwares
- * www.decipherzone.com
- */
-
 @RunWith(SpringRunner.class)
 @WebMvcTest(AppViewController.class)
 public class ControllerTest {

@@ -153,7 +153,7 @@ function initializeCropperDropzone( selector, config ) {
                 var files = this.files;
 
                 if ( files.length > config.maxFiles ) {
-                    for( i = 0; i < files.length; i++ ) { 
+                    for( i = 0; i < files.length; i++ ) {
                         this.removeFile(files[i]);
                     } 
                     this.addFile(file);

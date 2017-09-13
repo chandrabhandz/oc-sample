@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="fragments/common :: head"></head>
+<head>
+    <th:block th:replace="fragments/common :: head"></th:block>
+</head>
 <body>
 <section class="statistics">
     <div class="container section-container">
@@ -45,7 +47,7 @@
                                 <div class="card-overlay text-center">
                                     <div class="card-overlay-panel">
                                         <a href="" class="btn btn-see-through" data-toggle="tooltip" title="Edit"
-                                           th:href="@{/app/edit/{appId}(appId=${app.appId})}">
+                                           th:href="@{/app/edit/{appId}/{appVersion}(appId=${app.appId}, appVersion=${app.version})}">
                                             <i class="fa fa-pencil"></i>
                                         </a>
                                         <a class="btn btn-see-through" th:if="${app.status.value == 'inDevelopment'}"
@@ -115,7 +117,7 @@
         </div>
     </div>
 </section>
-<th:block th:replace="fragments/common :: scripts"></th:block>
+<th:block th:replace="fragments/common :: app-scripts"></th:block>
 <script type="text/javascript" th:src="@{/assets/js/appjs/app-index.js}"></script>
 </body>
 </html>
