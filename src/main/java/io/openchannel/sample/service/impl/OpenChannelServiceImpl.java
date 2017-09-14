@@ -98,7 +98,7 @@ public class OpenChannelServiceImpl implements OpenChannelService {
      * URL to be appended in query
      * Versions
      */
-    private static final String URL_VERSIONS = "/versions";
+    private static final String URL_VERSIONS = "/versions/";
 
     /**
      * UserId
@@ -452,8 +452,29 @@ public class OpenChannelServiceImpl implements OpenChannelService {
      */
     @Override
     public JSONObject searchApp(String queryParameter){
-        //TODO Need to implement
-        return null;
+        String query = "{\"status.value\":\"approved\"}";
+        try {
+            return JSONUtil.getJSONObject(openChannelAPIUtil.sendGet(ENDPOINT_CREATE_APP + File.separator + "textSearch", new OpenChannelAPIUtil.RequestParameter("query", query), new OpenChannelAPIUtil.RequestParameter("text", queryParameter), new OpenChannelAPIUtil.RequestParameter("fields", "['name','customData.summary','customData.description']"), new OpenChannelAPIUtil.RequestParameter(USER_ID, openChannelProperties.getUserId())));
+        } catch (IOException e) {
+            LOGGER.debug("Error while searching apps from openchannel api, Root cause : ", e);
+            throw new ApplicationOperationException("Failed to search apps details", e);
+        }
+    }
+
+    /**
+     * Search all the apps owned by the user
+     *
+     * @return JsonObject which contains data returned from API
+     */
+    @Override
+    public JSONObject searchOwnedApps() {
+        String query = "{\"status.value\":\"approved\"}";
+        try{
+        return JSONUtil.getJSONObject(openChannelAPIUtil.sendGet(ENDPOINT_CREATE_APP, new OpenChannelAPIUtil.RequestParameter(QUERY, query), new OpenChannelAPIUtil.RequestParameter(USER_ID, openChannelProperties.getUserId()), new OpenChannelAPIUtil.RequestParameter("isOwned", true)));
+        } catch (IOException e) {
+            LOGGER.debug("Error while searching owned apps from openchannel api, Root cause : ", e);
+            throw new ApplicationOperationException("Failed to search owned apps details", e);
+        }
     }
 
 }

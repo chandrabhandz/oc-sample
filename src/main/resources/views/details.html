@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+    <title>App Details</title>
     <th:block th:replace="fragments/header :: header"></th:block>
 </head>
 <body class="bg-light">
@@ -19,21 +20,31 @@
     <div class="col-sm-12 col-md-4 col-md-push-8">
 
         <!-- download button card -->
-        <div class="card text-center" th:switch="${#maps.containsKey(appDetail, 'ownership') and appDetail.ownership.status.ownershipStatus == 'active'}">
-            <button th:case="${true}" id="uninstall-app" class="btn-danger btn btn-lg" th:onclick="'uninstallApp(\'' + ${appDetail.appId} + '\');'"><i class="fa fa-close"></i> Uninstall App</button>
-            <button th:case="${false}" id="install-app" class="btn-primary btn btn-lg" th:onclick="'installApp(\'' + ${appDetail.appId} +'\',\''+ ${appDetail.model} + '\');'"><i class="fa fa-check"></i> Get It Now</button>
+        <div class="card text-center">
+            <button th:style="${#maps.containsKey(appDetail, 'ownership') and appDetail.ownership.ownershipStatus == 'active'} ? '' : 'display:none'"
+                    id="uninstall-app" class="btn-danger btn btn-lg"
+                    th:onclick="'uninstallApp(\'' + ${appDetail.appId} + '\');'"><i class="fa fa-close"></i> Uninstall
+                App
+            </button>
+            <button th:style="${#maps.containsKey(appDetail, 'ownership') and appDetail.ownership.ownershipStatus == 'active'} ? 'display:none' : ''"
+                    id="install-app" class="btn-primary btn btn-lg"
+                    th:onclick="'installApp(\'' + ${appDetail.appId} +'\',\''+ ${modelId} + '\');'"><i
+                    class="fa fa-check"></i> Get It Now
+            </button>
         </div>
 
         <!-- media card -->
         <div class="card">
             <div class="embed-responsive embed-responsive-16by9">
-                <input type="hidden" th:value="${appDetail.customData.videoUrl}" class="form-control video-url" name="video_url"/>
+                <input type="hidden" th:value="${appDetail.customData.videoUrl}" class="form-control video-url"
+                       name="video_url"/>
                 <div class="video-preview"></div>
             </div>
 
             <div class="thumb-slider">
                 <ul class="bxslider">
-                    <li th:each="image: ${appDetail.customData.get('images')}"><a href="img/slider/images.jpg"><img th:src="${image}" /></a></li>
+                    <li th:each="image: ${appDetail.customData.get('images')}"><a th:href="${image}"><img
+                            th:src="${image}" class="img-responsive"/></a></li>
                 </ul>
             </div>
 
@@ -42,10 +53,11 @@
         <!-- details card -->
         <div class="card">
             <h4 class="lead-txt">Website</h4>
-            <p><a th:href="${'http://'+appDetail.customData.websiteUrl}" th:text="${appDetail.customData.websiteUrl}"></a></p>
+            <p><a th:href="${'http://'+appDetail.customData.websiteUrl}"
+                  th:text="${appDetail.customData.websiteUrl}"></a></p>
 
             <h4 class="lead-txt">Categories</h4>
-            <p th:each="category : ${appDetail.customData.get('category')}" th:text="${category}"></p>
+            <p th:each="category, iterStat : ${appDetail.customData.get('category')}" th:text="!${iterStat.last} ? ${category} + ',': ${category}" th:remove="tag"></p>
 
         </div>
 
@@ -69,7 +81,8 @@
                             <img th:src="@{/assets/images/mp-logos/woocommerce.png}" alt=""/>
                         </div>
                         <h3>WooCommerce</h3>
-                        <p class="MarketplaceFeature-text">WooCommerce is the most popular eCommerce platform on the web.</p>
+                        <p class="MarketplaceFeature-text">WooCommerce is the most popular eCommerce platform on the
+                            web.</p>
                     </a>
                 </div>
 
@@ -100,26 +113,37 @@
 </div>
 
 <th:block th:replace="fragments/common :: marketplace-scripts"></th:block>
+<script type="text/javascript" th:src="@{/assets/js/BxSlider.js}"></script>
+<script type="text/javascript" th:src="@{/assets/js/jquery.magnific-popup.min.js}"></script>
+<script type="text/javascript" th:src="@{/assets/js/video-embed.js}"></script>
 
 <script>
-    if( $.fn.bxSlider) {
-        $('.thumb-slider ul').bxSlider({loop:false});
-    }
+    $(function () {
 
-    $('.thumb-slider').magnificPopup({
-        delegate: 'li>a',
-        type: 'image',
-        tLoading: 'Loading image #%curr%...',
-        mainClass: 'mfp-img-mobile',
-        gallery: {
-            enabled: true,
-            navigateByImgClick: true,
-            preload: [0,1] // Will preload 0 - before current, and 1 after the current image
-        },
-        image: {
-            tError: '<a href="%url%">The image #%curr%</a> could not be loaded.'
+        if ($.fn.bxSlider) {
+            $('.thumb-slider ul').bxSlider({loop: false});
         }
+
+        $('.thumb-slider').magnificPopup({
+            delegate: 'li>a',
+            type: 'image',
+            tLoading: 'Loading image #%curr%...',
+            mainClass: 'mfp-img-mobile',
+            gallery: {
+                enabled: true,
+                navigateByImgClick: true,
+                preload: [0, 1] // Will preload 0 - before current, and 1 after the current image
+            },
+            image: {
+                tError: '<a href="%url%">The image #%curr%</a> could not be loaded.'
+            }
+        });
+
+        $(".video-preview iframe").remove();
+        $(".video-preview").text('');
+        $(".video-preview").append(getEmbedVideoCode($(".video-url").val(), 390, 220));
     });
+
 
     function uninstallApp(appId) {
         $.ajax({
@@ -130,11 +154,12 @@
         });
     }
 
-    function installApp(appId, modelId){
-        $.ajax({url: "/install/" + appId + "/" + modelId, success: function(result){
-            $('#install-app').hide();
-            $('#uninstall-app').show();
-        }
+    function installApp(appId, modelId) {
+        $.ajax({
+            url: "/install/" + appId + "/" + modelId, success: function (result) {
+                $('#install-app').hide();
+                $('#uninstall-app').show();
+            }
         });
     }
 

@@ -2,6 +2,7 @@ package io.openchannel.sample.controller;
 
 import io.openchannel.sample.exception.ApplicationOperationException;
 import io.openchannel.sample.service.OpenChannelService;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.slf4j.Logger;
+
+/**
+ * HomeViewController.java : responsible for rendering all the HTML view
+ */
+
 
 @Controller
 public class HomeViewController {
@@ -69,8 +75,12 @@ public class HomeViewController {
     @GetMapping({"/details/{appId}","/details/{appId}/{appVersion}"})
     public String getAppDetailPage(@PathVariable("appId") final String appId, @PathVariable(value = "appVersion", required = false) final String version, final Model model) {
         JSONObject appDetail = openChannelService.getAppFromId(appId, version);
+        JSONArray modelArray = (JSONArray)appDetail.get("model");
+        JSONObject modelObject = (JSONObject) modelArray.get(0);
+        String modelId = (String)modelObject.get("modelId");
 
         model.addAttribute("appDetail", appDetail);
+        model.addAttribute("modelId", modelId);
         return "details";
     }
 
@@ -119,6 +129,21 @@ public class HomeViewController {
         } catch (Exception e) {
             LOGGER.debug("Error while searching app");
             throw new ApplicationOperationException("Failed to search app", e);
+        }
+    }
+
+    /**
+     * Search all the apps owned by the user
+     *
+     * @return JsonObject
+     */
+    @GetMapping("/ownedapp")
+    public @ResponseBody JSONObject ownedApp() {
+        try {
+            return openChannelService.searchOwnedApps();
+        } catch (Exception e) {
+            LOGGER.debug("Error while searching owned app");
+            throw new ApplicationOperationException("Failed to search owned app", e);
         }
     }
 }

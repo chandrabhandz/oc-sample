@@ -141,4 +141,10 @@ public interface OpenChannelService {
      */
     JSONObject searchApp(String queryParameter);
 
+    /**
+     * Search all the apps owned by the user
+     *
+     * @return JsonObject which contains data returned from API
+     */
+    JSONObject searchOwnedApps();
 }

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+    <title>Marketplace Home</title>
     <th:block th:replace="fragments/header :: header"></th:block>
 </head>
 <body>
@@ -9,133 +10,134 @@
 
 <!-- Hero section-->
 <div class="jumbotron hero-section">
-	<div class="container">
-		<h1 class="heading">Your Marketplace</h1>
-		<p class="sub-txt">Apps, plugins and add-ons for your platform</p>
+    <div class="container">
+        <h1 class="heading">Your Marketplace</h1>
+        <p class="sub-txt">Apps, plugins and add-ons for your platform</p>
 
-		<div class="col-sm-6 col-md-3 MarketplaceFeature">
-			<a href="#">
-				<div class="MarketplaceFeature-icon">
-					<img th:src="@{/assets/images/mp-logos/9.png}" alt=""/>
-				</div>
-				<h3>ZenHub</h3>
-				<p class="MarketplaceFeature-text">Agile project management within GitHub</p>
-			</a>
-		</div>
-
-
-		<div class="col-sm-6 col-md-3 MarketplaceFeature">
-			<a href="detail-page.html">
-				<div class="MarketplaceFeature-icon">
-					<img th:src="@{/assets/images/mp-logos/woocommerce.png}" alt=""/>
-				</div>
-				<h3>Travis CI</h3>
-				<p class="MarketplaceFeature-text">Test and deploy with confidence</p>
-			</a>
-		</div>
-
-		<div class="clearfix visible-sm"></div>
-
-		<div class="col-sm-6 col-md-3 MarketplaceFeature">
-			<a href="detail-page.html">
-				<div class="MarketplaceFeature-icon">
-					<img th:src="@{/assets/images/mp-logos/godaddy.png}" alt=""/>
-				</div>
-				<h3>GoDaddy</h3>
-				<p class="MarketplaceFeature-text">Fire up your PHP Apps Performance</p>
-			</a>
-		</div>
+        <div class="col-sm-6 col-md-3 MarketplaceFeature">
+            <a href="#">
+                <div class="MarketplaceFeature-icon">
+                    <img th:src="@{/assets/images/mp-logos/9.png}" alt=""/>
+                </div>
+                <h3>ZenHub</h3>
+                <p class="MarketplaceFeature-text">Agile project management within GitHub</p>
+            </a>
+        </div>
 
 
-		<div class="col-sm-6 col-md-3 MarketplaceFeature">
-			<a href="#">
-				<div class="MarketplaceFeature-icon">
-					<img th:src="@{/assets/images/mp-logos/intercom.png}" alt=""/>
-				</div>
-				<h3>Intercom</h3>
-				<p class="MarketplaceFeature-text">Communicate with your customers, personally, at scale.</p>
-			</a>
-		</div>
+        <div class="col-sm-6 col-md-3 MarketplaceFeature">
+            <a href="detail-page.html">
+                <div class="MarketplaceFeature-icon">
+                    <img th:src="@{/assets/images/mp-logos/woocommerce.png}" alt=""/>
+                </div>
+                <h3>Travis CI</h3>
+                <p class="MarketplaceFeature-text">Test and deploy with confidence</p>
+            </a>
+        </div>
 
-	</div>
+        <div class="clearfix visible-sm"></div>
+
+        <div class="col-sm-6 col-md-3 MarketplaceFeature">
+            <a href="detail-page.html">
+                <div class="MarketplaceFeature-icon">
+                    <img th:src="@{/assets/images/mp-logos/godaddy.png}" alt=""/>
+                </div>
+                <h3>GoDaddy</h3>
+                <p class="MarketplaceFeature-text">Fire up your PHP Apps Performance</p>
+            </a>
+        </div>
+
+
+        <div class="col-sm-6 col-md-3 MarketplaceFeature">
+            <a href="#">
+                <div class="MarketplaceFeature-icon">
+                    <img th:src="@{/assets/images/mp-logos/intercom.png}" alt=""/>
+                </div>
+                <h3>Intercom</h3>
+                <p class="MarketplaceFeature-text">Communicate with your customers, personally, at scale.</p>
+            </a>
+        </div>
+
+    </div>
 </div>
 <!--end-->
 
 <div class="container">
-	<!-- sidebar -->
-	<div class="sidebar-toggle hidden">
-		<button type="button" class="btn-info b tn">
-			<span class="glyphicon glyphicon-menu-hamburger"></span>
-		</button>
-	</div>
+    <!-- sidebar -->
+    <div class="sidebar-toggle hidden">
+        <button type="button" class="btn-info b tn">
+            <span class="glyphicon glyphicon-menu-hamburger"></span>
+        </button>
+    </div>
 
-	<div class="col-md-4 col-lg-3">
-		<div class="sidebar">
-			<h4 class="heading">Search Marketplace</h4>
-			<form accept-charset="UTF-8" action="#" class="search-form" method="post">
-				<input value="" type="text" name="query" placeholder="Search" aria-label="Search" id="IntegrationSearch" class="form-control search"/>
-			</form>
+    <div class="col-md-4 col-lg-3">
+        <div class="sidebar">
+            <h4 class="heading">Search Marketplace</h4>
+            <input value="" type="text" name="query" placeholder="Search" aria-label="Search" id="IntegrationSearch"
+                   class="form-control search"/>
 
-			<h4 class="heading">Collections</h4>
-			<ul>
-				<li><a th:href="@{/}" data-category="*">All Apps</a></li>
-				<li><a th:href="@{/app}" data-category="myApps">My Apps</a></li>
-				<li><a href="#" data-category="popular">Popular</a></li>
-			</ul>
+            <h4 class="heading">Collections</h4>
+            <ul class="collections">
+                <li><a th:href="@{/}" data-category="*">All Apps</a></li>
+                <li><a href="#" data-category="myApps">My Apps</a></li>
+                <li><a href="#" data-category="popular">Popular</a></li>
+            </ul>
 
-			<h4 class="heading">Categories</h4>
-			<ul class="category">
-				<li><a href="#" data-category="Accounting">Accounting</a></li>
-				<li><a href="#" data-category="Analytics">Analytics</a></li>
-				<li><a href="#" data-category="Automation">Automation</a></li>
-				<li><a href="#" data-category="Booking Ticketing">Booking &amp; Ticketing</a></li>
-				<li><a href="#" data-category="Card Readers &amp; POS">Card Readers &amp; POS</a></li>
-				<li><a href="#" data-category="CRM">CRM</a></li>
-				<li><a href="#" data-category="Customer Support">Customer Support</a></li>
-				<li><a href="#" data-category="E-Commerce">E-Commerce</a></li>
-				<li><a href="#" data-category="Electronic Signature">Electronic Signature</a></li>
-				<li><a href="#" data-category="Email Marketing &amp; Dunning">Email Marketing &amp; Dunning</a></li>
-				<li><a href="#" data-category="Financing">Financing</a></li>
-				<li><a href="#" data-category="Form Building">Form Building</a></li>
-				<li><a href="#" data-category="Fundraising">Fundraising</a></li>
-				<li><a href="#" data-category="Gift Certificates">Gift Certificates</a></li>
-				<li><a href="#" data-category="Inventory Management">Inventory Management</a></li>
-				<li><a href="#" data-category="Invoicing">Invoicing</a></li>
-			</ul>
+            <h4 class="heading">Categories</h4>
+            <ul class="category">
+                <li><a href="#" data-category="Accounting">Accounting</a></li>
+                <li><a href="#" data-category="Analytics">Analytics</a></li>
+                <li><a href="#" data-category="Automation">Automation</a></li>
+                <li><a href="#" data-category="Booking Ticketing">Booking &amp; Ticketing</a></li>
+                <li><a href="#" data-category="Card Readers &amp; POS">Card Readers &amp; POS</a></li>
+                <li><a href="#" data-category="CRM">CRM</a></li>
+                <li><a href="#" data-category="Customer Support">Customer Support</a></li>
+                <li><a href="#" data-category="E-Commerce">E-Commerce</a></li>
+                <li><a href="#" data-category="Electronic Signature">Electronic Signature</a></li>
+                <li><a href="#" data-category="Email Marketing &amp; Dunning">Email Marketing &amp; Dunning</a></li>
+                <li><a href="#" data-category="Financing">Financing</a></li>
+                <li><a href="#" data-category="Form Building">Form Building</a></li>
+                <li><a href="#" data-category="Fundraising">Fundraising</a></li>
+                <li><a href="#" data-category="Gift Certificates">Gift Certificates</a></li>
+                <li><a href="#" data-category="Inventory Management">Inventory Management</a></li>
+                <li><a href="#" data-category="Invoicing">Invoicing</a></li>
+            </ul>
 
-		</div>
-	</div><!-- end sidebar -->
+        </div>
+    </div><!-- end sidebar -->
 
-	<!-- search conatiner -->
-	<section id="apps" class="apps">
-		<div class="col-sm-12 col-md-8 col-lg-9">
-			<div class="main-content">
-					<div class="row" th:switch="${apps.get('list').size() == 0}">
-						<div class="no-results-card" th:case="${true}">
-							You don't have any apps yet.
-						</div>
-						<div th:case="${false}">
-							<div class="col-md-6" th:each="app : ${apps.get('list')}">
-								<!--<a class="Integration-box" href="detail-page.html"  data-context="Accounting">-->
-								<a class="Integration-box" th:href="@{/details/{appId}(appId=${app.appId})}">
-										<div class="row">
-											<img class="Integration-Icon" th:if="${#maps.containsKey(app.customData, 'icon')}"
-												 th:src="${app.customData.icon}" alt="App Image"/>
-											<img class="Integration-Icon" th:unless="${#maps.containsKey(app.customData, 'icon')}"
-												 th:src="@{/assets/images/notavailable.png}" alt="App Image"/>
+    <!-- search conatiner -->
+    <section id="apps" class="apps">
+        <div class="col-sm-12 col-md-8 col-lg-9">
+            <div class="main-content">
+                <div class="row" th:switch="${apps.get('list').size() == 0}" th:remove="tag">
+                    <div class="no-results-card" th:case="${true}">
+                        You don't have any apps yet.
+                    </div>
+                    <div th:case="${false}" th:remove="tag">
+                        <div class="col-md-6" th:each="app : ${apps.get('list')}" th:remove="tag">
+                            <a class="Integration-box" th:href="@{/details/{appId}(appId=${app.appId})}">
+                                <div class="row">
+                                    <img class="Integration-Icon" th:if="${#maps.containsKey(app.customData, 'icon')}"
+                                         th:src="${app.customData.icon}" alt="App Image"/>
+                                    <img class="Integration-Icon"
+                                         th:unless="${#maps.containsKey(app.customData, 'icon')}"
+                                         th:src="@{/assets/images/notavailable.png}" alt="App Image"/>
 
-											<div class="Integration-Detail">
-												<h3 th:text="${app.name}"></h3>
-												<p class="IntegrationTagline" th:if="${#maps.containsKey(app.customData, 'summary')}" th:text="${app.customData.summary}"></p>
-											</div>
-											</div>
-									</a>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-	</section>
+                                    <div class="Integration-Detail">
+                                        <h3 th:text="${app.name}"></h3>
+                                        <p class="IntegrationTagline"
+                                           th:if="${#maps.containsKey(app.customData, 'summary')}"
+                                           th:text="${app.customData.summary}"></p>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
 
 </div>
