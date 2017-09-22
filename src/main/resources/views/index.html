@@ -3,6 +3,9 @@
 <head>
     <title>Marketplace Home</title>
     <th:block th:replace="fragments/header :: header"></th:block>
+    <link href="/assets/css/style.css" th:href="@{/assets/css/style.css}" rel="stylesheet" type="text/css"/>
+    <!-- Custom CSS -->
+    <link th:href="@{/assets/css/market-custom.css}" rel="stylesheet"  type="text/css"/>
 </head>
 <body>
 
@@ -14,47 +17,13 @@
         <h1 class="heading">Your Marketplace</h1>
         <p class="sub-txt">Apps, plugins and add-ons for your platform</p>
 
-        <div class="col-sm-6 col-md-3 MarketplaceFeature">
-            <a href="#">
+        <div class="col-sm-6 col-md-3 MarketplaceFeature" th:each="featuredApp: ${featuredApps.get('list')}">
+            <a th:href="@{/details/{safeName}(safeName=${featuredApp.safeName})}">
                 <div class="MarketplaceFeature-icon">
-                    <img th:src="@{/assets/images/mp-logos/9.png}" alt=""/>
+                    <img th:src="${featuredApp.customData.icon}" alt=""/>
                 </div>
-                <h3>ZenHub</h3>
-                <p class="MarketplaceFeature-text">Agile project management within GitHub</p>
-            </a>
-        </div>
-
-
-        <div class="col-sm-6 col-md-3 MarketplaceFeature">
-            <a href="detail-page.html">
-                <div class="MarketplaceFeature-icon">
-                    <img th:src="@{/assets/images/mp-logos/woocommerce.png}" alt=""/>
-                </div>
-                <h3>Travis CI</h3>
-                <p class="MarketplaceFeature-text">Test and deploy with confidence</p>
-            </a>
-        </div>
-
-        <div class="clearfix visible-sm"></div>
-
-        <div class="col-sm-6 col-md-3 MarketplaceFeature">
-            <a href="detail-page.html">
-                <div class="MarketplaceFeature-icon">
-                    <img th:src="@{/assets/images/mp-logos/godaddy.png}" alt=""/>
-                </div>
-                <h3>GoDaddy</h3>
-                <p class="MarketplaceFeature-text">Fire up your PHP Apps Performance</p>
-            </a>
-        </div>
-
-
-        <div class="col-sm-6 col-md-3 MarketplaceFeature">
-            <a href="#">
-                <div class="MarketplaceFeature-icon">
-                    <img th:src="@{/assets/images/mp-logos/intercom.png}" alt=""/>
-                </div>
-                <h3>Intercom</h3>
-                <p class="MarketplaceFeature-text">Communicate with your customers, personally, at scale.</p>
+                <h3 th:text="${featuredApp.name}"></h3>
+                <p class="MarketplaceFeature-text" th:text="${featuredApp.customData.summary}"></p>
             </a>
         </div>
 
@@ -73,14 +42,17 @@
     <div class="col-md-4 col-lg-3">
         <div class="sidebar">
             <h4 class="heading">Search Marketplace</h4>
+            <div class="search-box">
+            <i class="fa fa-spinner fa-spin searchLoader" id="searchLoader" style="display: none;"></i>
             <input value="" type="text" name="query" placeholder="Search" aria-label="Search" id="IntegrationSearch"
                    class="form-control search"/>
-
+            </div>
             <h4 class="heading">Collections</h4>
             <ul class="collections">
-                <li><a th:href="@{/}" data-category="*">All Apps</a></li>
+                <li><a href="#" data-category="allApps">All Apps</a></li>
                 <li><a href="#" data-category="myApps">My Apps</a></li>
                 <li><a href="#" data-category="popular">Popular</a></li>
+                <li><a href="#" data-category="featured">Featured</a></li>
             </ul>
 
             <h4 class="heading">Categories</h4>
@@ -116,7 +88,7 @@
                     </div>
                     <div th:case="${false}" th:remove="tag">
                         <div class="col-md-6" th:each="app : ${apps.get('list')}" th:remove="tag">
-                            <a class="Integration-box" th:href="@{/details/{appId}(appId=${app.appId})}">
+                            <a class="Integration-box" th:href="@{/details/{safeName}(safeName=${app.safeName})}">
                                 <div class="row">
                                     <img class="Integration-Icon" th:if="${#maps.containsKey(app.customData, 'icon')}"
                                          th:src="${app.customData.icon}" alt="App Image"/>

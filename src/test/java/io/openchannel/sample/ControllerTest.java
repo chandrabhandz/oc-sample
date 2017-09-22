@@ -38,13 +38,13 @@ public class ControllerTest {
         appFormModel.setIcon("This is sample icon");
         appFormModel.setPublish(String.valueOf(Boolean.TRUE));
         appFormModel.setTncFlag(String.valueOf(Boolean.TRUE));
-        mockMvc.perform(post("/app/create").session(new MockHttpSession()).param("name", "sample" + new Random().nextInt()).param("publish", "true"));
+        mockMvc.perform(post("/apps/create").session(new MockHttpSession()).param("name", "sample" + new Random().nextInt()).param("publish", "true"));
         Assert.assertTrue(true);
     }
 
     @Test
     public void testDeleteApp() throws Exception {
-        mockMvc.perform(get("/app/delete/59aa5476f960873ee103bdba/1"));
+        mockMvc.perform(get("/apps/delete/59aa5476f960873ee103bdba/1"));
     }
 
     @Test

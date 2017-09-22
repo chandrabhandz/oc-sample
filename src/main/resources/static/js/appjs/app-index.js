@@ -118,17 +118,17 @@ function showDeleteDialog(appId, version, status) {
 function publishApp(obj, appId, version) {
     $(obj).prop('disabled', true);
     $(obj).find('.fa-spinner').removeClass('hidden');
-    window.location.href = "/app/publish/" + appId + "/" + version;
+    window.location.href = "/apps/publish/" + appId + "/" + version;
 }
 
 function deleteApp(obj, appId, version) {
     $(obj).prop('disabled', true);
     $(obj).find('.fa-spinner').removeClass('hidden');
-    window.location.href = "/app/delete/" + appId + "/" + version;
+    window.location.href = "/apps/delete/" + appId + "/" + version;
 }
 
 function suspendApp(obj, appId, status) {
     $(obj).prop('disabled', true);
     $(obj).find('.fa-spinner').removeClass('hidden');
-    window.location.href = "/app/status/" + appId + "/" + status;
+    window.location.href = "/apps/status/" + appId + "/" + status;
 }

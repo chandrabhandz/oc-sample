@@ -12,11 +12,54 @@ $category.on('click', function (e) {
 // show user installed apps
 var $collections = $('.collections [data-category]');
 $collections.on('click', function (e) {
+    var collections = $(this).attr('data-category');
+
+    var request_url;
+    if(collections == "myApps"){
+        request_url = "/ownedapp/" + collections;
+    } else if (collections == "popular"){
+        request_url = "/ownedapp/" + collections;
+    } else if (collections == "featured"){
+        request_url = "/ownedapp/" + collections;
+    } else if (collections == "allApps"){
+        request_url = "/ownedapp/" + collections;
+    }
+
     $.ajax({
-        url: "/ownedapp", success: function (result) {
+        url: request_url, success: function (result) {
             showContainerApps(result);
         }
     });
+});
+
+$( '#IntegrationSearch' ).keyup(function() {
+
+    var category = $('ul.category').find('li.active').find('a').data('category');
+
+    $('#searchLoader').css("display", "block");
+
+    if($(this).val() == '' && category == 'undefined'){
+        $.ajax({
+            url: "/ownedapp/allApps" , success: function (result) {
+                showContainerApps(result);
+                $('#searchLoader').css("display", "none");
+            }
+        });
+
+    } else if (category != 'undefined' && $(this).val() == ''){
+        $.ajax({
+            url: "/category/" + category, success: function (result) {
+                showContainerApps(result);
+            }
+        });
+    } else {
+        $.ajax({
+            url: "/searchapp/" + $(this).val() + "/" + category, success: function (result) {
+                showContainerApps(result);
+                $('#searchLoader').css("display", "none");
+            }
+        });
+    }
 });
 
 //render data in apps section
@@ -31,12 +74,12 @@ function showContainerApps(result) {
             '</div>';
 
     $.each(result.list, function (i) {
-        var appId = result.list[i].appId;
+        var safeName = result.list[i].safeName;
         var icon = result.list[i].customData.icon;
         var appName = result.list[i].name;
         var summary = result.list[i].customData.summary;
         data += '' +
-            '<a class="Integration-box" href="/details/' + appId + '">' +
+            '<a class="Integration-box" href="/details/' + safeName + '">' +
             '<div class="row">';
         if (icon != null) {
             data += '<img class="Integration-Icon" src="' + icon + '" alt="App Image"/>';

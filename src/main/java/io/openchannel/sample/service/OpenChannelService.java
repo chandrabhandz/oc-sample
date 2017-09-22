@@ -139,12 +139,37 @@ public interface OpenChannelService {
      * @param   queryParameter search parameter
      * @return JsonObject
      */
-    JSONObject searchApp(String queryParameter);
+    JSONObject searchAppForQuery(String queryParameter, String category);
 
     /**
      * Search all the apps owned by the user
      *
+     * @param  collections type of collections
      * @return JsonObject which contains data returned from API
      */
-    JSONObject searchOwnedApps();
+    JSONObject searchOwnedApps(String collections);
+
+    /**
+     * Search App detail page
+     *
+     * @param safeName              safeName of the app
+     * @return JsonObject
+     */
+    JSONObject getAppFromSafeName(String safeName);
+
+    /**
+     * Search App detail page
+     *
+     * @param categories   categories of the app
+     * @param appId        unique app id
+     * @return JsonObject
+     */
+    JSONObject getSortedCategoryApp(String categories, String appId);
+
+    /**
+     * Get featured apps
+     *
+     * @return JSONObject
+     */
+    JSONObject getFeaturedApps();
 }

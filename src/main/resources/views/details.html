@@ -3,6 +3,9 @@
 <head>
     <title>App Details</title>
     <th:block th:replace="fragments/header :: header"></th:block>
+    <!-- Custom CSS -->
+    <link th:href="@{/assets/css/market-custom.css}" rel="stylesheet"  type="text/css"/>
+    <link href="/assets/css/toastr.css" th:href="@{/assets/css/toastr.css}" rel="stylesheet" type="text/css"/>
 </head>
 <body class="bg-light">
 <th:block th:replace="fragments/header :: navbar"></th:block>
@@ -34,31 +37,32 @@
         </div>
 
         <!-- media card -->
-        <div class="card">
-            <div class="embed-responsive embed-responsive-16by9">
+        <div class="card" th:style="${appDetail.customData.videoUrl != '' or appDetail.customData.get('images').size() != 0} ? '' : 'display:none'" >
+            <div class="embed-responsive embed-responsive-16by9" th:switch="${appDetail.customData.videoUrl != ''}" th:case="${true}">
                 <input type="hidden" th:value="${appDetail.customData.videoUrl}" class="form-control video-url"
                        name="video_url"/>
                 <div class="video-preview"></div>
             </div>
 
-            <div class="thumb-slider">
+            <div class="thumb-slider" th:switch="${appDetail.customData.get('images').size() != 0}" th:case="${true}">
                 <ul class="bxslider">
                     <li th:each="image: ${appDetail.customData.get('images')}"><a th:href="${image}"><img
                             th:src="${image}" class="img-responsive"/></a></li>
                 </ul>
             </div>
-
         </div>
 
         <!-- details card -->
-        <div class="card">
-            <h4 class="lead-txt">Website</h4>
-            <p><a th:href="${'http://'+appDetail.customData.websiteUrl}"
-                  th:text="${appDetail.customData.websiteUrl}"></a></p>
-
-            <h4 class="lead-txt">Categories</h4>
-            <p th:each="category, iterStat : ${appDetail.customData.get('category')}" th:text="!${iterStat.last} ? ${category} + ',': ${category}" th:remove="tag"></p>
-
+        <div class="card" th:style="${appDetail.customData.websiteUrl != '' or appDetail.customData.get('category').size() != 0} ? '' : 'display:none'">
+            <div class="row" th:switch="${appDetail.customData.websiteUrl != ''}" th:case="${true}">
+                <h4 class="lead-txt">Website</h4>
+                <p><a th:href="${'http://'+appDetail.customData.websiteUrl}"
+                      th:text="${appDetail.customData.websiteUrl}"></a></p>
+            </div>
+            <div class="row" th:switch="${appDetail.customData.get('category').size() != 0}" th:case="${true}">
+                <h4 class="lead-txt">Categories</h4>
+                <p th:each="category, iterStat : ${appDetail.customData.get('category')}" th:text="!${iterStat.last} ? ${category} + ',': ${category}" th:remove="tag"></p>
+            </div>
         </div>
 
     </div><!-- end sidebar -->
@@ -72,37 +76,16 @@
                 </div>
             </div>
 
-            <div class="related-product">
+            <div class="related-product" th:switch="${relatedApps.get('list').size() == 0}" th:case="${false}">
                 <h4>Other Related Apps</h4>
 
-                <div class="col-sm-6 col-md-4 MarketplaceFeature">
-                    <a href="detail-page.html">
+                <div class="col-sm-6 col-md-4 MarketplaceFeature" th:each="relatedApp: ${relatedApps.get('list')}">
+                    <a th:href="@{/details/{safeName}(safeName=${relatedApp.safeName})}">
                         <div class="MarketplaceFeature-icon">
-                            <img th:src="@{/assets/images/mp-logos/woocommerce.png}" alt=""/>
+                            <img th:src="${relatedApp.customData.icon}" alt=""/>
                         </div>
-                        <h3>WooCommerce</h3>
-                        <p class="MarketplaceFeature-text">WooCommerce is the most popular eCommerce platform on the
-                            web.</p>
-                    </a>
-                </div>
-
-                <div class="col-sm-6 col-md-4 MarketplaceFeature">
-                    <a href="detail-page.html">
-                        <div class="MarketplaceFeature-icon">
-                            <img th:src="@{/assets/images/mp-logos/chatfuel.png}" alt=""/>
-                        </div>
-                        <h3>Chatfuel</h3>
-                        <p class="MarketplaceFeature-text">Chatfuel is a free self-serve chatbot creation platform.</p>
-                    </a>
-                </div>
-
-                <div class="col-sm-6 col-md-4 MarketplaceFeature">
-                    <a href="detail-page.html">
-                        <div class="MarketplaceFeature-icon">
-                            <img th:src="@{/assets/images/mp-logos/intercom.png}" alt=""/>
-                        </div>
-                        <h3>Intercom</h3>
-                        <p class="MarketplaceFeature-text">Communicate with your customers, personally, at scale.</p>
+                        <h3 th:text="${relatedApp.name}"></h3>
+                        <p class="MarketplaceFeature-text" th:utext="${relatedApp.customData.summary}"></p>
                     </a>
                 </div>
             </div>
@@ -116,6 +99,7 @@
 <script type="text/javascript" th:src="@{/assets/js/BxSlider.js}"></script>
 <script type="text/javascript" th:src="@{/assets/js/jquery.magnific-popup.min.js}"></script>
 <script type="text/javascript" th:src="@{/assets/js/video-embed.js}"></script>
+<script type="text/javascript" th:src="@{/assets/js/toastr.min.js}"></script>
 
 <script>
     $(function () {
@@ -148,8 +132,14 @@
     function uninstallApp(appId) {
         $.ajax({
             url: "/uninstall/" + appId, success: function (result) {
+                toastr.options.positionClass = 'toast-top-center';
+                if(result.hasOwnProperty('errors')){
+                    toastr.error('App​ ​cannot uninstalled​');
+                }
                 $('#uninstall-app').hide();
                 $('#install-app').show();
+
+                toastr.success('App​ ​ uninstalled​ ​ successfully');
             }
         });
     }
@@ -157,8 +147,15 @@
     function installApp(appId, modelId) {
         $.ajax({
             url: "/install/" + appId + "/" + modelId, success: function (result) {
-                $('#install-app').hide();
-                $('#uninstall-app').show();
+                toastr.options.positionClass = 'toast-top-center';
+                if(result.hasOwnProperty('errors')){
+                    toastr.error('App​ ​cannot installed​');
+                } else {
+                    $('#install-app').hide();
+                    $('#uninstall-app').show();
+
+                    toastr.success('App​ installed​ ​successfully');
+                }
             }
         });
     }

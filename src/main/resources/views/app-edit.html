@@ -2,8 +2,12 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <th:block th:replace="fragments/common :: head"></th:block>
+    <link th:href="@{/assets/css/market-custom.css}" rel="stylesheet"  type="text/css"/>
 </head>
 <body>
+
+<th:block th:replace="fragments/header :: navbar"></th:block>
+
 <section class="breadcrumb">
     <div class="container">
         <h1>Edit App</h1>
@@ -25,7 +29,7 @@
             <span th:text="${views} + ' Views'"></span>
         </h1>
         <div id="plot"> </div>
-        <form th:action="@{/app/edit}" th:class="form" method="post" th:novalidate="${true}" th:object="${app}">
+        <form th:action="@{/apps/edit}" th:class="form" method="post" th:novalidate="${true}" th:object="${app}">
             <input type="hidden" id="publish" value="false" name="publish"/>
             <input type="hidden" id="appId" name="appId" th:field="*{appId}"/>
             <input type="hidden" id="version" name="version" th:field="*{version}"/>
@@ -144,10 +148,22 @@
                 <div class="col-md-6 controls">
                     <select th:field="*{category}" name="category" multiple="multiple" class="form-control categorizer"
                             required="required" data-validation-required-message="Please select at least one">
-                        <option value="Sample Category 1">Sample Category 1</option>
-                        <option value="Sample Category 2">Sample Category 2</option>
-                        <option value="Sample Category 3">Sample Category 3</option>
-                        <option value="Sample Category 4">Sample Category 4</option>
+                        <option value="Accounting">Accounting</option>
+                        <option value="Analytics">Analytics</option>
+                        <option value="Automation">Automation</option>
+                        <option value="Booking Ticketing">Booking &amp; Ticketing</option>
+                        <option value="Card Readers &amp; POS">Card Readers &amp; POS</option>
+                        <option value="CRM">CRM</option>
+                        <option value="Customer Support">Customer Support</option>
+                        <option value="E-Commerce">E-Commerce</option>
+                        <option value="Electronic Signature">Electronic Signature</option>
+                        <option value="Email Marketing &amp; Dunning">Email Marketing &amp; Dunning</option>
+                        <option value="Financing">Financing</option>
+                        <option value="Form Building">Form Building</option>
+                        <option value="Fundraising">Fundraising</option>
+                        <option value="Gift Certificates">Gift Certificates</option>
+                        <option value="Inventory Management">Inventory Management</option>
+                        <option value="Invoicing">Invoicing</option>
                     </select>
                 </div>
             </div>

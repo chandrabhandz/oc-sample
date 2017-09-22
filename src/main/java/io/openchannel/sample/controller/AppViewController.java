@@ -23,7 +23,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
  */
 
 @Controller
-@RequestMapping("/app")
+@RequestMapping("/apps")
 public class AppViewController {
     /**
      * Logger Reference
@@ -38,7 +38,7 @@ public class AppViewController {
     private static final String PUBLISH = "publish";
     private static final String ERRORS = "errors";
     private static final String MODEL_MAP = "modelMap";
-    private static final String REDIRECT_APP = "redirect:/app";
+    private static final String REDIRECT_APP = "redirect:/apps";
     private static final String IN_DEVELOPMENT = "inDevelopment";
     private static final String ERROR = "error";
 
@@ -132,7 +132,7 @@ public class AppViewController {
                 model.addAttribute(TOAST_MESSAGE, message);
                 redirectAttributes.addFlashAttribute("app", appFormModel);
                 redirectAttributes.addFlashAttribute(MODEL_MAP, model);
-                return "redirect:/app/create/";
+                return "redirect:/apps/create/";
             }
 
             if (appFormModel.getPublish()) {
@@ -203,7 +203,7 @@ public class AppViewController {
                 model.addAttribute(TOAST_MESSAGE, message);
                 redirectAttributes.addFlashAttribute("app", appFormModel);
                 redirectAttributes.addFlashAttribute(MODEL_MAP, model);
-                return "redirect:/app/edit/" + appFormModel.getAppId() + "/" + appFormModel.getVersion();
+                return "redirect:/apps/edit/" + appFormModel.getAppId() + "/" + appFormModel.getVersion();
             }
 
             if (appFormModel.getPublish()) {
@@ -216,7 +216,7 @@ public class AppViewController {
             model.addAttribute(TOAST_MESSAGE, e.getLocalizedMessage());
             LOGGER.debug("Error while updating app", e);
             redirectAttributes.addFlashAttribute(MODEL_MAP, model);
-            return "redirect:/app/edit/" + appFormModel.getAppId() + "/" + appFormModel.getVersion();
+            return "redirect:/apps/edit/" + appFormModel.getAppId() + "/" + appFormModel.getVersion();
         }
         redirectAttributes.addFlashAttribute(MODEL_MAP, model);
         LOGGER.debug("App Updated ? : {}", status);

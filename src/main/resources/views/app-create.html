@@ -2,8 +2,12 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <th:block th:replace="fragments/common :: head"></th:block>
+    <link th:href="@{/assets/css/market-custom.css}" rel="stylesheet"  type="text/css"/>
 </head>
 <body>
+
+<th:block th:replace="fragments/header :: navbar"></th:block>
+
 <section class="breadcrumb">
     <div class="container">
         <h1>Add App</h1>
@@ -20,7 +24,7 @@
 </section>
 <section class="form">
     <div class="container">
-        <form th:action="@{/app/create}" th:class="form" method="post" th:novalidate="${true}" th:object="${app}">
+        <form th:action="@{/apps/create}" th:class="form" method="post" th:novalidate="${true}" th:object="${app}">
             <input type="hidden" id="publish" value="false" name="publish"/>
             <div class="form-group row control-group">
                 <div class="col-md-3 item">

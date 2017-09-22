@@ -26,6 +26,11 @@ public class HomeViewController {
     private static final Logger LOGGER = LoggerFactory.getLogger(HomeViewController.class);
 
     /**
+     * Constants
+     */
+    private static final String MODEL_ID = "modelId";
+
+    /**
      * OpenChannelService, an intermediate layer between APIs and Controller
      */
     private OpenChannelService openChannelService;
@@ -48,8 +53,8 @@ public class HomeViewController {
      */
     @GetMapping({"/", ""})
     public String renderHome(final Model model) {
-        JSONObject appList = openChannelService.searchApprovedApps();
-        model.addAttribute("apps", appList);
+        model.addAttribute("apps", openChannelService.searchApprovedApps());
+        model.addAttribute("featuredApps", openChannelService.getFeaturedApps());
         return "index";
     }
 
@@ -72,15 +77,22 @@ public class HomeViewController {
      * @param model model to be injected into view
      * @return view name
      */
-    @GetMapping({"/details/{appId}","/details/{appId}/{appVersion}"})
+    @GetMapping("/details/{appId}/{appVersion}")
     public String getAppDetailPage(@PathVariable("appId") final String appId, @PathVariable(value = "appVersion", required = false) final String version, final Model model) {
         JSONObject appDetail = openChannelService.getAppFromId(appId, version);
+
+        JSONObject customObject = (JSONObject)appDetail.get("customData");
+        JSONArray categoryArray = (JSONArray)customObject.get("category");
+
+        JSONObject relatedApps = openChannelService.getSortedCategoryApp(categoryArray.toString(), appId);
+
         JSONArray modelArray = (JSONArray)appDetail.get("model");
         JSONObject modelObject = (JSONObject) modelArray.get(0);
-        String modelId = (String)modelObject.get("modelId");
+        String modelId = (String)modelObject.get(MODEL_ID);
 
+        model.addAttribute("relatedApps", relatedApps);
         model.addAttribute("appDetail", appDetail);
-        model.addAttribute("modelId", modelId);
+        model.addAttribute(MODEL_ID, modelId);
         return "details";
     }
 
@@ -120,12 +132,13 @@ public class HomeViewController {
      * Search apps
      *
      * @param   query search parameter
+     * @param   category search parameter
      * @return JsonObject
      */
-    @GetMapping("/searchapp/{query}")
-    public @ResponseBody JSONObject searchApp(@PathVariable("query") final String query) {
+    @GetMapping({"/searchapp/{query}", "/searchapp/{query}/{category}"})
+    public @ResponseBody JSONObject searchApp(@PathVariable("query") final String query, @PathVariable("category") final String category) {
         try {
-            return openChannelService.searchApp(query);
+            return openChannelService.searchAppForQuery(query, category);
         } catch (Exception e) {
             LOGGER.debug("Error while searching app");
             throw new ApplicationOperationException("Failed to search app", e);
@@ -137,13 +150,41 @@ public class HomeViewController {
      *
      * @return JsonObject
      */
-    @GetMapping("/ownedapp")
-    public @ResponseBody JSONObject ownedApp() {
+    @GetMapping("/ownedapp/{collections}")
+    public @ResponseBody JSONObject ownedApp(@PathVariable("collections") final String collections) {
         try {
-            return openChannelService.searchOwnedApps();
+            return openChannelService.searchOwnedApps(collections);
         } catch (Exception e) {
             LOGGER.debug("Error while searching owned app");
             throw new ApplicationOperationException("Failed to search owned app", e);
         }
+    }
+
+    /**
+     * Renders App detail page
+     *
+     * @param safeName              safeName of the app
+     * @param model model to be injected into view
+     * @return view name
+     */
+    @GetMapping({"/details/{safeName}"})
+    public String getAppDetailPage(@PathVariable("safeName") final String safeName, final Model model) {
+        JSONObject appDetail = openChannelService.getAppFromSafeName(safeName);
+
+        JSONObject customObject = (JSONObject)appDetail.get("customData");
+        JSONArray categoryArray = (JSONArray)customObject.get("category");
+
+        String appId = (String)appDetail.get("appId");
+
+        JSONObject relatedApps = openChannelService.getSortedCategoryApp(categoryArray.toString(), appId);
+
+        JSONArray modelArray = (JSONArray)appDetail.get("model");
+        JSONObject modelObject = (JSONObject) modelArray.get(0);
+        String modelId = (String)modelObject.get(MODEL_ID);
+
+        model.addAttribute("relatedApps", relatedApps);
+        model.addAttribute("appDetail", appDetail);
+        model.addAttribute(MODEL_ID, modelId);
+        return "details";
     }
 }

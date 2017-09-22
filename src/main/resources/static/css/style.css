@@ -339,10 +339,45 @@ img {
 	margin-right: 10px;
 }
 
+.searchLoader {
+	position: absolute;
+	right: 57px;
+	top: 11px;
+}
+
+.fa-spinner {
+	animation: spin 2000ms infinite linear;
+}
+
+.fa {
+	display: inline-block;
+	font: normal normal normal 14px/1 FontAwesome;
+	font-size: inherit;
+	text-rendering: auto;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
 @keyframes spin {
 	from {
 		transform: rotate(0deg);
 	} to {
 		transform: rotate(360deg);
 	}
+}
+/*====== Search box ======= */
+.search-box{
+	position: relative;
+}
+
+.nav-header {
+	background: #fff;
+	min-height: 90px;
+	padding: 20px 0 0;
+	margin-bottom: 0;
+}
+
+.span {
+	display: block;
+	color: #000000;
 }
