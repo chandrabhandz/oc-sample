@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <th:block th:replace="fragments/common :: head"></th:block>
+    <th:block th:replace="fragments/common :: common-head"></th:block>
     <link th:href="@{/assets/css/market-custom.css}" rel="stylesheet"  type="text/css"/>
 </head>
 <body>
@@ -15,7 +15,7 @@
             <span>Home</span>
         </a>
         <span>/</span>
-        <a th:href="@{/}">
+        <a th:href="@{/apps}">
             <span>My Apps</span>
         </a>
         <span>/</span>
@@ -73,7 +73,7 @@
                     <div id="upload-icon" class="dropzone">
                         <input th:field="*{icon}" id="icon" name="icon" type="hidden" class="hidden" value=""
                                required="required" data-validation-required-message="Please upload icon"/>
-                    </div>
+
                     <div class="dz-preview dz-processing dz-image-preview dz-success dz-complete"
                          th:if="${app.icon != null}">
                         <div class="dz-image">
@@ -88,6 +88,7 @@
                            th:onclick="'removeFile(this, \'#icon\', \'' + ${app.icon} + '\')'" class="dz-remove">
                             <i class="fa fa-trash"></i>
                         </a>
+                    </div>
                     </div>
                 </div>
             </div>
@@ -121,12 +122,12 @@
                     Files
                 </div>
                 <div class="col-md-6">
-                    <div id="upload-files" class="dropzone">
+                    <div id="upload-files" class="dropzone dz-started">
                         <input th:field="*{files}" name="files" type="hidden" class="hidden" value="" id="files"/>
                         <div class="dz-preview dz-processing dz-image-preview dz-success dz-complete"
                              th:if="${app.files != null}" th:each="file : ${app.files}">
                             <div class="dz-image">
-                                <img th:src="${file}" data-dz-thumbnail="true"/>
+                                <a th:href="${file}"><i class="fa fa-file"></i></a>
                             </div>
                             <div class="dz-progress">
                                 <span class="dz-upload completed" data-dz-uploadprogress="true" style="width: 100%;">

@@ -119,6 +119,11 @@ public class OpenChannelServiceImpl implements OpenChannelService {
     private static final String APPROVED_APPS_QUERY = "{'status.value':'approved'}";
 
     /**
+     * Undefiend parameter
+     */
+    private static final String UNDEFINED = "undefined";
+
+    /**
      * OpenChannelAPIUtil which performs low level communication with APIs
      */
     private final OpenChannelAPIUtil openChannelAPIUtil;
@@ -328,6 +333,7 @@ public class OpenChannelServiceImpl implements OpenChannelService {
             }
 
             if (appFormModel.getPublish()) {
+                appFormModel.setVersion(String.valueOf(apiResponse.get("version")));
                 JSONObject publishApiResponse = publishApp(appFormModel);
                 if (!publishApiResponse.isEmpty()) {
                     return publishApiResponse;
@@ -481,7 +487,7 @@ public class OpenChannelServiceImpl implements OpenChannelService {
     @Override
     public JSONObject searchAppForQuery(String queryParameter, String category){
         String query = null;
-        if(category.equals("undefined")){
+        if(category.equals(UNDEFINED)){
             query = APPROVED_APPS_QUERY;
         } else {
             query = "{'status.value':'approved','customData.category':'" + category + "'}";
@@ -498,42 +504,51 @@ public class OpenChannelServiceImpl implements OpenChannelService {
      * Search all the apps owned by the user
      *
      * @param  collections type of collections
+     * @param  queryParam search parameter
      * @return JsonObject which contains data returned from API
      */
     @Override
-    public JSONObject searchOwnedApps(String collections) {
+    public JSONObject searchOwnedApps(String collections, String queryParam) {
         String query = null;
         String sort = null;
         List<OpenChannelAPIUtil.RequestParameter> requestParameterList = new ArrayList<>();
 
-        if(collections.equals(AppCollection.POPULAR_APPS.toString())){
+        if (collections.equals(AppCollection.POPULAR_APPS.toString())) {
             query = APPROVED_APPS_QUERY;
             sort = "{'statistics.views.30day':-1}";
-        } else if(collections.equals(AppCollection.FEATURED_APPS.toString())){
+        } else if (collections.equals(AppCollection.FEATURED_APPS.toString())) {
             query = "{'status.value':'approved','attributes.featured':'yes'}";
             sort = RANDOMIZE_QUERY;
-        } else if(collections.equals(AppCollection.MY_APP.toString())){
+        } else if (collections.equals(AppCollection.MY_APP.toString())) {
             query = APPROVED_APPS_QUERY;
         } else {
             query = APPROVED_APPS_QUERY;
         }
 
-        requestParameterList.add(new OpenChannelAPIUtil.RequestParameter(QUERY,query));
+        requestParameterList.add(new OpenChannelAPIUtil.RequestParameter(QUERY, query));
 
-            if(sort != null){
-                requestParameterList.add(new OpenChannelAPIUtil.RequestParameter("sort",sort));
-            } else if (collections.equals(AppCollection.MY_APP.toString())){
-                requestParameterList.add(new OpenChannelAPIUtil.RequestParameter(USER_ID, openChannelProperties.getUserId()));
-                requestParameterList.add(new OpenChannelAPIUtil.RequestParameter("isOwned", "true"));
-            } else {
-                requestParameterList.add(new OpenChannelAPIUtil.RequestParameter(USER_ID, openChannelProperties.getUserId()));
-            }
+        if (sort != null) {
+            requestParameterList.add(new OpenChannelAPIUtil.RequestParameter("sort", sort));
+        } else if (collections.equals(AppCollection.MY_APP.toString())) {
+            requestParameterList.add(new OpenChannelAPIUtil.RequestParameter(USER_ID, openChannelProperties.getUserId()));
+            requestParameterList.add(new OpenChannelAPIUtil.RequestParameter("isOwner", "true"));
+        } else {
+            requestParameterList.add(new OpenChannelAPIUtil.RequestParameter(USER_ID, openChannelProperties.getUserId()));
+        }
 
-        OpenChannelAPIUtil.RequestParameter[] requestParameters = new OpenChannelAPIUtil.RequestParameter[requestParameterList.size()];
-        requestParameters = requestParameterList.toArray(requestParameters);
 
         try{
-            return JSONUtil.getJSONObject(openChannelAPIUtil.sendGet(ENDPOINT_CREATE_APP, requestParameters));
+            if(queryParam != UNDEFINED) {
+                requestParameterList.add(new OpenChannelAPIUtil.RequestParameter("text", queryParam));
+                requestParameterList.add(new OpenChannelAPIUtil.RequestParameter("fields","['name','customData.summary','customData.description']"));
+            }
+            OpenChannelAPIUtil.RequestParameter[] requestParameters = new OpenChannelAPIUtil.RequestParameter[requestParameterList.size()];
+            requestParameters = requestParameterList.toArray(requestParameters);
+            if(queryParam != UNDEFINED) {
+                return JSONUtil.getJSONObject(openChannelAPIUtil.sendGet(ENDPOINT_CREATE_APP + File.separator + "textSearch", requestParameters));
+            } else {
+                return JSONUtil.getJSONObject(openChannelAPIUtil.sendGet(ENDPOINT_CREATE_APP, requestParameters));
+            }
         } catch (IOException e) {
             LOGGER.debug("Error while searching owned apps from openchannel api, Root cause : ", e);
             throw new ApplicationOperationException("Failed to search owned apps details", e);
@@ -550,7 +565,12 @@ public class OpenChannelServiceImpl implements OpenChannelService {
     @Override
     public JSONObject getAppFromSafeName(String safeName){
         String path = ENDPOINT_CREATE_APP + File.separator + "bySafeName" + File.separator + safeName;
-        return getAppJsonObject(path, USER_ID, openChannelProperties.getUserId());
+        try {
+            return JSONUtil.getJSONObject(openChannelAPIUtil.sendGet(path, new OpenChannelAPIUtil.RequestParameter(USER_ID, openChannelProperties.getUserId()), new OpenChannelAPIUtil.RequestParameter("trackViews", true)));
+        } catch (IOException e) {
+            LOGGER.debug("Error while fetching app with safeName from openchannel api, Root cause : ", e);
+            throw new ApplicationOperationException("Failed to get app details with safeName", e);
+        }
     }
 
     /**

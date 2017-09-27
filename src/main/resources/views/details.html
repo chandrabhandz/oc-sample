@@ -105,7 +105,7 @@
     $(function () {
 
         if ($.fn.bxSlider) {
-            $('.thumb-slider ul').bxSlider({loop: false});
+            $('.thumb-slider ul').bxSlider({loop: true, auto: true, autoControls: true});
         }
 
         $('.thumb-slider').magnificPopup({
@@ -134,12 +134,12 @@
             url: "/uninstall/" + appId, success: function (result) {
                 toastr.options.positionClass = 'toast-top-center';
                 if(result.hasOwnProperty('errors')){
-                    toastr.error('App​ ​cannot uninstalled​');
+                    toastr.error('Cannot Uninstall App​');
                 }
                 $('#uninstall-app').hide();
                 $('#install-app').show();
 
-                toastr.success('App​ ​ uninstalled​ ​ successfully');
+                toastr.success('App​ ​Uninstalled​ ​Successfully');
             }
         });
     }
@@ -149,12 +149,12 @@
             url: "/install/" + appId + "/" + modelId, success: function (result) {
                 toastr.options.positionClass = 'toast-top-center';
                 if(result.hasOwnProperty('errors')){
-                    toastr.error('App​ ​cannot installed​');
+                    toastr.error('Cannot Install App​');
                 } else {
                     $('#install-app').hide();
                     $('#uninstall-app').show();
 
-                    toastr.success('App​ installed​ ​successfully');
+                    toastr.success('App​ Installed​ ​Successfully');
                 }
             }
         });

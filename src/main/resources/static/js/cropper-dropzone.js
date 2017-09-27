@@ -1,3 +1,5 @@
+// variable for assigning response
+var r;
 
 // Transform cropper dataURI output to a Blob which Dropzone accepts
 var dataURItoBlob = function (dataURI) {
@@ -18,7 +20,6 @@ function initializeCropperDropzone( selector, config ) {
     
     // Flag to determine to show cropper or not.
     var showCropper = true;
-
     var options = {
         url: "/files/upload",
         method: 'post',
@@ -59,8 +60,16 @@ function initializeCropperDropzone( selector, config ) {
                         // If the dropzone is image or file upload dropzone
                         if ( $("#" + config.fileType).val() == "" ) {
                             $("#" + config.fileType).val($("#" + config.fileType).val() + response);
+                            if ( config.bFile ) {
+                                $(selector + " .dz-image *").remove();
+                                $(selector + " .dz-preview .dz-image").append("<a href='" + response + "' download><i class='fa fa-file'></i></a>");
+                            }
                         } else {
                             $("#" + config.fileType).val($("#" + config.fileType).val() + "," + response);
+                            if ( config.bFile ) {
+
+                                $(selector + " .dz-preview .dz-image:last").html("<a href='" + response + "' download><i class='fa fa-file'></i></a>");
+                            }
                         }
 
                         $(selector + ' .dz-remove:last').click(function() {
@@ -142,9 +151,9 @@ function initializeCropperDropzone( selector, config ) {
                 }
 
                 // Set file icon if the dropzone is a file upload dropzone.
-                if ( config.bFile ) {
-                    $(selector + " .dz-image *").remove();
-                    $(selector + " .dz-preview .dz-image").append("<i class='fa fa-file'> </i>");
+                if ( config.bFile) {
+                        $(selector).find('.dz-image').find('img').remove();
+                        $(selector).find(".dz-image:last").append("<i class='fa fa-file'></i>");
                 }
             });
 

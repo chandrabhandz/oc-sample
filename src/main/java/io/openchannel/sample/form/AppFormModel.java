@@ -32,6 +32,9 @@ public class AppFormModel implements BaseFormModel, Serializable {
     private List<String> category;
     private String websiteUrl;
     private String videoUrl;
+    private String status;
+    @JsonIgnore
+    private String status;
     @JsonIgnore
     private String tncFlag;
     @JsonIgnore
@@ -161,5 +164,13 @@ public class AppFormModel implements BaseFormModel, Serializable {
 
     public void setAppId(String appId) {
         this.appId = appId;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

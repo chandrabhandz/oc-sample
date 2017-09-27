@@ -77,15 +77,16 @@ $(function() {
     $("form").find("input,select,textarea").not("[type='submit']").jqBootstrapValidation({
         preventSubmit: true,
         submitSuccess: function () {
-
-            if (app) {
+            /*if (app) {
+                console.log(app);
+                console.log(JSON.parse(app));
                 var status = JSON.parse(app).status.value;
 
                 // If app status is pending, submit the form without publish modal dialog.
                 if (status == 'pending') {
                     bSubmit = true;
                 }
-            }
+            }*/
 
             console.log(bSubmit);
             // When save button is clicked
@@ -121,5 +122,10 @@ $(function() {
 
     $("form").submit(function (e) {
         return bSubmit;
+    });
+
+    $('#file-download').click(function(e){
+        e.preventDefault();  //stop the browser from following
+        window.location.href = $('#files').val();
     });
 });

@@ -2,6 +2,7 @@
 var $category = $('.category [data-category]');
 $category.on('click', function (e) {
     var category = $(this).attr('data-category');
+    $('#IntegrationSearch').val("");
     $.ajax({
         url: "/category/" + category, success: function (result) {
             showContainerApps(result);
@@ -32,13 +33,18 @@ $collections.on('click', function (e) {
     });
 });
 
+/*
 $( '#IntegrationSearch' ).keyup(function() {
 
     var category = $('ul.category').find('li.active').find('a').data('category');
 
     $('#searchLoader').css("display", "block");
 
-    if($(this).val() == '' && category == 'undefined'){
+    console.log('category is: '+category);
+    console.log('this value is: '+$(this).val());
+
+    if()
+    if($(this).val().length == 0 && typeof category == 'undefined'){
         $.ajax({
             url: "/ownedapp/allApps" , success: function (result) {
                 showContainerApps(result);
@@ -46,7 +52,7 @@ $( '#IntegrationSearch' ).keyup(function() {
             }
         });
 
-    } else if (category != 'undefined' && $(this).val() == ''){
+    } else if (typeof category != 'undefined' && $(this).val().length == 0){
         $.ajax({
             url: "/category/" + category, success: function (result) {
                 showContainerApps(result);
@@ -61,6 +67,73 @@ $( '#IntegrationSearch' ).keyup(function() {
         });
     }
 });
+*/
+
+$( '#IntegrationSearchQuery' ).keyup(function() {
+
+    var category = $('ul.category').find('li.active').find('a').data('category');
+    var collection = $('ul.collections').find('li.active').find('a').data('category');
+
+    $('#searchLoader').css("display", "block");
+
+    if(typeof category != 'undefined'){
+
+        if($(this).val().length != 0){
+            $.ajax({
+                url: "/searchapp/"+ $(this).val() +"/" + category, success: function (result) {
+                    showContainerApps(result);
+                    $('#searchLoader').css("display", "none");
+                }
+            });
+        } else {
+            $.ajax({
+                url: "/category/" + category , success: function (result) {
+                    showContainerApps(result);
+                    $('#searchLoader').css("display", "none");
+                }
+            });
+
+        }
+
+    } else if (typeof collection != 'undefined') {
+        if($(this).val().length != 0){
+            $.ajax({
+                url: "/ownedapp/"+ collection + "/" + $(this).val(), success: function (result) {
+                    showContainerApps(result);
+                    $('#searchLoader').css("display", "none");
+                }
+            });
+        } else {
+            $.ajax({
+                url: "/ownedapp/" + collection , success: function (result) {
+                    showContainerApps(result);
+                    $('#searchLoader').css("display", "none");
+                }
+            });
+
+        }
+    } else {
+        if($(this).val().length != 0){
+            $.ajax({
+                url: "/searchapp/"+ $(this).val(), success: function (result) {
+                    showContainerApps(result);
+                    $('#searchLoader').css("display", "none");
+                }
+            });
+        } else {
+            $.ajax({
+                url: "/ownedapp/allApps" , success: function (result) {
+                    showContainerApps(result);
+                    $('#searchLoader').css("display", "none");
+                }
+            });
+
+        }
+
+    }
+
+
+});
 
 //render data in apps section
 function showContainerApps(result) {
@@ -70,7 +143,7 @@ function showContainerApps(result) {
 
     if (result.count == 0)
         data += '<div class="no-results-card">' +
-            'You don\'t have any apps yet.' +
+            'There are no apps available' +
             '</div>';
 
     $.each(result.list, function (i) {

@@ -31,6 +31,11 @@ public class HomeViewController {
     private static final String MODEL_ID = "modelId";
 
     /**
+     * Undefiend parameter
+     */
+    private static final String UNDEFINED = "undefined";
+
+    /**
      * OpenChannelService, an intermediate layer between APIs and Controller
      */
     private OpenChannelService openChannelService;
@@ -136,8 +141,11 @@ public class HomeViewController {
      * @return JsonObject
      */
     @GetMapping({"/searchapp/{query}", "/searchapp/{query}/{category}"})
-    public @ResponseBody JSONObject searchApp(@PathVariable("query") final String query, @PathVariable("category") final String category) {
+    public @ResponseBody JSONObject searchApp(@PathVariable("query") String query, @PathVariable(value = "category", required = false)String category) {
         try {
+            if(category == null){
+                category = UNDEFINED;
+            }
             return openChannelService.searchAppForQuery(query, category);
         } catch (Exception e) {
             LOGGER.debug("Error while searching app");
@@ -150,10 +158,13 @@ public class HomeViewController {
      *
      * @return JsonObject
      */
-    @GetMapping("/ownedapp/{collections}")
-    public @ResponseBody JSONObject ownedApp(@PathVariable("collections") final String collections) {
+    @GetMapping({"/ownedapp/{collections}", "/ownedapp/{collections}/{queryParam}"})
+    public @ResponseBody JSONObject ownedApp(@PathVariable("collections") final String collections, @PathVariable(value = "queryParam", required = false) String queryParam) {
         try {
-            return openChannelService.searchOwnedApps(collections);
+            if(queryParam == null) {
+                queryParam = UNDEFINED;
+            }
+            return openChannelService.searchOwnedApps(collections, queryParam);
         } catch (Exception e) {
             LOGGER.debug("Error while searching owned app");
             throw new ApplicationOperationException("Failed to search owned app", e);

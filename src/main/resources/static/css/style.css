@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700');
 
 .action-container {
 	color: #fff;
@@ -380,4 +381,15 @@ img {
 .span {
 	display: block;
 	color: #000000;
+}
+/*====== Header Design ====== */
+.header .navbar-brand {
+	height: 100%;
+	padding-top: 10px;
+}
+.header .navbar-nav li a {
+	color: #6c7c92;
+	font-weight: bold;
+	font-family: 'Open Sans', sans-serif;
+	text-transform: uppercase;
 }

@@ -34,8 +34,10 @@ function initialize() {
         }
         flotConfig.xaxis.ticks = xaxis;
         stats = JSON.parse(statistics);
-        for (i = 0; i < stats.length; i++) {
-            stats[i][0] = i;
+        if(stats != null) {
+            for (i = 0; i < stats.length; i++) {
+                stats[i][0] = i;
+            }
         }
 
         $("#plot").plot(

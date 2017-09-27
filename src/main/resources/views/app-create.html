@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <th:block th:replace="fragments/common :: head"></th:block>
+    <th:block th:replace="fragments/common :: common-head"></th:block>
     <link th:href="@{/assets/css/market-custom.css}" rel="stylesheet"  type="text/css"/>
 </head>
 <body>
@@ -15,7 +15,7 @@
             <span>Home</span>
         </a>
         <span>/</span>
-        <a th:href="@{/}">
+        <a th:href="@{/apps}">
             <span>My Apps</span>
         </a>
         <span>/</span>
@@ -111,7 +111,7 @@
                         <input th:field="*{files}" name="files" type="hidden" class="hidden" value="" id="files"/>
                         <div class="dz-preview dz-processing dz-image-preview dz-success dz-complete" th:if="${app.files != null}" th:each="file : ${app.files}" >
                             <div class="dz-image">
-                                <img th:src="${file}" data-dz-thumbnail="true"/>
+                                <!--<img th:src="@{/assets/images/file_icon.png}" data-dz-thumbnail="true"/>-->
                             </div>
                             <div class="dz-progress">
                                 <span class="dz-upload completed" data-dz-uploadprogress="true" style="width: 100%;">
