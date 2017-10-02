@@ -32,7 +32,6 @@ public class AppFormModel implements BaseFormModel, Serializable {
     private List<String> category;
     private String websiteUrl;
     private String videoUrl;
-    private String status;
     @JsonIgnore
     private String status;
     @JsonIgnore
