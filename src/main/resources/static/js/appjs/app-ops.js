@@ -1,4 +1,5 @@
 var bSubmit = false;
+var hasError = false;
 
 // Disable dropzone autodiscover to initialize the dropzone with custom configuration
 Dropzone.autoDiscover = false;
@@ -28,6 +29,27 @@ function submitApp(obj, publish) {
     $(obj).find('.fa-spinner').removeClass('hidden');
     $(obj).prop('disabled', true);
     $('form').submit();
+}
+
+// CHeck valid video Url
+function videoUrlValidator(){
+
+    var url = $('#video_url').val();
+
+    var regYoutube = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=|\?v=)([^#\&\?]*).*/;
+    var regDailymotion = /^.+dailymotion.com\/(video|hub)\/([^_]+)[^#]*(#video=([^_&]+))?/;
+    var regVimeo = /(https?:\/\/)?(www\.)?(player\.)?vimeo\.com\/([a-z]*\/)*([0-9]{6,11})[?]?.*/;
+    var regMetacafe = /((http:\/\/)?(www\.)?metacafe\.com)(\/watch\/)(\d+)(.*)/i;
+
+    if(url.match(regYoutube) || url.match(regDailymotion) || url.match(regMetacafe) || url.match(regVimeo) || url.length < 1) {
+        hasError = false;
+        $("#video_url_message").css("display", "none");
+        return true;
+    }else{
+        hasError = true;
+        $("#video_url_message").css("display", "block");
+        return false;
+    }
 }
 
 $(function() {
@@ -60,6 +82,9 @@ $(function() {
 
     // Set video preview function
     $(".video-url").change(function () {
+        if(hasError){
+            return false;
+        }
         $(".video-preview iframe").remove();
         $(".video-preview").text('');
         $(".video-preview").append(getEmbedVideoCode($(".video-url").val(), 390, 220));
@@ -77,18 +102,19 @@ $(function() {
     $("form").find("input,select,textarea").not("[type='submit']").jqBootstrapValidation({
         preventSubmit: true,
         submitSuccess: function () {
-            /*if (app) {
-                console.log(app);
-                console.log(JSON.parse(app));
-                var status = JSON.parse(app).status.value;
+            if(hasError) {
+                return false;
+            }
+            if (app) {
+                //var status = JSON.parse(app).status.value;
 
+                var status = JSON.parse($('#status').val()).value;
                 // If app status is pending, submit the form without publish modal dialog.
                 if (status == 'pending') {
                     bSubmit = true;
                 }
-            }*/
+            }
 
-            console.log(bSubmit);
             // When save button is clicked
             if (bSubmit == false) {
                 var modal =
@@ -121,11 +147,7 @@ $(function() {
     });
 
     $("form").submit(function (e) {
-        return bSubmit;
+            return bSubmit;
     });
 
-    $('#file-download').click(function(e){
-        e.preventDefault();  //stop the browser from following
-        window.location.href = $('#files').val();
-    });
 });

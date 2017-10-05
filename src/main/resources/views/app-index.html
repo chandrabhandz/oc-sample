@@ -48,6 +48,13 @@
                         <div class="col-md-6" th:each="app : ${apps.get('list')}">
                             <div class="card">
                                 <div class="card-overlay text-center">
+                                    <th:block th:switch="${app.status.value == 'rejected' or app.status.value == 'suspended'}">
+                                        <th:block th:case="${true}">
+                                            <th:block th:switch="${app.status.reason == ''}">
+                                                <span class="span" th:case="${false}" th:text="${app.status.reason}"></span>
+                                            </th:block>
+                                        </th:block>
+                                    </th:block>
                                     <div class="card-overlay-panel">
                                         <a href="" class="btn btn-see-through" data-toggle="tooltip" title="Edit"
                                            th:href="@{/apps/edit/{appId}/{appVersion}(appId=${app.appId}, appVersion=${app.version})}">
@@ -79,13 +86,6 @@
                                            th:onclick="'showDeleteDialog(\'' + ${app.appId} + '\', \'' + ${app.version} + '\', \'' + ${app.status.value} + '\')'">
                                             <i class="fa fa-trash"></i>
                                         </a>
-                                        <th:block th:switch="${app.status.value == 'rejected' or app.status.value == 'suspended'}">
-                                            <th:block th:case="${true}">
-                                                <th:block th:switch="${app.status.reason == ''}">
-                                                    <span class="span" th:case="${false}" th:text="${app.status.reason}"></span>
-                                                </th:block>
-                                            </th:block>
-                                        </th:block>
                                     </div>
                                     <div th:class="${app.parent.status.value} + ' card-status text-center'" th:if="${app.status.value == 'approved'}">
                                         <span th:if="${app.parent.status.value == 'approved'}">Approved</span>

@@ -5,6 +5,7 @@ import io.openchannel.sample.service.OpenChannelService;
 import io.openchannel.sample.util.CommonUtil;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -162,7 +163,11 @@ public class AppViewController {
     @GetMapping("/edit/{appId}/{version}")
     public String getEditAppPage(@PathVariable("appId") final String appId, @PathVariable("version") final String version, final Model model, final RedirectAttributes redirectAttributes) {
         try {
-            model.addAttribute("app", openChannelService.getApp(appId, version));
+            AppFormModel appFormModel = openChannelService.getApp(appId, version);
+            model.addAttribute("app", appFormModel);
+
+            JSONParser parser = new JSONParser();
+            JSONObject status = (JSONObject) parser.parse(appFormModel.getStatus());
 
             JSONArray statistics = openChannelService.getStatistics(appId);
             double views = 0;
@@ -170,6 +175,7 @@ public class AppViewController {
                 JSONArray statsJsonArray = (JSONArray) statistics.get(i);
                 views += Double.parseDouble(String.valueOf(statsJsonArray.get(1)));
             }
+            model.addAttribute("status", status);
             model.addAttribute("views", (int) views);
             model.addAttribute("statistics", statistics.toJSONString());
             return "app-edit";

@@ -30,8 +30,8 @@ public class AppFormModel implements BaseFormModel, Serializable {
     private List<String> images;
     private List<String> files;
     private List<String> category;
-    private String websiteUrl;
-    private String videoUrl;
+    private String website;
+    private String video;
     @JsonIgnore
     private String status;
     @JsonIgnore
@@ -98,20 +98,20 @@ public class AppFormModel implements BaseFormModel, Serializable {
         this.category = category;
     }
 
-    public String getWebsiteUrl() {
-        return websiteUrl;
+    public String getWebsite() {
+        return website;
     }
 
-    public void setWebsiteUrl(String websiteUrl) {
-        this.websiteUrl = websiteUrl;
+    public void setWebsite(String website) {
+        this.website = website;
     }
 
-    public String getVideoUrl() {
-        return videoUrl;
+    public String getVideo() {
+        return video;
     }
 
-    public void setVideoUrl(String videoUrl) {
-        this.videoUrl = videoUrl;
+    public void setVideo(String video) {
+        this.video = video;
     }
 
     public String getTncFlag() {

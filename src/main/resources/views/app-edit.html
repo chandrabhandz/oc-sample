@@ -24,6 +24,7 @@
 </section>
 <section class="form">
     <div class="container">
+        <div class="alert-danger" th:if="${(status.value == 'rejected' or status.value == 'suspended') and status.reason != ''}"><span th:utext="${status.reason}">fkjkld</span></div>
         <h1>
             <i class="fa fa-search"> </i>
             <span th:text="${views} + ' Views'"></span>
@@ -33,6 +34,7 @@
             <input type="hidden" id="publish" value="false" name="publish"/>
             <input type="hidden" id="appId" name="appId" th:field="*{appId}"/>
             <input type="hidden" id="version" name="version" th:field="*{version}"/>
+            <input type="hidden" id="status" name="status" th:field="*{status}"/>
             <div class="form-group row control-group">
                 <div class="col-md-3 item">
                     Application Name
@@ -49,7 +51,7 @@
                     <span class="text-danger">*</span>
                 </div>
                 <div class="col-md-6 controls">
-                    <textarea th:field="*{summary}" cols="30" rows="10" class="form-control" required="required"
+                    <textarea th:field="*{summary}" cols="30" rows="10" maxlength="150" class="form-control" required="required"
                               data-validation-required-message="Please fill out this field" name="summary"></textarea>
                 </div>
             </div>
@@ -172,8 +174,8 @@
                 <div class="col-md-3 item">
                     Website URL
                 </div>
-                <div class="col-md-6">
-                    <input th:field="*{websiteUrl}" class="form-control" name="website_url"/>
+                <div class="col-md-6 controls">
+                    <input th:field="*{website}" class="form-control" name="website_url" data-validation-regex-regex="(http[s]?:\/\/){0,1}(www\.){0,1}[a-zA-Z0-9\.\-]+\.[a-zA-Z]{2,5}[\.]{0,1}" data-validation-regex-message="Please enter a valid URL"/>
                 </div>
             </div>
             <div class="form-group row control-group">
@@ -181,8 +183,9 @@
                     Video URL
                 </div>
                 <div class="col-md-6">
-                    <input th:field="*{videoUrl}" class="form-control video-url" name="video_url"/>
-                    <div class="video-preview"></div>
+                    <input th:field="*{video}" id="video_url" class="form-control video-url" name="video_url" onkeyup="videoUrlValidator()" />
+                    <div class="help-block" id="video_url_message" style="display:none;"><ul role="alert"><li>Please enter a valid URL</li></ul></div>
+                    <div class="video-preview" id="video-preview-box"></div>
                 </div>
             </div>
             <div class="form-group row">

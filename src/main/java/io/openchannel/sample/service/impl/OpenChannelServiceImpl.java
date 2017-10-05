@@ -368,6 +368,7 @@ public class OpenChannelServiceImpl implements OpenChannelService {
             appFormModel.setAppId(String.valueOf(apiResponse.get(APP_ID)));
             appFormModel.setVersion(String.valueOf(apiResponse.get(VERSION)));
             appFormModel.setName(String.valueOf(apiResponse.get("name")));
+            appFormModel.setStatus(String.valueOf(apiResponse.get("status")));
             return appFormModel;
     }
 

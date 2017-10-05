@@ -37,9 +37,9 @@
         </div>
 
         <!-- media card -->
-        <div class="card" th:style="${appDetail.customData.videoUrl != '' or appDetail.customData.get('images').size() != 0} ? '' : 'display:none'" >
-            <div class="embed-responsive embed-responsive-16by9" th:switch="${appDetail.customData.videoUrl != ''}" th:case="${true}">
-                <input type="hidden" th:value="${appDetail.customData.videoUrl}" class="form-control video-url"
+        <div class="card" th:style="${appDetail.customData.video != '' or appDetail.customData.get('images').size() != 0} ? '' : 'display:none'" >
+            <div class="embed-responsive embed-responsive-16by9" th:switch="${appDetail.customData.video != ''}" th:case="${true}">
+                <input type="hidden" th:value="${appDetail.customData.video}" class="form-control video-url"
                        name="video_url"/>
                 <div class="video-preview"></div>
             </div>
@@ -53,11 +53,11 @@
         </div>
 
         <!-- details card -->
-        <div class="card" th:style="${appDetail.customData.websiteUrl != '' or appDetail.customData.get('category').size() != 0} ? '' : 'display:none'">
-            <div class="row" th:switch="${appDetail.customData.websiteUrl != ''}" th:case="${true}">
+        <div class="card" th:style="${appDetail.customData.website != '' or appDetail.customData.get('category').size() != 0} ? '' : 'display:none'">
+            <div class="row" th:switch="${appDetail.customData.website != ''}" th:case="${true}">
                 <h4 class="lead-txt">Website</h4>
-                <p><a th:href="${'http://'+appDetail.customData.websiteUrl}"
-                      th:text="${appDetail.customData.websiteUrl}"></a></p>
+                <p><a th:href="${'http://'+appDetail.customData.website}"
+                      th:text="${appDetail.customData.website}"></a></p>
             </div>
             <div class="row" th:switch="${appDetail.customData.get('category').size() != 0}" th:case="${true}">
                 <h4 class="lead-txt">Categories</h4>
@@ -96,7 +96,7 @@
 </div>
 
 <th:block th:replace="fragments/common :: marketplace-scripts"></th:block>
-<script type="text/javascript" th:src="@{/assets/js/BxSlider.js}"></script>
+<script type="text/javascript" th:src="@{/assets/js/jquery.bxSlider.js}"></script>
 <script type="text/javascript" th:src="@{/assets/js/jquery.magnific-popup.min.js}"></script>
 <script type="text/javascript" th:src="@{/assets/js/video-embed.js}"></script>
 <script type="text/javascript" th:src="@{/assets/js/toastr.min.js}"></script>
