@@ -26,7 +26,7 @@
         <div class="card text-center">
             <button th:style="${#maps.containsKey(appDetail, 'ownership') and appDetail.ownership.ownershipStatus == 'active'} ? '' : 'display:none'"
                     id="uninstall-app" class="btn-danger btn btn-lg"
-                    th:onclick="'uninstallApp(\'' + ${appDetail.appId} + '\');'"><i class="fa fa-close"></i> Uninstall
+                    th:onclick="'uninstallApp(\'' + ${#maps.containsKey(appDetail, 'ownership') ? appDetail.ownership.ownershipId : ''} + '\');'"><i class="fa fa-close"></i> Uninstall
                 App
             </button>
             <button th:style="${#maps.containsKey(appDetail, 'ownership') and appDetail.ownership.ownershipStatus == 'active'} ? 'display:none' : ''"
@@ -37,14 +37,15 @@
         </div>
 
         <!-- media card -->
-        <div class="card" th:style="${appDetail.customData.video != '' or appDetail.customData.get('images').size() != 0} ? '' : 'display:none'" >
-            <div class="embed-responsive embed-responsive-16by9" th:switch="${appDetail.customData.video != ''}" th:case="${true}">
+        <div class="card" id="video-image-card" th:style="${appDetail.customData.video != '' or appDetail.customData.get('images').size() != 0} ? '' : 'display:none'" >
+            <div id="embed-video" class="embed-responsive embed-responsive-16by9 text-center" th:switch="${appDetail.customData.video != ''}" th:case="${true}">
                 <input type="hidden" th:value="${appDetail.customData.video}" class="form-control video-url"
-                       name="video_url"/>
+                       name="video"/>
                 <div class="video-preview"></div>
             </div>
 
             <div class="thumb-slider" th:switch="${appDetail.customData.get('images').size() != 0}" th:case="${true}">
+                <input type="hidden" th:value="${appDetail.customData.get('images').size()}" id="image-slider-size" name="image-slider"/>
                 <ul class="bxslider">
                     <li th:each="image: ${appDetail.customData.get('images')}"><a th:href="${image}"><img
                             th:src="${image}" class="img-responsive"/></a></li>
@@ -56,8 +57,8 @@
         <div class="card" th:style="${appDetail.customData.website != '' or appDetail.customData.get('category').size() != 0} ? '' : 'display:none'">
             <div class="row" th:switch="${appDetail.customData.website != ''}" th:case="${true}">
                 <h4 class="lead-txt">Website</h4>
-                <p><a th:href="${'http://'+appDetail.customData.website}"
-                      th:text="${appDetail.customData.website}"></a></p>
+                <p><a th:href="${#strings.contains(appDetail.customData.website,'http')? appDetail.customData.website: 'http://'+appDetail.customData.website}"
+                      th:text="${appDetail.customData.website}" target="_blank"></a></p>
             </div>
             <div class="row" th:switch="${appDetail.customData.get('category').size() != 0}" th:case="${true}">
                 <h4 class="lead-txt">Categories</h4>
@@ -80,7 +81,7 @@
                 <h4>Other Related Apps</h4>
 
                 <div class="col-sm-6 col-md-4 MarketplaceFeature" th:each="relatedApp: ${relatedApps.get('list')}">
-                    <a th:href="@{/details/{safeName}(safeName=${relatedApp.safeName})}">
+                    <a th:href="@{/details/{safeName}(safeName=${relatedApp.safeName[0]})}">
                         <div class="MarketplaceFeature-icon">
                             <img th:src="${relatedApp.customData.icon}" alt=""/>
                         </div>
@@ -125,16 +126,28 @@
 
         $(".video-preview iframe").remove();
         $(".video-preview").text('');
-        $(".video-preview").append(getEmbedVideoCode($(".video-url").val(), 390, 220));
+        var videoPreview = getEmbedVideoCode($(".video-url").val(), 390, 220);
+        if (videoPreview.indexOf('iframe') >= 0){
+            $(".video-preview").append(videoPreview);
+        } else {
+            var sliderLength = $("#image-slider-size").val();
+            console.log('slider length is '+sliderLength);
+            if(sliderLength > 0 || typeof sliderLength != "undefined") {
+                $('#embed-video').css("display", "none");
+            } else {
+                $('#video-image-card').css("display", "none");
+            }
+        }
     });
 
 
-    function uninstallApp(appId) {
+    function uninstallApp(ownershipId) {
         $.ajax({
-            url: "/uninstall/" + appId, success: function (result) {
+            url: "/uninstall/" + ownershipId, success: function (result) {
                 toastr.options.positionClass = 'toast-top-center';
                 if(result.hasOwnProperty('errors')){
                     toastr.error('Cannot Uninstall App​');
+                    return false;
                 }
                 $('#uninstall-app').hide();
                 $('#install-app').show();
@@ -150,6 +163,7 @@
                 toastr.options.positionClass = 'toast-top-center';
                 if(result.hasOwnProperty('errors')){
                     toastr.error('Cannot Install App​');
+                    return false;
                 } else {
                     $('#install-app').hide();
                     $('#uninstall-app').show();

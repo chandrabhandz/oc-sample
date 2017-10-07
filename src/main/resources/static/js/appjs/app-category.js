@@ -33,41 +33,6 @@ $collections.on('click', function (e) {
     });
 });
 
-/*
-$( '#IntegrationSearch' ).keyup(function() {
-
-    var category = $('ul.category').find('li.active').find('a').data('category');
-
-    $('#searchLoader').css("display", "block");
-
-    console.log('category is: '+category);
-    console.log('this value is: '+$(this).val());
-
-    if()
-    if($(this).val().length == 0 && typeof category == 'undefined'){
-        $.ajax({
-            url: "/ownedapp/allApps" , success: function (result) {
-                showContainerApps(result);
-                $('#searchLoader').css("display", "none");
-            }
-        });
-
-    } else if (typeof category != 'undefined' && $(this).val().length == 0){
-        $.ajax({
-            url: "/category/" + category, success: function (result) {
-                showContainerApps(result);
-            }
-        });
-    } else {
-        $.ajax({
-            url: "/searchapp/" + $(this).val() + "/" + category, success: function (result) {
-                showContainerApps(result);
-                $('#searchLoader').css("display", "none");
-            }
-        });
-    }
-});
-*/
 
 $( '#IntegrationSearchQuery' ).keyup(function() {
 
@@ -147,7 +112,7 @@ function showContainerApps(result) {
             '</div>';
 
     $.each(result.list, function (i) {
-        var safeName = result.list[i].safeName;
+        var safeName = result.list[i].safeName[0];
         var icon = result.list[i].customData.icon;
         var appName = result.list[i].name;
         var summary = result.list[i].customData.summary;

@@ -8,7 +8,7 @@ function getEmbedVideoCode(url, width, height){
 	}
 	
 	if(url != null && url != undefined){
-		if(url.search("^https:\/\/www\.youtube\.com\/watch[?]{1}v=[-a-zA-Z0-9@:%_\+.~#?&\/=]*$") != -1){
+		if(url.search("^https:\/\/(www\.){0,1}youtube\.com\/watch[?]{1}v=[-a-zA-Z0-9@:%_\+.~#?&\/=]*$") != -1){
 			var start = url.indexOf("v=") + 2;
 			var length = url.indexOf("&") - start;
 
@@ -83,6 +83,5 @@ function getEmbedVideoCode(url, width, height){
 			return "<iframe width='"+width+"' height='"+height+"' src='"+url.substr(start,length)+"/widget/video.html' frameborder='0' webkitallowfullscreen mozallowfullscreen scrolling='no' allowfullscreen></iframe>";
 		}
 	}
-	
 	return url;
 };

@@ -119,10 +119,10 @@ public interface OpenChannelService {
     /**
      * Uninstall app
      *
-     * @param appId unique app id
+     * @param ownershipId unique ownership id
      * @return JsonObject
      */
-    JSONObject unInstallApp(String appId);
+    JSONObject unInstallApp(String ownershipId);
 
     /**
      * Install app

@@ -175,16 +175,15 @@
                     Website URL
                 </div>
                 <div class="col-md-6 controls">
-                    <input th:field="*{website}" class="form-control" name="website_url" data-validation-regex-regex="(http[s]?:\/\/){0,1}(www\.){0,1}[a-zA-Z0-9\.\-]+\.[a-zA-Z]{2,5}[\.]{0,1}" data-validation-regex-message="Please enter a valid URL"/>
+                    <input th:field="*{website}" class="form-control" name="website" data-validation-regex-regex="(http[s]?:\/\/){0,1}(www\.){0,1}[a-zA-Z0-9\.\-]+\.[a-zA-Z]{2,5}[\.]{0,1}" data-validation-regex-message="Please enter a valid URL"/>
                 </div>
             </div>
             <div class="form-group row control-group">
                 <div class="col-md-3 item">
                     Video URL
                 </div>
-                <div class="col-md-6">
-                    <input th:field="*{video}" id="video_url" class="form-control video-url" name="video_url" onkeyup="videoUrlValidator()" />
-                    <div class="help-block" id="video_url_message" style="display:none;"><ul role="alert"><li>Please enter a valid URL</li></ul></div>
+                <div class="col-md-6 controls">
+                    <input th:field="*{video}" id="video" class="form-control video-url" name="video" data-validation-regex-regex="((?:https?\:\/\/|www\.)(?:[-a-z0-9]+\.)*[-a-z0-9]+.*)" data-validation-regex-message="Please enter a valid URL"/>
                     <div class="video-preview" id="video-preview-box"></div>
                 </div>
             </div>

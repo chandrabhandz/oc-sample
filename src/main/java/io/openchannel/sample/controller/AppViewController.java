@@ -42,6 +42,7 @@ public class AppViewController {
     private static final String REDIRECT_APP = "redirect:/apps";
     private static final String IN_DEVELOPMENT = "inDevelopment";
     private static final String ERROR = "error";
+    private static final String STATUS = "status";
 
     /**
      * OpenChannelService, an intermediate layer between APIs and Controller
@@ -86,7 +87,7 @@ public class AppViewController {
         if (!CommonUtil.isNull(list))
             for (int i = list.size() - 1; i >= 0; i--) {
                 JSONObject app = (JSONObject) list.get(i);
-                JSONObject status = (JSONObject) app.get("status");
+                JSONObject status = (JSONObject) app.get(STATUS);
                 if (IN_DEVELOPMENT.equals(status.get("value"))) {
                     model.addAttribute(IN_DEVELOPMENT, Boolean.TRUE);
                     break;
@@ -175,7 +176,7 @@ public class AppViewController {
                 JSONArray statsJsonArray = (JSONArray) statistics.get(i);
                 views += Double.parseDouble(String.valueOf(statsJsonArray.get(1)));
             }
-            model.addAttribute("status", status);
+            model.addAttribute(STATUS, status);
             model.addAttribute("views", (int) views);
             model.addAttribute("statistics", statistics.toJSONString());
             return "app-edit";
@@ -241,7 +242,7 @@ public class AppViewController {
     public String deleteApp(@PathVariable("appId") final String appId, @PathVariable(value = "version", required = false) final String version, final Model model, final RedirectAttributes redirectAttributes) {
         try {
             openChannelService.deleteApp(appId, version);
-            model.addAttribute(TOAST_TYPE, "status");
+            model.addAttribute(TOAST_TYPE, STATUS);
             model.addAttribute(TOAST_MESSAGE, "App has been deleted");
         } catch (Exception e) {
             model.addAttribute(TOAST_TYPE, ERROR);
@@ -285,7 +286,7 @@ public class AppViewController {
      * @return view view
      */
     @GetMapping("/status/{appId}/{status}")
-    public String changeStatus(@PathVariable("appId") final String appId, @PathVariable(value = "status", required = false) final String status, final Model model, final RedirectAttributes redirectAttributes) {
+    public String changeStatus(@PathVariable("appId") final String appId, @PathVariable(value = STATUS, required = false) final String status, final Model model, final RedirectAttributes redirectAttributes) {
         try {
             openChannelService.changeAppStatus(appId, status);
             model.addAttribute(TOAST_TYPE, "update");

@@ -104,13 +104,13 @@ public class HomeViewController {
     /**
      * Uninstall app
      *
-     * @param appId  unique app id
+     * @param ownershipId  unique ownership id
      * @return JsonObject
      */
-    @GetMapping("/uninstall/{appId}")
-    public @ResponseBody JSONObject uninstallApp(@PathVariable("appId") final String appId) {
+    @GetMapping("/uninstall/{ownershipId}")
+    public @ResponseBody JSONObject uninstallApp(@PathVariable("ownershipId") final String ownershipId) {
         try {
-            return openChannelService.unInstallApp(appId);
+            return openChannelService.unInstallApp(ownershipId);
         } catch (Exception e) {
             LOGGER.debug("Error while uninstalling app");
             throw new ApplicationOperationException("Failed to uninstall app", e);
@@ -143,10 +143,13 @@ public class HomeViewController {
     @GetMapping({"/searchapp/{query}", "/searchapp/{query}/{category}"})
     public @ResponseBody JSONObject searchApp(@PathVariable("query") String query, @PathVariable(value = "category", required = false)String category) {
         try {
+            String appCategory = null;
             if(category == null){
-                category = UNDEFINED;
+                appCategory = UNDEFINED;
+            } else {
+                appCategory = category;
             }
-            return openChannelService.searchAppForQuery(query, category);
+            return openChannelService.searchAppForQuery(query, appCategory);
         } catch (Exception e) {
             LOGGER.debug("Error while searching app");
             throw new ApplicationOperationException("Failed to search app", e);
@@ -161,10 +164,13 @@ public class HomeViewController {
     @GetMapping({"/ownedapp/{collections}", "/ownedapp/{collections}/{queryParam}"})
     public @ResponseBody JSONObject ownedApp(@PathVariable("collections") final String collections, @PathVariable(value = "queryParam", required = false) String queryParam) {
         try {
+            String query = null;
             if(queryParam == null) {
-                queryParam = UNDEFINED;
+                query = UNDEFINED;
+            } else {
+                query = queryParam;
             }
-            return openChannelService.searchOwnedApps(collections, queryParam);
+            return openChannelService.searchOwnedApps(collections, query);
         } catch (Exception e) {
             LOGGER.debug("Error while searching owned app");
             throw new ApplicationOperationException("Failed to search owned app", e);

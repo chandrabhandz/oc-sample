@@ -46,7 +46,7 @@
                     </div>
                     <div th:case="${false}">
                         <div class="col-md-6" th:each="app : ${apps.get('list')}">
-                            <div class="card">
+                            <div class="card" th:attrappend="data-toggle=${#maps.containsKey(app.status, 'value') and (app.status.value == 'rejected' or app.status.value == 'suspended') and #maps.containsKey(app.status, 'reason') and app.status.reason != ''}?popover, data-content=${#maps.containsKey(app.status, 'reason') and app.status.reason != ''}?${app.status.reason}">
                                 <div class="card-overlay text-center">
                                     <th:block th:switch="${app.status.value == 'rejected' or app.status.value == 'suspended'}">
                                         <th:block th:case="${true}">

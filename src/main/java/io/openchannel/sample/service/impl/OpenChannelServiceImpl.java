@@ -54,7 +54,12 @@ public class OpenChannelServiceImpl implements OpenChannelService {
     /**
      * Endpoint for uninstalling app
      */
-    private static final String ENDPOINT_UNINSTALL_APP = "ownership/apps";
+    private static final String ENDPOINT_UNINSTALL_APP = "ownership/uninstall";
+
+    /**
+     * Endpoint for installing app
+     */
+    private static final String ENDPOINT_INSTALL_APP = "ownership/install";
 
 
     /**
@@ -432,13 +437,13 @@ public class OpenChannelServiceImpl implements OpenChannelService {
     /**
      * Uninstall app
      *
-     * @param appId unique app id
+     * @param ownershipId unique ownership id
      * @return JsonObject
      */
     @Override
-    public JSONObject unInstallApp(final String appId) {
+    public JSONObject unInstallApp(final String ownershipId) {
         try {
-            return JSONUtil.getJSONObject(openChannelAPIUtil.sendDelete(ENDPOINT_UNINSTALL_APP + URL_SEPARATOR + appId, new OpenChannelAPIUtil.RequestParameter(USER_ID, openChannelProperties.getUserId())));
+            return JSONUtil.getJSONObject(openChannelAPIUtil.sendPost(ENDPOINT_UNINSTALL_APP + URL_SEPARATOR + ownershipId, OpenChannelAPIUtil.PostContentType.JSON, new OpenChannelAPIUtil.RequestParameter(USER_ID, openChannelProperties.getUserId())));
         } catch (Exception e) {
             LOGGER.debug("Error while uninstalling app");
             throw new ApplicationOperationException("Failed to uninstall app", e);
@@ -455,7 +460,7 @@ public class OpenChannelServiceImpl implements OpenChannelService {
     @Override
     public JSONObject installApp(final String appId, final String modelId){
         try {
-            return JSONUtil.getJSONObject(openChannelAPIUtil.sendPost(ENDPOINT_UNINSTALL_APP + URL_SEPARATOR + appId, OpenChannelAPIUtil.PostContentType.JSON, new OpenChannelAPIUtil.RequestParameter(USER_ID, openChannelProperties.getUserId()), new OpenChannelAPIUtil.RequestParameter("modelId", modelId)));
+            return JSONUtil.getJSONObject(openChannelAPIUtil.sendPost(ENDPOINT_INSTALL_APP, OpenChannelAPIUtil.PostContentType.JSON, new OpenChannelAPIUtil.RequestParameter(APP_ID, appId), new OpenChannelAPIUtil.RequestParameter(USER_ID, openChannelProperties.getUserId()), new OpenChannelAPIUtil.RequestParameter("modelId", modelId)));
         } catch (Exception e) {
             LOGGER.debug("Error while uninstalling app");
             throw new ApplicationOperationException("Failed to uninstall app", e);

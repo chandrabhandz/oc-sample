@@ -1155,4 +1155,8 @@ img.mfp-img {
     .Integration-Detail h3 {
         max-width: none;
     }
+
+}
+.embed-responsive-17by9 {
+    padding-bottom: 12.25%;
 }

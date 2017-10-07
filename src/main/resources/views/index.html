@@ -18,7 +18,7 @@
         <p class="sub-txt">Apps, plugins and add-ons for your platform</p>
 
         <div class="col-sm-6 col-md-3 MarketplaceFeature" th:each="featuredApp: ${featuredApps.get('list')}">
-            <a th:href="@{/details/{safeName}(safeName=${featuredApp.safeName})}">
+            <a th:href="@{/details/{safeName}(safeName=${featuredApp.safeName[0]})}">
                 <div class="MarketplaceFeature-icon">
                     <img th:src="${featuredApp.customData.icon}" alt=""/>
                 </div>
@@ -88,7 +88,7 @@
                     </div>
                     <div th:case="${false}" th:remove="tag">
                         <div class="col-md-6" th:each="app : ${apps.get('list')}" th:remove="tag">
-                            <a class="Integration-box" th:href="@{/details/{safeName}(safeName=${app.safeName})}">
+                            <a class="Integration-box" th:href="@{/details/{safeName}(safeName=${app.safeName[0]})}">
                                 <div class="row">
                                     <img class="Integration-Icon" th:if="${#maps.containsKey(app.customData, 'icon')}"
                                          th:src="${app.customData.icon}" alt="App Image"/>

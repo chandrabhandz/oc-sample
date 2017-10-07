@@ -1,3 +1,11 @@
+$(function (){
+    $("[data-toggle='popover']").popover({
+        trigger : 'hover',
+        placement: 'top',
+        title: 'Reason'
+    });
+});
+
 function showPublishDialog(appId, version) {
     var modal =
         '<div id="modal_publish" class="modal fade" role="dialog">' +

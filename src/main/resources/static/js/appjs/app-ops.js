@@ -1,5 +1,4 @@
 var bSubmit = false;
-var hasError = false;
 
 // Disable dropzone autodiscover to initialize the dropzone with custom configuration
 Dropzone.autoDiscover = false;
@@ -29,27 +28,6 @@ function submitApp(obj, publish) {
     $(obj).find('.fa-spinner').removeClass('hidden');
     $(obj).prop('disabled', true);
     $('form').submit();
-}
-
-// CHeck valid video Url
-function videoUrlValidator(){
-
-    var url = $('#video_url').val();
-
-    var regYoutube = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=|\?v=)([^#\&\?]*).*/;
-    var regDailymotion = /^.+dailymotion.com\/(video|hub)\/([^_]+)[^#]*(#video=([^_&]+))?/;
-    var regVimeo = /(https?:\/\/)?(www\.)?(player\.)?vimeo\.com\/([a-z]*\/)*([0-9]{6,11})[?]?.*/;
-    var regMetacafe = /((http:\/\/)?(www\.)?metacafe\.com)(\/watch\/)(\d+)(.*)/i;
-
-    if(url.match(regYoutube) || url.match(regDailymotion) || url.match(regMetacafe) || url.match(regVimeo) || url.length < 1) {
-        hasError = false;
-        $("#video_url_message").css("display", "none");
-        return true;
-    }else{
-        hasError = true;
-        $("#video_url_message").css("display", "block");
-        return false;
-    }
 }
 
 $(function() {
@@ -82,9 +60,6 @@ $(function() {
 
     // Set video preview function
     $(".video-url").change(function () {
-        if(hasError){
-            return false;
-        }
         $(".video-preview iframe").remove();
         $(".video-preview").text('');
         $(".video-preview").append(getEmbedVideoCode($(".video-url").val(), 390, 220));
@@ -102,9 +77,7 @@ $(function() {
     $("form").find("input,select,textarea").not("[type='submit']").jqBootstrapValidation({
         preventSubmit: true,
         submitSuccess: function () {
-            if(hasError) {
-                return false;
-            }
+
             if (app) {
                 //var status = JSON.parse(app).status.value;
 
