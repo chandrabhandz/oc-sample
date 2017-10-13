@@ -499,7 +499,7 @@ public class OpenChannelServiceImpl implements OpenChannelService {
             query = "{'status.value':'approved','customData.category':'" + category + "'}";
         }
         try {
-                return JSONUtil.getJSONObject(openChannelAPIUtil.sendGet(ENDPOINT_CREATE_APP + File.separator + "textSearch", new OpenChannelAPIUtil.RequestParameter("query", query), new OpenChannelAPIUtil.RequestParameter("text", queryParameter), new OpenChannelAPIUtil.RequestParameter("fields", "['name','customData.summary','customData.description']"), new OpenChannelAPIUtil.RequestParameter(USER_ID, openChannelProperties.getUserId())));
+                return JSONUtil.getJSONObject(openChannelAPIUtil.sendGet(ENDPOINT_CREATE_APP + "/textSearch", new OpenChannelAPIUtil.RequestParameter("query", query), new OpenChannelAPIUtil.RequestParameter("text", queryParameter), new OpenChannelAPIUtil.RequestParameter("fields", "['name','customData.summary','customData.description']"), new OpenChannelAPIUtil.RequestParameter(USER_ID, openChannelProperties.getUserId())));
         } catch (IOException e) {
             LOGGER.debug("Error while searching apps from openchannel api, Root cause : ", e);
             throw new ApplicationOperationException("Failed to search apps details", e);
@@ -551,7 +551,7 @@ public class OpenChannelServiceImpl implements OpenChannelService {
             OpenChannelAPIUtil.RequestParameter[] requestParameters = new OpenChannelAPIUtil.RequestParameter[requestParameterList.size()];
             requestParameters = requestParameterList.toArray(requestParameters);
             if(queryParam != UNDEFINED) {
-                return JSONUtil.getJSONObject(openChannelAPIUtil.sendGet(ENDPOINT_CREATE_APP + File.separator + "textSearch", requestParameters));
+                return JSONUtil.getJSONObject(openChannelAPIUtil.sendGet(ENDPOINT_CREATE_APP + "/textSearch", requestParameters));
             } else {
                 return JSONUtil.getJSONObject(openChannelAPIUtil.sendGet(ENDPOINT_CREATE_APP, requestParameters));
             }
@@ -570,7 +570,7 @@ public class OpenChannelServiceImpl implements OpenChannelService {
      */
     @Override
     public JSONObject getAppFromSafeName(String safeName){
-        String path = ENDPOINT_CREATE_APP + File.separator + "bySafeName" + File.separator + safeName;
+        String path = ENDPOINT_CREATE_APP + "/bySafeName/" + safeName;
         try {
             return JSONUtil.getJSONObject(openChannelAPIUtil.sendGet(path, new OpenChannelAPIUtil.RequestParameter(USER_ID, openChannelProperties.getUserId()), new OpenChannelAPIUtil.RequestParameter("trackViews", true)));
         } catch (IOException e) {

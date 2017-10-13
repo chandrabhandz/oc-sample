@@ -63,7 +63,17 @@ public class CommonUtil {
      * @return extension
      */
     public static String getExtension(final String fileName) {
-        return fileName.substring(fileName.lastIndexOf('.'), fileName.length());
+    	
+    	int index = fileName.lastIndexOf('.');
+    	
+    	if(index > 0)
+    	{
+    		return fileName.substring(index, fileName.length());
+    	}
+    	else
+    	{
+    		return "";
+    	}
     }
 
     /**
@@ -73,12 +83,22 @@ public class CommonUtil {
      * @return extension trimmed file name
      */
     public static String getFileNameWithoutExt(final String fileName) {
-        String substring = fileName.substring(0, fileName.lastIndexOf('.'));
-        if (substring.length() < 3) {
-            substring = substring + "_dz_" + new Random().nextInt();
-        }
-
-        return substring;
+    	
+    	int index = fileName.lastIndexOf('.');
+    	
+    	if(index > 0)
+    	{
+	        String substring = fileName.substring(0, index);
+	        if (substring.length() < 3) {
+	            substring = substring + "_dz_" + new Random().nextInt();
+	        }
+	        
+	        return substring;
+    	}
+    	else
+    	{
+    		return fileName;
+    	}
     }
 
 }

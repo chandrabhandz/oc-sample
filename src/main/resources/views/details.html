@@ -30,7 +30,7 @@
                 App
             </button>
             <button th:style="${#maps.containsKey(appDetail, 'ownership') and appDetail.ownership.ownershipStatus == 'active'} ? 'display:none' : ''"
-                    id="install-app" class="btn-primary btn btn-lg"
+                    id="install-app" class="btn-primary btn btn-lg" th:disabled="${preview == 'true' ? 'disabled':'false'}"
                     th:onclick="'installApp(\'' + ${appDetail.appId} +'\',\''+ ${modelId} + '\');'"><i
                     class="fa fa-check"></i> Get It Now
             </button>
@@ -38,9 +38,10 @@
 
         <!-- media card -->
         <div class="card" id="video-image-card" th:style="${appDetail.customData.video != '' or appDetail.customData.get('images').size() != 0} ? '' : 'display:none'" >
-            <div id="embed-video" class="embed-responsive embed-responsive-16by9 text-center" th:switch="${appDetail.customData.video != ''}" th:case="${true}">
+            <div id="embed-video" class="embed-responsive embed-responsive-16by9" th:switch="${appDetail.customData.video != ''}" th:case="${true}">
                 <input type="hidden" th:value="${appDetail.customData.video}" class="form-control video-url"
                        name="video"/>
+                <a id="video-button" class="video-button btn btn-default hide-button" th:href="${#strings.contains(appDetail.customData.video,'http')? appDetail.customData.video: 'http://'+appDetail.customData.video}" target="_blank">Video</a>
                 <div class="video-preview"></div>
             </div>
 
@@ -110,7 +111,7 @@
         }
 
         $('.thumb-slider').magnificPopup({
-            delegate: 'li>a',
+            delegate: 'li:not(.bx-clone) a',
             type: 'image',
             tLoading: 'Loading image #%curr%...',
             mainClass: 'mfp-img-mobile',
@@ -127,15 +128,13 @@
         $(".video-preview iframe").remove();
         $(".video-preview").text('');
         var videoPreview = getEmbedVideoCode($(".video-url").val(), 390, 220);
-        if (videoPreview.indexOf('iframe') >= 0){
-            $(".video-preview").append(videoPreview);
-        } else {
-            var sliderLength = $("#image-slider-size").val();
-            console.log('slider length is '+sliderLength);
-            if(sliderLength > 0 || typeof sliderLength != "undefined") {
-                $('#embed-video').css("display", "none");
+
+        if(typeof videoPreview != 'undefined') {
+            if (videoPreview.indexOf('iframe') >= 0) {
+                $(".video-preview").append(videoPreview);
             } else {
-                $('#video-image-card').css("display", "none");
+               // $("#embed-video").removeClass("embed-responsive-16by9").addClass("embed-responsive-17by9");
+                $("#video-button").removeClass("hide-button");
             }
         }
     });
@@ -166,7 +165,7 @@
                     return false;
                 } else {
                     $('#install-app').hide();
-                    $('#uninstall-app').show();
+                    $('#uninstall-app').prop("onclick", null).off('click').on('click', function() {uninstallApp(result.ownershipId)}).show();
 
                     toastr.success('App​ Installed​ ​Successfully');
                 }

@@ -10,6 +10,7 @@ var flotConfig = {
 		
 	},
 	series: {
+        color: "#465a61",
 		lines: {
 			show: true,
 			fill: true,

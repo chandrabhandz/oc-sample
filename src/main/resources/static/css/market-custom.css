@@ -256,6 +256,7 @@ a, a:focus, a:visited, a:hover {
 .Integration-box {
     display: block;
     width: 50%;
+    height: 130px;
     float: left;
     padding: 0 15px;
     margin-bottom: 25px;
@@ -1157,6 +1158,13 @@ img.mfp-img {
     }
 
 }
-.embed-responsive-17by9 {
-    padding-bottom: 12.25%;
+.hide-button {
+    display:none;
+}
+
+.embed-responsive .video-button {
+    margin-top: 59px;
+    margin-left: 56px;
+    padding-left: 62px;
+    padding-right: 57px;
 }

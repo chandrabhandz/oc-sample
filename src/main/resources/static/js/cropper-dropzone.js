@@ -62,13 +62,74 @@ function initializeCropperDropzone( selector, config ) {
                             $("#" + config.fileType).val($("#" + config.fileType).val() + response);
                             if ( config.bFile ) {
                                 $(selector + " .dz-image *").remove();
-                                $(selector + " .dz-preview .dz-image").append("<a href='" + response + "' download><i class='fa fa-file'></i></a>");
+                             //   $(selector + " .dz-preview .dz-image:last").append("<a href='" + response + "' download><i class='fa fa-file'></i></a>");
+                                $(selector + " .dz-preview .dz-image").each(function () {
+                                    var count = 0;
+                                    if (count <= 0 && $(selector + " .dz-preview .dz-image").find("a").length == 0) {
+                                        console.log("inside selctor");
+                                        $(this).html("<a href='" + response + "' download><i class='fa fa-file'></i></a>");
+                                        count++;
+                                    }
+                                    var upload = 0;
+                                    $(selector + " .dz-upload").each(function () {
+                                      if(upload <= 0 && !$(this).hasClass('completed')) {
+                                        $(this).text("Complete");
+                                        $(this).addClass("completed");
+                                        upload++;
+                                      }
+                                    })
+                                });
+                                console.log("inside config.bFile "+response);
                             }
                         } else {
                             $("#" + config.fileType).val($("#" + config.fileType).val() + "," + response);
+                            console.log("inside else condition");
+                            console.log("response "+response);
                             if ( config.bFile ) {
-
-                                $(selector + " .dz-preview .dz-image:last").html("<a href='" + response + "' download><i class='fa fa-file'></i></a>");
+                                console.log("inside else if condition");
+                                var count = 0;
+                                var upload = 0;
+                                $(selector + " .dz-preview .dz-image").each(function () {
+                                  if(count <= 0 && $(this).find('a').length == 0){
+                                    $(this).html("<a href='" + response + "' download><i class='fa fa-file'></i></a>");
+                                    count++;
+                                  }
+                                  $(selector + " .dz-upload").each(function () {
+                                    if(upload <= 0 && !$(this).hasClass('completed')) {
+                                      $(this).text("Complete");
+                                      $(this).addClass("completed");
+                                      upload++;
+                                    }
+                                  })
+                                })
+                                /*$(selector + " .dz-preview .dz-image").each(function () {
+                                    console.log("count value is "+count);
+                                    console.log("after count "+$(this).find('a').length);
+                                    if(count <= 0 && $(this).find('a').length == 0){
+                                        console.log("inside count condition "+response);
+                                        $(this).html("<a href='" + response + "' download><i class='fa fa-file'></i></a>");
+                                        count++;
+                                        var upload = 0;
+                                        $(selector + " .dz-upload").each(function () {
+                                            if(upload <= 0 && !$(this).hasClass('completed')) {
+                                                $(this).text("Complete");
+                                                $(this).addClass("completed");
+                                                upload++;
+                                            }
+                                        })
+                                    }
+                                })
+                                $(selector + " .dz-preview .dz-image:last").html("<a href='" + response + "' download><i class='fa fa-file'></i></a>");*/
+                            } else {
+                                console.log("inside else else condition");
+                                var upload = 0;
+                                $(selector + " .dz-upload").each(function () {
+                                    if(upload <= 0 && !$(this).hasClass('completed')) {
+                                        $(this).text("Complete");
+                                        $(this).addClass("completed");
+                                        upload++;
+                                    }
+                                })
                             }
                         }
 
@@ -260,10 +321,10 @@ function initializeCropperDropzone( selector, config ) {
                         return;
                     }
                     // get cropped image data
-                    var blob = cropper.getCroppedCanvas().toDataURL();
+                    var blob = cropper.getCroppedCanvas().toDataURL('image/jpeg');
                     // transform it to Blob object
                     var croppedFile = dataURItoBlob(blob);
-                    croppedFile.name = fileName;
+                    croppedFile.name = 'icon';
 
                     var files = myDropzone.getAcceptedFiles();
                     for (var i = 0; i < files.length; i++) {

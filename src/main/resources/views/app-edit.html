@@ -24,7 +24,7 @@
 </section>
 <section class="form">
     <div class="container">
-        <div class="alert-danger" th:if="${(status.value == 'rejected' or status.value == 'suspended') and status.reason != ''}"><span th:utext="${status.reason}">fkjkld</span></div>
+        <div class="alert alert-danger" th:if="${(status.value == 'rejected' or status.value == 'suspended') and status.reason != ''}"><i class="fa fa-exclamation-circle"></i> <span th:utext="${status.reason}"></span></div>
         <h1>
             <i class="fa fa-search"> </i>
             <span th:text="${views} + ' Views'"></span>

@@ -133,7 +133,7 @@
       resizeQuality: 0.8,
       resizeMethod: 'contain',
       filesizeBase: 1000,
-      maxFiles: null,
+      maxFiles: 10,
       params: {},
       headers: null,
       clickable: true,

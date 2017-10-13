@@ -4,6 +4,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.constraints.NotNull;
+import java.security.InvalidParameterException;
 
 /**
  * OpenChannelProperties.java : works as loaded "openchannel" properties from application.yml to be
@@ -84,6 +85,9 @@ public class OpenChannelProperties {
      * @return
      */
     public String getMarketplaceId() {
+        if(marketplaceId.equals("")) {
+            throw new InvalidParameterException("MarketplaceId must be set with your marketplace API credentials");
+        }
         return marketplaceId;
     }
 
@@ -102,6 +106,9 @@ public class OpenChannelProperties {
      * @return
      */
     public String getSecret() {
+        if(secret.equals("")) {
+            throw new InvalidParameterException("Marketplace secret must be set with your marketplace API credentials");
+        }
         return secret;
     }
 

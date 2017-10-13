@@ -48,13 +48,6 @@
                         <div class="col-md-6" th:each="app : ${apps.get('list')}">
                             <div class="card" th:attrappend="data-toggle=${#maps.containsKey(app.status, 'value') and (app.status.value == 'rejected' or app.status.value == 'suspended') and #maps.containsKey(app.status, 'reason') and app.status.reason != ''}?popover, data-content=${#maps.containsKey(app.status, 'reason') and app.status.reason != ''}?${app.status.reason}">
                                 <div class="card-overlay text-center">
-                                    <th:block th:switch="${app.status.value == 'rejected' or app.status.value == 'suspended'}">
-                                        <th:block th:case="${true}">
-                                            <th:block th:switch="${app.status.reason == ''}">
-                                                <span class="span" th:case="${false}" th:text="${app.status.reason}"></span>
-                                            </th:block>
-                                        </th:block>
-                                    </th:block>
                                     <div class="card-overlay-panel">
                                         <a href="" class="btn btn-see-through" data-toggle="tooltip" title="Edit"
                                            th:href="@{/apps/edit/{appId}/{appVersion}(appId=${app.appId}, appVersion=${app.version})}">

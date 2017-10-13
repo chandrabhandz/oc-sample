@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>We're sorry, but something went wrong (500)</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <link href="/assets/css/error-custom.css" th:href="@{/assets/css/error-custom.css}" rel="stylesheet" type="text/css"/>
+    <style>
+
+    </style>
+</head>
+<body class="rails-default-error-page">
+<div class="dialog">
+    <div>
+        <h1>We're sorry, but something went wrong.</h1>
+    </div>
+    <p th:utext="${message}"></p>
+</div>
+</body>
+</html>

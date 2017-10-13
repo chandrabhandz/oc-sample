@@ -62,12 +62,18 @@ $(function() {
     $(".video-url").change(function () {
         $(".video-preview iframe").remove();
         $(".video-preview").text('');
-        $(".video-preview").append(getEmbedVideoCode($(".video-url").val(), 390, 220));
+        var videoPreview = getEmbedVideoCode($(".video-url").val(), 390, 220);
+        if (videoPreview.indexOf('iframe') >= 0){
+            $(".video-preview").append(videoPreview);
+        }
     });
 
     // Display video when the url is preset
     if ($(".video-url").val()) {
-        $(".video-preview").append(getEmbedVideoCode($(".video-url").val(), 390, 220));
+        var videoPreview = getEmbedVideoCode($(".video-url").val(), 390, 220);
+        if (videoPreview.indexOf('iframe') >= 0){
+            $(".video-preview").append(videoPreview);
+        }
     }
 
     // Initialize bootstrap tooltip
